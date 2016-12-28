@@ -11,7 +11,7 @@ public class AudioService {
 	@Autowired
 	AudioRepository repository;
 
-	public Folder getList() {
+	public Folder getList() throws Exception {
 		Folder result = repository.findAll();
 		return result;
 	}

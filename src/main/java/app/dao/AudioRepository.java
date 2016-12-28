@@ -6,5 +6,5 @@ import app.entity.Folder;
 
 @Repository
 public interface AudioRepository {
-	Folder findAll();
+	Folder findAll() throws Exception;
 }
