@@ -1,18 +1,20 @@
 <link rel="import" href="/bower_components/polymer/polymer.html" />
 
-<link rel="import" href="/templates/navigation-menu.html" />
-
 <script src="/scripts/locale-utils.js"></script>
 
-<dom-module id="index-page">
+<dom-module id="navigation-menu">
 	<template>
-		<navigation-menu></navigation-menu>
-		<h3><iron-label>[[i18n('index.greeting')]]</iron-label></h3>
+		<table>
+			<tr>
+				<td><a href="/">[[i18n('index.caption')]]</a></td>
+				<td><a href="/audio">[[i18n('audio.caption')]]</a></td>
+			</tr>
+		</table>
 	</template>
 
 	<script>
     Polymer({
-    	is: "index-page",
+    	is: "navigation-menu",
 
     	i18n: function(key) {
     		return Locales.i18n(key);

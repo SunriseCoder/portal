@@ -10,8 +10,8 @@ public class PageController {
 		return "index";
 	}
 
-	@RequestMapping("/test/")
+	@RequestMapping("/audio")
 	public String dbTest() {
-		return "test/index";
+		return "audio";
 	}
 }

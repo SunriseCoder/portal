@@ -13,11 +13,11 @@ import app.entity.Folder;
 
 @ManagedBean
 public class AudioRepositoryImpl implements AudioRepository {
-	@Value("${audios.folder}")
-	private String audiosFolder;
+	@Value("${audio.folder}")
+	private String audioFolder;
 
 	public Folder findAll() throws Exception {
-		File file = new File(audiosFolder);
+		File file = new File(audioFolder);
 
 		if (!file.exists()) {
 			throw new FileNotFoundException(file.getAbsolutePath());

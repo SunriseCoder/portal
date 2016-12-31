@@ -1,3 +1,9 @@
 {
-	"app" : "Portal"
+	"app" : "Portal",
+
+	"index.caption" : "Main",
+	"audio.caption" : "Audio",
+
+	"index.greeting" : "Welcome to the Portal",
+	"audio.greeting" : "Audio Files"
 }

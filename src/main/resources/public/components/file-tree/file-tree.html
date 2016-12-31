@@ -1,0 +1,125 @@
+<link rel="import" href="/bower_components/polymer/polymer.html" />
+<link rel="import" href="/bower_components/iron-ajax/iron-ajax.html" />
+
+<script src="/scripts/locale-utils.js"></script>
+
+<dom-module id="file-tree">
+	<template>
+		<style>
+			div.treeElement {
+				background-color: #DDFFFF;
+				height: 100%;
+				width: 100%;
+				display:table;
+			}
+    	</style>
+		<iron-ajax id="treeDataAjax" content-type="application/json"
+				on-response="_loadDataOk" on-error="_loadDataError"></iron-ajax>
+
+		<!-- Tree -->
+		<div class="treeElement">
+			<template is="dom-repeat" items="[[data]]" as="row">
+				<div style="[[_generateStyle(row)]]">
+					<template is="dom-if" if="[[row.isFolder]]">
+						<img alt="Folder" src="icons/folder.png"></img>
+					</template>
+					<template is="dom-if" if="[[row.isFile]]">
+						<img alt="File" src="icons/file.png"></img>
+					</template>
+					[[row.name]]
+				</div>
+			</template>
+		</div>
+	</template>
+
+	<script>
+    Polymer({
+    	is: "file-tree",
+
+    	properties: {
+    		ajaxUrl: String,
+    		data: Array
+    	},
+
+    	i18n: function(key) {
+    		return Locales.i18n(key);
+    	},
+    	
+    	ready: function() {
+    		this.refresh();
+    	},
+    	
+    	refresh: function() {
+    		this._loadData();
+    	},
+
+    	_loadData: function() {
+    		this.$.treeDataAjax.url = this.ajaxUrl;
+    		this.$.treeDataAjax.generateRequest();
+    	},
+    	
+    	_loadDataOk: function(event) {
+    		var data = event.detail.response;
+    		var processedData = this._processTreeData(data);
+    		this.data = processedData;
+    	},
+    	
+    	_processTreeData: function(data) {
+    		var result = [];
+    		var indent = 0;
+    		this._processFolderRecursively(data, result, indent);
+    		return result;
+    	},
+    	
+    	_processFolderRecursively: function(folder, result, indent) {
+
+    		for (var i = 0; i < folder.folders.length; i++) {
+    			//Add Folder
+    			var nextFolder = folder.folders[i];
+	    		var node = {};
+    			node.name = nextFolder.name;
+    			node.indent = indent;
+    			node.isFolder = true;
+    			result.push(node);
+
+    			//Scan Recursively
+    			this._processFolderRecursively(nextFolder, result, indent + 1);
+    		}
+    		for (var i = 0; i < folder.files.length; i++) {
+    			//Add File
+    			var file = folder.files[i];
+    			var node = {};
+    			node.name = file.name;
+    			node.indent = indent;
+    			node.isFile = true;
+    			node.index = i;
+    			result.push(node);
+    		}
+    	},
+
+    	_loadDataError: function(event) {
+    		//TODO
+    	},
+
+    	_generateStyle(row) {
+    		var indent = row.indent * 20;
+    		var style = "position: relative; left: " + indent + "px;";
+
+    		if (row.isFolder) {
+    			// folder
+    			style += " background-color: #FFFFBB"
+    		} else {
+	    		if (row.index % 2 == 0) {
+	    			// even
+	    			style += " background-color: #DDDDDD;";
+	    		} else {
+	    			// odd
+	    			style += " background-color: white;";
+	    		}
+    		}
+
+    		return style;
+    	}
+    });
+  </script>
+</dom-module>
