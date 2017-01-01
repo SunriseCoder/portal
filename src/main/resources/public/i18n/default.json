@@ -2,8 +2,9 @@
 	"app" : "Portal",
 
 	"index.caption" : "Main",
-	"audio.caption" : "Audio",
-
 	"index.greeting" : "Welcome to the Portal",
-	"audio.greeting" : "Audio Files"
+
+	"audio.caption" : "Audio",
+	"audio.greeting" : "Audio Files",
+	"audio.search.label" : "Search"
 }

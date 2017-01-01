@@ -1,5 +1,6 @@
 <link rel="import" href="/bower_components/polymer/polymer.html" />
 <link rel="import" href="/bower_components/iron-ajax/iron-ajax.html" />
+<link rel="import" href="/bower_components/paper-input/paper-input.html" />
 
 <script src="/scripts/locale-utils.js"></script>
 
@@ -16,9 +17,12 @@
 		<iron-ajax id="treeDataAjax" content-type="application/json"
 				on-response="_loadDataOk" on-error="_loadDataError"></iron-ajax>
 
+		<!-- Search -->
+		<paper-input label="[[searchLabel]]" on-input="_filter"></paper-input>
+
 		<!-- Tree -->
 		<div class="treeElement">
-			<template is="dom-repeat" items="[[data]]" as="row">
+			<template is="dom-repeat" items="[[flatData]]" as="row">
 				<div style="[[_generateStyle(row)]]">
 					<template is="dom-if" if="[[row.isFolder]]">
 						<img alt="Folder" src="icons/folder.png"></img>
@@ -38,17 +42,16 @@
 
     	properties: {
     		ajaxUrl: String,
-    		data: Array
+    		searchLabel: String,
+    		filter: String,
+    		treeData: Object,
+    		flatData: Array
     	},
 
-    	i18n: function(key) {
-    		return Locales.i18n(key);
-    	},
-    	
     	ready: function() {
     		this.refresh();
     	},
-    	
+
     	refresh: function() {
     		this._loadData();
     	},
@@ -57,43 +60,141 @@
     		this.$.treeDataAjax.url = this.ajaxUrl;
     		this.$.treeDataAjax.generateRequest();
     	},
-    	
+
     	_loadDataOk: function(event) {
     		var data = event.detail.response;
-    		var processedData = this._processTreeData(data);
-    		this.data = processedData;
+    		this.treeData = data;
+
+    		this._referenceToParents(this.treeData);
+    		this._applyFilter();
     	},
-    	
-    	_processTreeData: function(data) {
-    		var result = [];
-    		var indent = 0;
-    		this._processFolderRecursively(data, result, indent);
+
+    	_referenceToParents: function(folder) {
+    		for (var i = 0; i < folder.folders.length; i++) {
+    			var nextFolder = folder.folders[i];
+    			nextFolder.parent = folder;
+    			this._referenceToParents(nextFolder);
+    		}
+    		for (var i = 0; i < folder.files.length; i++) {
+    			var file = folder.files[i];
+    			file.parent = folder;
+    		}
+    	},
+
+    	_applyFilter: function() {
+    		// Mark each elements in the Tree as non-passed 
+    		this._resetFiltered(this.treeData);
+    		// Scan and match each element
+    		this._filterData(this.treeData);
+    		// make flat structure out of passed elements
+    		this._makeFlatData();
+    	},
+
+    	_resetFiltered: function(folder) {
+    		folder.passedFilter = false;
+    		for (var i = 0; i < folder.folders.length; i++) {
+    			var nextFolder = folder.folders[i];
+    			this._resetFiltered(nextFolder);
+    		}
+    		for (var i = 0; i < folder.files.length; i++) {
+    			var file = folder.files[i];
+    			file.passedFilter = false;
+    		}
+    	},
+
+    	_filterData: function(folder) {
+    		if (this._match(folder.name)) {
+    			this._markBranchPassedFilter(folder);
+    			this._markChildrenPassedFilter(folder);
+    			return;
+    		}
+
+    		for (var i = 0; i < folder.folders.length; i++) {
+    			var nextFolder = folder.folders[i];
+    			this._filterData(nextFolder);
+    		}
+
+	    	for (var i = 0; i < folder.files.length; i++) {
+    			var file = folder.files[i];
+    			if (this._match(file.name)) {
+    				file.passedFilter = true;
+    				if (!folder.passedFilter) {
+	    				this._markBranchPassedFilter(folder);
+    				}
+    			}
+    		}
+    	},
+
+    	_match: function(value) {
+    		var result;
+
+    		if (this.filter) {
+    			var lowered = value.toLowerCase();
+    			result = lowered.includes(this.filter);
+    		} else {
+    			result = true;
+    		}
+
     		return result;
     	},
-    	
-    	_processFolderRecursively: function(folder, result, indent) {
 
+    	_markBranchPassedFilter: function(folder) {
+    		folder.passedFilter = true;
+    		if (folder.parent) {
+    			var parent = folder.parent;
+    			this._markBranchPassedFilter(parent);
+    		}
+    	},
+
+		_markChildrenPassedFilter: function(folder) {
+			for (var i = 0; i < folder.folders.length; i++) {
+    			var nextFolder = folder.folders[i];
+    			nextFolder.passedFilter = true;
+    			this._markChildrenPassedFilter(nextFolder);
+    		}
+
+	    	for (var i = 0; i < folder.files.length; i++) {
+    			var file = folder.files[i];
+   				file.passedFilter = true;
+    		}
+		},
+
+    	_makeFlatData: function() {
+    		var flat = [];
+    		var indent = 0;
+    		this._treeToFlatRecursively(this.treeData, flat, indent);
+
+    		this.flatData = flat;
+    	},
+
+    	_treeToFlatRecursively: function(folder, result, indent) {
     		for (var i = 0; i < folder.folders.length; i++) {
     			//Add Folder
     			var nextFolder = folder.folders[i];
-	    		var node = {};
-    			node.name = nextFolder.name;
-    			node.indent = indent;
-    			node.isFolder = true;
-    			result.push(node);
+
+    			if (nextFolder.passedFilter) {
+		    		var node = {};
+	    			node.name = nextFolder.name;
+	    			node.indent = indent;
+	    			node.isFolder = true;
+	    			result.push(node);
+    			}
 
     			//Scan Recursively
-    			this._processFolderRecursively(nextFolder, result, indent + 1);
+    			this._treeToFlatRecursively(nextFolder, result, indent + 1);
     		}
     		for (var i = 0; i < folder.files.length; i++) {
     			//Add File
     			var file = folder.files[i];
-    			var node = {};
-    			node.name = file.name;
-    			node.indent = indent;
-    			node.isFile = true;
-    			node.index = i;
-    			result.push(node);
+
+    			if (file.passedFilter) {
+	    			var node = {};
+	    			node.name = file.name;
+	    			node.indent = indent;
+	    			node.isFile = true;
+	    			node.index = i;
+	    			result.push(node);
+    			}
     		}
     	},
 
@@ -101,7 +202,7 @@
     		//TODO
     	},
 
-    	_generateStyle(row) {
+    	_generateStyle: function(row) {
     		var indent = row.indent * 20;
     		var style = "position: relative; left: " + indent + "px;";
 
@@ -119,6 +220,11 @@
     		}
 
     		return style;
+    	},
+
+    	_filter: function(event) {
+    		this.filter = event.srcElement.value.toLowerCase();
+    		this._applyFilter();
     	}
     });
   </script>
