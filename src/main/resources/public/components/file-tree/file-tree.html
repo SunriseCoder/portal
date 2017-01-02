@@ -13,6 +13,19 @@
 				width: 100%;
 				display:table;
 			}
+
+			a:link {
+				color: black;
+				text-decoration: none;
+			}
+
+			a:visited {
+				color: black;
+			}
+
+			a:hover {
+				color: blue;
+			}
     	</style>
 		<iron-ajax id="treeDataAjax" content-type="application/json"
 				on-response="_loadDataOk" on-error="_loadDataError"></iron-ajax>
@@ -30,7 +43,9 @@
 					<template is="dom-if" if="[[row.isFile]]">
 						<img alt="File" src="icons/file.png"></img>
 					</template>
-					[[row.name]]
+					<a href="[[row.url]]">
+						[[row.name]]
+					</a>
 				</div>
 			</template>
 		</div>
@@ -42,6 +57,7 @@
 
     	properties: {
     		ajaxUrl: String,
+    		downloadUrl: String,
     		searchLabel: String,
     		filter: String,
     		treeData: Object,
@@ -162,26 +178,28 @@
     	_makeFlatData: function() {
     		var flat = [];
     		var indent = 0;
-    		this._treeToFlatRecursively(this.treeData, flat, indent);
+    		this._treeToFlatRecursively(this.treeData, flat, indent, this.downloadUrl);
 
     		this.flatData = flat;
     	},
 
-    	_treeToFlatRecursively: function(folder, result, indent) {
+    	_treeToFlatRecursively: function(folder, result, indent, url) {
     		for (var i = 0; i < folder.folders.length; i++) {
     			//Add Folder
     			var nextFolder = folder.folders[i];
+    			var nextUrl = url + "/" + nextFolder.name;
 
     			if (nextFolder.passedFilter) {
 		    		var node = {};
 	    			node.name = nextFolder.name;
 	    			node.indent = indent;
 	    			node.isFolder = true;
+	    			node.url = nextUrl;
 	    			result.push(node);
     			}
 
     			//Scan Recursively
-    			this._treeToFlatRecursively(nextFolder, result, indent + 1);
+    			this._treeToFlatRecursively(nextFolder, result, indent + 1, nextUrl);
     		}
     		for (var i = 0; i < folder.files.length; i++) {
     			//Add File
@@ -193,6 +211,8 @@
 	    			node.indent = indent;
 	    			node.isFile = true;
 	    			node.index = i;
+	    			var fileUrl = url + "/" + file.name;
+	    			node.url = fileUrl;
 	    			result.push(node);
     			}
     		}
