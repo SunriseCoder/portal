@@ -43,9 +43,14 @@
 					<template is="dom-if" if="[[row.isFile]]">
 						<img alt="File" src="icons/file.png"></img>
 					</template>
+
 					<a href="[[_encodeUrl(row.url)]]">
 						[[row.name]]
 					</a>
+
+					<template is="dom-if" if="[[row.isFile]]">
+						([[_readableFileSize(row.size)]])
+					</template>
 				</div>
 			</template>
 		</div>
@@ -212,6 +217,7 @@
 	    			node.index = i;
 	    			var fileUrl = url + file.name;
 	    			node.url = fileUrl;
+	    			node.size = file.size;
 	    			result.push(node);
     			}
     		}
@@ -252,6 +258,21 @@
     	_filter: function(event) {
     		this.filter = event.srcElement.value.toLowerCase();
     		this._applyFilter();
+    	},
+
+    	_readableFileSize(size) {
+    		var unit = 1024;
+
+			if (size < unit) {
+				return size + " B";
+			}
+
+			var exp = Math.log(size) / Math.log(unit);
+			exp = Math.floor(exp);
+			var suffix = "kMGTPE".charAt(exp - 1);
+			var notation = size / Math.pow(unit, exp);
+			var result = notation.toFixed(1) + " " + suffix + "B";
+    		return result;
     	}
     });
   </script>
