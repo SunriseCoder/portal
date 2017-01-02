@@ -184,31 +184,30 @@
     	},
 
     	_treeToFlatRecursively: function(folder, result, indent, url) {
-    		for (var i = 0; i < folder.folders.length; i++) {
+   			if (folder.passedFilter) {
     			//Add Folder
+	    		var node = {};
+    			node.name = folder.name;
+    			node.indent = indent;
+    			node.isFolder = true;
+    			node.url = url;
+    			result.push(node);
+   			}
+
+    		for (var i = 0; i < folder.folders.length; i++) {
+    			//Scan Recursively
     			var nextFolder = folder.folders[i];
     			var nextUrl = url + nextFolder.name + "/";
-
-    			if (nextFolder.passedFilter) {
-		    		var node = {};
-	    			node.name = nextFolder.name;
-	    			node.indent = indent;
-	    			node.isFolder = true;
-	    			node.url = nextUrl;
-	    			result.push(node);
-    			}
-
-    			//Scan Recursively
     			this._treeToFlatRecursively(nextFolder, result, indent + 1, nextUrl);
     		}
     		for (var i = 0; i < folder.files.length; i++) {
-    			//Add File
     			var file = folder.files[i];
 
     			if (file.passedFilter) {
+    				//Add File
 	    			var node = {};
 	    			node.name = file.name;
-	    			node.indent = indent;
+	    			node.indent = indent + 1;
 	    			node.isFile = true;
 	    			node.index = i;
 	    			var fileUrl = url + file.name;
