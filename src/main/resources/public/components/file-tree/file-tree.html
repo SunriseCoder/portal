@@ -43,7 +43,7 @@
 					<template is="dom-if" if="[[row.isFile]]">
 						<img alt="File" src="icons/file.png"></img>
 					</template>
-					<a href="[[row.url]]">
+					<a href="[[_encodeUrl(row.url)]]">
 						[[row.name]]
 					</a>
 				</div>
@@ -178,7 +178,7 @@
     	_makeFlatData: function() {
     		var flat = [];
     		var indent = 0;
-    		this._treeToFlatRecursively(this.treeData, flat, indent, this.downloadUrl);
+    		this._treeToFlatRecursively(this.treeData, flat, indent, "");
 
     		this.flatData = flat;
     	},
@@ -187,7 +187,7 @@
     		for (var i = 0; i < folder.folders.length; i++) {
     			//Add Folder
     			var nextFolder = folder.folders[i];
-    			var nextUrl = url + "/" + nextFolder.name;
+    			var nextUrl = url + nextFolder.name + "/";
 
     			if (nextFolder.passedFilter) {
 		    		var node = {};
@@ -211,11 +211,19 @@
 	    			node.indent = indent;
 	    			node.isFile = true;
 	    			node.index = i;
-	    			var fileUrl = url + "/" + file.name;
+	    			var fileUrl = url + file.name;
 	    			node.url = fileUrl;
 	    			result.push(node);
     			}
     		}
+    	},
+
+    	_encodeUrl: function(url) {
+    		url = encodeURIComponent(url);
+    		var encoded = btoa(url);
+    		encoded = encoded.replace("/", "_");
+    		url = this.downloadUrl + encoded; 
+    		return url;
     	},
 
     	_loadDataError: function(event) {

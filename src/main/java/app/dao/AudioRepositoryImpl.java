@@ -1,11 +1,16 @@
 package app.dao;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.NotDirectoryException;
 
 import javax.annotation.ManagedBean;
+import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Value;
 
 import app.entity.AudioFile;
@@ -16,6 +21,7 @@ public class AudioRepositoryImpl implements AudioRepository {
 	@Value("${audio.folder}")
 	private String audioFolder;
 
+	@Override
 	public Folder findAll() throws Exception {
 		File file = new File(audioFolder);
 
@@ -47,5 +53,22 @@ public class AudioRepositoryImpl implements AudioRepository {
 		}
 
 		return folder;
+	}
+
+	@Override
+	public void downloadFile(String url, HttpServletResponse response) throws Exception {
+		String path = audioFolder + "/" + url;
+		File file = new File(path);
+		if (!file.exists() || file.isDirectory()) {
+			response.sendError(404);
+			return;
+		}
+
+		response.setContentType("audio/mpeg");
+
+		InputStream is = new FileInputStream(file);
+		OutputStream os = response.getOutputStream();
+		IOUtils.copy(is, os);
+		response.flushBuffer();
 	}
 }
