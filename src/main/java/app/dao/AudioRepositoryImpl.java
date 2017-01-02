@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 
 import app.entity.AudioFile;
 import app.entity.Folder;
@@ -65,6 +66,9 @@ public class AudioRepositoryImpl implements AudioRepository {
 		}
 
 		response.setContentType("audio/mpeg");
+		// Use "attachment; filename=..." to download instead of playing file
+		response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "filename=" + file.getName());
+		response.setContentLengthLong(file.length());
 
 		InputStream is = new FileInputStream(file);
 		OutputStream os = response.getOutputStream();
