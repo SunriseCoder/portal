@@ -4,8 +4,7 @@ var Locales = {
 	_load: function() {
 		var xhrObject = new XMLHttpRequest();
         xhrObject.overrideMimeType("application/json");
-        // synchrones AJAX deprecated, hier aber notwendig um sicherzustellen,
-        // dass Texte da bevor Komponenten geladen werden
+        // synchronous AJAX is deprecated, but important to load resources
         xhrObject.open('GET', '/i18n/default.json', false);
         xhrObject.send();
         _keys = JSON.parse(xhrObject.responseText);
@@ -19,7 +18,6 @@ var Locales = {
 			return key;
 		}
 
-		console.log("i18n: " + value);
 		return value;
 	},
 	
@@ -29,4 +27,5 @@ var Locales = {
 		element.innerHTML = value;
 	}
 }
+
 Locales._load();
