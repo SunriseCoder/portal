@@ -13,13 +13,20 @@ var Locales = {
 
 	i18n: function(key) {
 		var value = _keys[key];
-		
+
 		if (!value) {
 			console.log('Cannot find i18n message for ' + key);
 			return key;
 		}
-		
+
+		console.log("i18n: " + value);
 		return value;
+	},
+	
+	write(id, key) {
+		var element = document.getElementById(id);;
+		var value = this.i18n(key);
+		element.innerHTML = value;
 	}
 }
 Locales._load();

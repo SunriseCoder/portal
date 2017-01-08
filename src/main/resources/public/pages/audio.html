@@ -3,10 +3,26 @@
 <head>
 	<title>Audio Files</title>
 
-	<link rel="import" href="/templates/audio-page.html">
-	<script src="/bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+	<script src="scripts/jquery.js"></script>
+	<script src="scripts/locale-utils.js"></script>
+	
+	<script>
+		$(function(){
+			$("#menu").load("elements/menu.html"); 
+		});
+	</script>
 </head>
 <body>
-	<audio-page></audio-page>
+	<!-- TODO Implement via JS
+		<link rel="import" href="/components/file-tree/file-tree.html" />
+		<h3><iron-label>[[i18n('audio.greeting')]]</iron-label></h3>
+		<file-tree ajax-url="/rest/audio/list" download-url="/audio-dl/"
+				search-label="[[i18n('audio.search.label')]]"></file-tree>
+	</template> -->
+
+	<h3>
+		<script>document.write(Locales.i18n('audio.greeting'));</script>
+	</h3>
+	<div id="menu"></div>
 </body>
 </html>

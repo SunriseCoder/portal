@@ -3,10 +3,19 @@
 <head>
 	<title>Main Page</title>
 
-	<link rel="import" href="/templates/index-page.html">
-	<script src="/bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+	<script src="scripts/jquery.js"></script>
+	<script src="scripts/locale-utils.js"></script>
+
+	<script>
+		$(function(){
+			$("#menu").load("elements/menu.html"); 
+		});
+	</script>
 </head>
 <body>
-	<index-page></index-page>
+	<h3>
+		<script>document.write(Locales.i18n('index.greeting'));</script>
+	</h3>
+	<div id="menu"></div>
 </body>
 </html>
