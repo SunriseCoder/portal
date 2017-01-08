@@ -44,12 +44,12 @@
 						<img alt="File" src="icons/file.png"></img>
 					</template>
 
-					<a href="[[_encodeUrl(row.url)]]">
+					<a href="[[row.encodedUrl]]">
 						[[row.name]]
 					</a>
 
 					<template is="dom-if" if="[[row.isFile]]">
-						([[_readableFileSize(row.size)]])
+						[[row.readableSize]]
 					</template>
 				</div>
 			</template>
@@ -196,6 +196,7 @@
     			node.indent = indent;
     			node.isFolder = true;
     			node.url = url;
+    			node.readableSize = 0;
     			result.push(node);
    			}
 
@@ -205,6 +206,7 @@
     			var nextUrl = url + nextFolder.name + "/";
     			this._treeToFlatRecursively(nextFolder, result, indent + 1, nextUrl);
     		}
+    		var index = 0;
     		for (var i = 0; i < folder.files.length; i++) {
     			var file = folder.files[i];
 
@@ -214,10 +216,14 @@
 	    			node.name = file.name;
 	    			node.indent = indent + 1;
 	    			node.isFile = true;
-	    			node.index = i;
+	    			node.index = index++;
 	    			var fileUrl = url + file.name;
 	    			node.url = fileUrl;
+	    			var encodedUrl = this._encodeUrl(fileUrl);
+	    			node.encodedUrl = encodedUrl;
 	    			node.size = file.size;
+	    			var readableSize = this._readableFileSize(file.size);
+	    			node.readableSize = readableSize;
 	    			result.push(node);
     			}
     		}
@@ -260,13 +266,14 @@
     		this._applyFilter();
     	},
 
-    	_readableFileSize(size) {
-    		var unit = 1024;
+    	_readableFileSize(row) {
+    		var size = row.size;
 
 			if (size < unit) {
 				return size + " B";
 			}
 
+    		var unit = 1024;
 			var exp = Math.log(size) / Math.log(unit);
 			exp = Math.floor(exp);
 			var suffix = "kMGTPE".charAt(exp - 1);
