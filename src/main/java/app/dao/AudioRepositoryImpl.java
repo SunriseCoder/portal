@@ -194,10 +194,12 @@ public class AudioRepositoryImpl implements AudioRepository {
 		contentTypes.put("ogg", "audio/ogg");
 		contentTypes.put("wav", "audio/wave");
 		contentTypes.put("wave", "audio/wave");
+		contentTypes.put("wma", "audio/x-ms-wma");
 
 		// Video
 		contentTypes.put("mp4", "video/mp4");
 		contentTypes.put("m4v", "video/mp4");
+		contentTypes.put("wmv", "video/x-ms-wmv");
 
 		// Archives
 		contentTypes.put("", "application/zip");
