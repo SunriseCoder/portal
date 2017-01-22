@@ -102,7 +102,7 @@ var FileTree = {
 
 	applyFilter: function() {
 		var filter = $('#filter')[0].value;
-		this.filter = filter;
+		this.filter = filter.toLowerCase().trim();
 
 		if (this.serverData == undefined) {
 			return;
@@ -110,7 +110,7 @@ var FileTree = {
 
 		this._applyFilter();
 
-		this.limitCounter = 0;
+		this.displayLimitCounter = 0;
 		var nodes = [];
 		var tree = this.serverData;
 		this._buildTreeRecursively(tree, nodes, 0);
@@ -125,7 +125,7 @@ var FileTree = {
 	},
 
 	_buildTreeRecursively: function(folder, nodes, indent) {
-		if (this.limitCounter >= this.limit) {
+		if (this.displayLimitCounter >= this.displayLimit) {
 			return;
 		}
 
@@ -147,7 +147,7 @@ var FileTree = {
 		}
 		var index = 0;
 		for (var i = 0; i < folder.files.length; i++) {
-			if (this.limitCounter >= this.limit) {
+			if (this.displayLimitCounter >= this.displayLimit) {
 				return;
 			}
 			var file = folder.files[i];
@@ -161,7 +161,7 @@ var FileTree = {
 				element.readableSize = file.readableSize;
 				element.url = file.url;
 				nodes.push(element);
-				this.limitCounter++;
+				this.displayLimitCounter++;
 			}
 		}
 	},
@@ -170,7 +170,6 @@ var FileTree = {
 		var htmlText = "Total: " + this.totalFilesCount + " file(s) and " + this.totalFoldersCount + " folder(s)<br />";
 		htmlText += "Found: " + this.filteredFilesCount + " file(s) and " + this.filteredFoldersCount + " folder(s)<br />";
 
-		var counter = 1;
 		for (var i = 0; i < nodes.length; i++) {
 			var node = nodes[i];
 			htmlText += '<div style="position: relative; left: ' + node.indent * 20 + 'px;">';
@@ -178,7 +177,7 @@ var FileTree = {
 				htmlText += '<a href="' + node.url + '"><img src="/icons/folder.png" />' + node.name + '</a>';
 				htmlText += " (" + node.readableSize + ")";
 			} else if (node.isFile) {
-				htmlText += counter++ + '<a href="' + node.url + '"><img src="/icons/file.png" />' + node.name + '</a>';
+				htmlText += '<a href="' + node.url + '"><img src="/icons/file.png" />' + node.name + '</a>';
 				htmlText += " (" + node.readableSize + ")";
 			}
 			htmlText += '</div>';
