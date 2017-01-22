@@ -7,6 +7,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URLEncoder;
 import java.nio.file.NotDirectoryException;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.annotation.ManagedBean;
 import javax.servlet.http.HttpServletResponse;
@@ -22,6 +24,11 @@ import app.entity.Folder;
 public class AudioRepositoryImpl implements AudioRepository {
 	@Value("${audio.folder}")
 	private String audioFolder;
+	private Map<String, String> contentTypes;
+
+	public AudioRepositoryImpl() {
+		fillContentTypes();
+	}
 
 	@Override
 	public Folder findAll() throws Exception {
@@ -73,7 +80,8 @@ public class AudioRepositoryImpl implements AudioRepository {
 		// therefore filename by saving contains pluses instead of whitespaces
 		fileName = fileName.replaceAll("\\+", "%20");
 
-		response.setContentType("audio/mpeg");
+		String contentType = getContentType(fileName);
+		response.setContentType(contentType);
 		// Use "attachment; filename=..." to download instead of playing file
 		response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "filename*=utf8''" + fileName);
 		response.setContentLengthLong(file.length());
@@ -82,5 +90,57 @@ public class AudioRepositoryImpl implements AudioRepository {
 		OutputStream os = response.getOutputStream();
 		IOUtils.copy(is, os);
 		response.flushBuffer();
+	}
+
+	private String getContentType(String fileName) {
+		// Extracting File Extension
+		int lastDotPosition = fileName.lastIndexOf(".");
+		String fileExt;
+		if (lastDotPosition != -1) {
+			fileExt = fileName.substring(lastDotPosition + 1);
+		} else {
+			fileExt = fileName;
+		}
+		fileExt = fileExt.toLowerCase();
+
+		// Retrieving Content Type by File Extention
+		String contentType = contentTypes.get(fileExt);
+		if (contentType == null) {
+			contentType = contentTypes.get(null);
+		}
+		return contentType;
+	}
+
+	private void fillContentTypes() {
+		contentTypes = new HashMap<>();
+
+		// Default content type - just to be able to download file
+		contentTypes.put(null, "application/octet-stream");
+
+		// Text files
+		contentTypes.put("htm", "text/html");
+		contentTypes.put("html", "text/html");
+		contentTypes.put("pdf", "application/pdf");
+		contentTypes.put("txt", "text/plain");
+
+		// Images
+		contentTypes.put("gif", "image/gif");
+		contentTypes.put("jpeg", "image/jpeg");
+		contentTypes.put("jpg", "image/jpeg");
+		contentTypes.put("png", "image/png");
+
+		// Audio
+		contentTypes.put("m4a", "audio/mp4");
+		contentTypes.put("mp3", "audio/mpeg");
+		contentTypes.put("ogg", "audio/ogg");
+		contentTypes.put("wav", "audio/wave");
+		contentTypes.put("wave", "audio/wave");
+
+		// Video
+		contentTypes.put("mp4", "video/mp4");
+		contentTypes.put("m4v", "video/mp4");
+
+		// Archives
+		contentTypes.put("", "application/zip");
 	}
 }
