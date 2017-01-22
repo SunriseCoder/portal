@@ -3,6 +3,8 @@
 <head>
 	<title>Audio Files</title>
 
+	<script src="scripts/ajax-utils.js"></script>
+	<script src="scripts/file-tree.js"></script>
 	<script src="scripts/jquery.js"></script>
 	<script src="scripts/locale-utils.js"></script>
 	<script src="scripts/menu.js"></script>
@@ -11,6 +13,11 @@
 		$(function() {
 			Menu.insert("menu"); 
 			Locales.write("title", "audio.greeting");
+
+			FileTree.setHtmlNode("tree");
+			FileTree.ajaxUrl = "/rest/audio/list";
+			FileTree.downloadUrl = "/audio-dl/";
+			FileTree.build();
 		});
 	</script>
 </head>
@@ -24,5 +31,9 @@
 
 	<h3 id="title"></h3>
 	<div id="menu"></div>
+
+	Search: <input id="filter" type="text" oninput="FileTree.applyFilter();" />
+
+	<div id="tree">Loading...</div>
 </body>
 </html>
