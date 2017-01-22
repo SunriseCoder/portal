@@ -9,6 +9,9 @@ import java.net.URLEncoder;
 import java.nio.file.NotDirectoryException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.zip.Deflater;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import javax.annotation.ManagedBean;
 import javax.servlet.http.HttpServletResponse;
@@ -69,11 +72,67 @@ public class AudioRepositoryImpl implements AudioRepository {
 	public void downloadFile(String url, HttpServletResponse response) throws Exception {
 		String path = audioFolder + "/" + url;
 		File file = new File(path);
-		if (!file.exists() || file.isDirectory()) {
+		if (!file.exists()) {
 			response.sendError(404);
 			return;
 		}
 
+		if (file.isDirectory()) {
+			sendFolder(response, file);
+		} else {
+			sendFile(response, file);
+		}
+	}
+
+	private void sendFolder(HttpServletResponse response, File file) throws Exception {
+		String fileName = file.getName() + ".zip";
+
+		fileName = URLEncoder.encode(fileName, "UTF-8");
+		// URL Encoder replaces whitespaces with pluses,
+		// therefore filename by saving contains pluses instead of whitespaces
+		fileName = fileName.replaceAll("\\+", "%20");
+
+		String contentType = getContentType(fileName);
+		response.setContentType(contentType);
+		// Use "attachment; filename=..." to download instead of playing file
+		response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename*=utf8''" + fileName);
+
+		OutputStream outputStream = response.getOutputStream();
+		try (ZipOutputStream zipOutputStream = new ZipOutputStream(outputStream);) {
+			zipOutputStream.setLevel(Deflater.NO_COMPRESSION);
+
+			File root = file.getParentFile();
+			addFolderRecursively(root, file, zipOutputStream);
+		} catch (Exception e) {
+			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error due to ZIP-file creation.");
+		} finally {
+			response.flushBuffer();
+		}
+	}
+
+	private void addFolderRecursively(File root, File folder, ZipOutputStream zipOutputStream) throws Exception {
+		for (File file : folder.listFiles()) {
+			if (file.isDirectory()) {
+				addFolderRecursively(root, file, zipOutputStream);
+			} else {
+				// Calculating relative path from root folder of the archive
+				String rootFolderPath = root.getAbsolutePath();
+				String filePath = file.getAbsolutePath();
+				String relativeFilePath = filePath.substring(rootFolderPath.length() + 1);
+
+				// Adding Entry with path to the archive
+				ZipEntry entry = new ZipEntry(relativeFilePath);
+				zipOutputStream.putNextEntry(entry);
+
+				// Copying file data
+				try (InputStream inputStream = new FileInputStream(file);) {
+					IOUtils.copy(inputStream, zipOutputStream);
+				}
+			}
+		}
+	}
+
+	private void sendFile(HttpServletResponse response, File file) throws Exception {
 		String fileName = file.getName();
 		fileName = URLEncoder.encode(fileName, "UTF-8");
 		// URL Encoder replaces whitespaces with pluses,
@@ -86,25 +145,25 @@ public class AudioRepositoryImpl implements AudioRepository {
 		response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "filename*=utf8''" + fileName);
 		response.setContentLengthLong(file.length());
 
-		InputStream is = new FileInputStream(file);
-		OutputStream os = response.getOutputStream();
-		IOUtils.copy(is, os);
+		InputStream inputStream = new FileInputStream(file);
+		OutputStream outputStream = response.getOutputStream();
+		IOUtils.copy(inputStream, outputStream);
 		response.flushBuffer();
 	}
 
 	private String getContentType(String fileName) {
 		// Extracting File Extension
 		int lastDotPosition = fileName.lastIndexOf(".");
-		String fileExt;
+		String fileExttension;
 		if (lastDotPosition != -1) {
-			fileExt = fileName.substring(lastDotPosition + 1);
+			fileExttension = fileName.substring(lastDotPosition + 1);
 		} else {
-			fileExt = fileName;
+			fileExttension = fileName;
 		}
-		fileExt = fileExt.toLowerCase();
+		fileExttension = fileExttension.toLowerCase();
 
-		// Retrieving Content Type by File Extention
-		String contentType = contentTypes.get(fileExt);
+		// Retrieving Content Type by File Extension
+		String contentType = contentTypes.get(fileExttension);
 		if (contentType == null) {
 			contentType = contentTypes.get(null);
 		}
