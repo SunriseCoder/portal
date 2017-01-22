@@ -120,12 +120,18 @@ var FileTree = {
 		this.htmlNode.html(htmlText);
 	},
 	
+	applyLimit: function() {
+		var limit = $('#limit')[0].value;
+		this.displayLimit = limit;
+		this.applyFilter();
+	},
+	
 	_onAjaxError: function(object, data) {
 		Locales.write("tree", "loading.error");
 	},
 
 	_buildTreeRecursively: function(folder, nodes, indent) {
-		if (this.displayLimitCounter >= this.displayLimit) {
+		if (this.displayLimit > 0 && this.displayLimit <= this.displayLimitCounter) {
 			return;
 		}
 
@@ -147,7 +153,7 @@ var FileTree = {
 		}
 		var index = 0;
 		for (var i = 0; i < folder.files.length; i++) {
-			if (this.displayLimitCounter >= this.displayLimit) {
+			if (this.displayLimit > 0 && this.displayLimit <= this.displayLimitCounter) {
 				return;
 			}
 			var file = folder.files[i];

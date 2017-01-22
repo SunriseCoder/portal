@@ -25,7 +25,16 @@
 	<h3 id="title"></h3>
 	<div id="menu"></div>
 
-	Search: <input autofocus="autofocus" id="filter" type="text" oninput="FileTree.applyFilter();" />
+	Search:
+	<input autofocus="autofocus" id="filter" type="text" oninput="FileTree.applyFilter();" />
+
+	Display:
+	<select id="limit" onchange="FileTree.applyLimit();">
+		<option value="10">10</option>
+		<option value="100" selected="selected">100</option>
+		<option value="1000">1000</option>
+		<option value="0">All</option>
+	</select>
 
 	<div id="tree">Loading...</div>
 </body>
