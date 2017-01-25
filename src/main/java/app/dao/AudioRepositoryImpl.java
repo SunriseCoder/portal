@@ -3,6 +3,7 @@ package app.dao;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URLEncoder;
@@ -17,6 +18,8 @@ import javax.annotation.ManagedBean;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 
@@ -25,6 +28,8 @@ import app.entity.Folder;
 
 @ManagedBean
 public class AudioRepositoryImpl implements AudioRepository {
+	private static final Logger logger = LogManager.getLogger(AudioRepositoryImpl.class.getName());
+
 	@Value("${audio.folder}")
 	private String audioFolder;
 	private Map<String, String> contentTypes;
@@ -38,9 +43,11 @@ public class AudioRepositoryImpl implements AudioRepository {
 		File file = new File(audioFolder);
 
 		if (!file.exists()) {
+			logger.error("Requested file or directory not found: {}", file.getAbsolutePath());
 			throw new FileNotFoundException(file.getAbsolutePath());
 		}
 		if (!file.isDirectory()) {
+			logger.error("Requested file is not a directory: {}", file.getAbsolutePath());
 			throw new NotDirectoryException(file.getAbsolutePath());
 		}
 
@@ -73,6 +80,7 @@ public class AudioRepositoryImpl implements AudioRepository {
 		String path = audioFolder + "/" + url;
 		File file = new File(path);
 		if (!file.exists()) {
+			logger.error("");
 			response.sendError(404);
 			return;
 		}
@@ -84,33 +92,37 @@ public class AudioRepositoryImpl implements AudioRepository {
 		}
 	}
 
-	private void sendFolder(HttpServletResponse response, File file) throws Exception {
+	private void sendFolder(HttpServletResponse response, File file) throws IOException {
 		String fileName = file.getName() + ".zip";
 
-		fileName = URLEncoder.encode(fileName, "UTF-8");
-		// URL Encoder replaces whitespaces with pluses,
-		// therefore filename by saving contains pluses instead of whitespaces
-		fileName = fileName.replaceAll("\\+", "%20");
+		try {
+			fileName = URLEncoder.encode(fileName, "UTF-8");
+			// URL Encoder replaces whitespaces with pluses,
+			// therefore filename by saving contains pluses instead of whitespaces
+			fileName = fileName.replaceAll("\\+", "%20");
 
-		String contentType = getContentType(fileName);
-		response.setContentType(contentType);
-		// Use "attachment; filename=..." to download instead of playing file
-		response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename*=utf8''" + fileName);
+			String contentType = getContentType(fileName);
+			response.setContentType(contentType);
+			// Use "attachment; filename=..." to download instead of playing file
+			response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename*=utf8''" + fileName);
 
-		OutputStream outputStream = response.getOutputStream();
-		try (ZipOutputStream zipOutputStream = new ZipOutputStream(outputStream);) {
-			zipOutputStream.setLevel(Deflater.NO_COMPRESSION);
+			OutputStream outputStream = response.getOutputStream();
+			try (ZipOutputStream zipOutputStream = new ZipOutputStream(outputStream);) {
+				zipOutputStream.setLevel(Deflater.NO_COMPRESSION);
 
-			File root = file.getParentFile();
-			addFolderRecursively(root, file, zipOutputStream);
-		} catch (Exception e) {
-			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error due to ZIP-file creation.");
+				File root = file.getParentFile();
+				addFolderRecursively(root, file, zipOutputStream);
+			}
+		} catch (IOException e) {
+			logger.error("Error due to create and send ZIP-file",  e);
+			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error due to create and send ZIP-file");
+			throw e;
 		} finally {
 			response.flushBuffer();
 		}
 	}
 
-	private void addFolderRecursively(File root, File folder, ZipOutputStream zipOutputStream) throws Exception {
+	private void addFolderRecursively(File root, File folder, ZipOutputStream zipOutputStream) throws IOException {
 		for (File file : folder.listFiles()) {
 			if (file.isDirectory()) {
 				addFolderRecursively(root, file, zipOutputStream);
@@ -122,11 +134,16 @@ public class AudioRepositoryImpl implements AudioRepository {
 
 				// Adding Entry with path to the archive
 				ZipEntry entry = new ZipEntry(relativeFilePath);
-				zipOutputStream.putNextEntry(entry);
+				try {
+					zipOutputStream.putNextEntry(entry);
 
-				// Copying file data
-				try (InputStream inputStream = new FileInputStream(file);) {
-					IOUtils.copy(inputStream, zipOutputStream);
+					// Copying file data
+					try (InputStream inputStream = new FileInputStream(file);) {
+						IOUtils.copy(inputStream, zipOutputStream);
+					}
+				} catch (IOException e) {
+					logger.error("Can not add file {} to ZIP-archive", file.getAbsolutePath(), e);
+					throw e;
 				}
 			}
 		}
@@ -134,20 +151,25 @@ public class AudioRepositoryImpl implements AudioRepository {
 
 	private void sendFile(HttpServletResponse response, File file) throws Exception {
 		String fileName = file.getName();
-		fileName = URLEncoder.encode(fileName, "UTF-8");
-		// URL Encoder replaces whitespaces with pluses,
-		// therefore filename by saving contains pluses instead of whitespaces
-		fileName = fileName.replaceAll("\\+", "%20");
+		try {
+			fileName = URLEncoder.encode(fileName, "UTF-8");
+			// URL Encoder replaces whitespaces with pluses,
+			// therefore filename by saving contains pluses instead of whitespaces
+			fileName = fileName.replaceAll("\\+", "%20");
 
-		String contentType = getContentType(fileName);
-		response.setContentType(contentType);
-		// Use "attachment; filename=..." to download instead of playing file
-		response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "filename*=utf8''" + fileName);
-		response.setContentLengthLong(file.length());
+			String contentType = getContentType(fileName);
+			response.setContentType(contentType);
+			// Use "attachment; filename=..." to download instead of playing file
+			response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "filename*=utf8''" + fileName);
+			response.setContentLengthLong(file.length());
 
-		InputStream inputStream = new FileInputStream(file);
-		OutputStream outputStream = response.getOutputStream();
-		IOUtils.copy(inputStream, outputStream);
+			InputStream inputStream = new FileInputStream(file);
+			OutputStream outputStream = response.getOutputStream();
+			IOUtils.copy(inputStream, outputStream);
+		} catch (Exception e) {
+			logger.error("Error due to sending file {}", file.getAbsoluteFile(), e);
+			throw e;
+		}
 		response.flushBuffer();
 	}
 

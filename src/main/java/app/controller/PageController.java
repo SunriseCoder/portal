@@ -11,7 +11,7 @@ public class PageController {
 	}
 
 	@RequestMapping("/audio")
-	public String dbTest() {
+	public String audio() {
 		return "audio";
 	}
 }

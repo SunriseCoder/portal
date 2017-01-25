@@ -2,6 +2,7 @@
 .project
 .factorypath
 .settings
+log
 target
 .springBeans
 /.apt_generated/
