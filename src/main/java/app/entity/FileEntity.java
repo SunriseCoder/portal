@@ -1,6 +1,6 @@
 package app.entity;
 
-public class AudioFile {
+public class FileEntity {
 	private String name;
 	private long size;
 

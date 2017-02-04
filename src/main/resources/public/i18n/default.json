@@ -4,9 +4,9 @@
 	"index.caption" : "Main",
 	"index.greeting" : "Welcome to the Portal",
 
-	"audio.caption" : "Audio",
-	"audio.greeting" : "Audio Files",
-	"audio.search.label" : "Search",
+	"files.caption" : "Files",
+	"files.greeting" : "Files",
+	"files.search.label" : "Search",
 
 	"loading.error" : "Loading Error"
 }

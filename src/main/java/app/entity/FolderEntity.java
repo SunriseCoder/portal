@@ -3,12 +3,12 @@ package app.entity;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Folder {
+public class FolderEntity {
 	private String name;
-	private List<Folder> folders;
-	private List<AudioFile> files;
+	private List<FolderEntity> folders;
+	private List<FileEntity> files;
 
-	public Folder() {
+	public FolderEntity() {
 		folders = new ArrayList<>();
 		files = new ArrayList<>();
 	}
@@ -21,19 +21,19 @@ public class Folder {
 		this.name = name;
 	}
 
-	public List<Folder> getFolders() {
+	public List<FolderEntity> getFolders() {
 		return folders;
 	}
 
-	public List<AudioFile> getFiles() {
+	public List<FileEntity> getFiles() {
 		return files;
 	}
 
-	public void addFolder(Folder folder) {
+	public void addFolder(FolderEntity folder) {
 		folders.add(folder);
 	}
 
-	public void addFile(AudioFile audio) {
-		files.add(audio);
+	public void addFile(FileEntity file) {
+		files.add(file);
 	}
 }

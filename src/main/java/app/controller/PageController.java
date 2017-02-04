@@ -10,8 +10,8 @@ public class PageController {
 		return "index";
 	}
 
-	@RequestMapping("/audio")
-	public String audio() {
-		return "audio";
+	@RequestMapping("/files")
+	public String files() {
+		return "files";
 	}
 }
