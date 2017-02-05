@@ -53,8 +53,9 @@ public class FileUtils {
 	}
 
 	static void writeFile(HttpServletResponse response, File file, long start, long length) throws IOException {
-		InputStream inputStream = new FileInputStream(file);
-		OutputStream outputStream = response.getOutputStream();
-		IOUtils.copyLarge(inputStream, outputStream, start, length);
+		try (InputStream inputStream = new FileInputStream(file)) {
+			OutputStream outputStream = response.getOutputStream();
+			IOUtils.copyLarge(inputStream, outputStream, start, length);
+		}
 	}
 }
