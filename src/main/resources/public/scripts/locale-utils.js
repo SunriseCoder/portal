@@ -20,9 +20,15 @@ var Locales = {
 
         return value;
     },
-    
+
+    writeTitle(key) {
+        var title = document.getElementByTagName("title")[0];
+        var value = this.i18n(key);
+        title.text = value;
+    },
+
     write(id, key) {
-        var element = document.getElementById(id);;
+        var element = document.getElementById(id);
         var value = this.i18n(key);
         element.innerHTML = value;
     }

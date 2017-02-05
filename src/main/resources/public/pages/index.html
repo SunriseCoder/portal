@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Main Page</title>
+    <title>Main</title>
 
     <script src="scripts/jquery.js"></script>
     <script src="scripts/locale-utils.js"></script>
@@ -10,6 +10,7 @@
     <script>
         $(function() {
             Menu.insert("menu");
+            Locales.writeTitle("index.caption");
             Locales.write("title", "index.greeting");
         });
     </script>
