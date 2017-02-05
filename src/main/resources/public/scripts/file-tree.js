@@ -36,7 +36,7 @@ var FileTree = {
         var response = data.response;
         object.serverData = JSON.parse(response);
 
-        object._processServerData(object.serverData, "");
+        object._processServerData(object.serverData, "/");
 
         object.applyFilter();
     },

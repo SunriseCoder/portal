@@ -22,7 +22,7 @@ public class FileRepositoryImpl implements FileRepository {
 
     @Override
     public FolderEntity findAll() throws Exception {
-        File folderOnDisk = new File(unsortedFilesUrl); 
+        File folderOnDisk = new File(unsortedFilesUrl);
         FileUtils.checkDirectoryExists(folderOnDisk);
         FolderEntity virtualTree = FileUtils.getVirtualTreeRecursively(folderOnDisk);
         return virtualTree;
@@ -30,7 +30,7 @@ public class FileRepositoryImpl implements FileRepository {
 
     @Override
     public void downloadFile(HttpServletRequest request, HttpServletResponse response, String url) throws IOException {
-        String path = unsortedFilesUrl + "/" + url;
+        String path = unsortedFilesUrl + url;
         File file = new File(path);
         FileUtils.checkExists(file);
 

@@ -23,12 +23,9 @@ public class StringUtils {
             // Actually should never happens, as long as "UTF-8" supports, but
             logger.error(e);
         }
-    
+
         // Deleting double dots and slashes at the beginning
         String safeUrl = decodedUrl.replaceAll("\\.\\.", "");
-        while (safeUrl.startsWith("/")) {
-            safeUrl = safeUrl.replaceAll("^/", "");
-        }
         return safeUrl;
     }
 }
