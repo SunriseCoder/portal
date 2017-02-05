@@ -54,7 +54,7 @@ public class HttpUtils {
         // URL Encoder replaces whitespaces with pluses,
         // therefore filename by saving contains pluses instead of whitespaces
         fileName = fileName.replaceAll("\\+", "%20");
-        fileName = "filename*=utf8''" + fileName;
+        fileName = "filename*=UTF-8''" + fileName;
 
         ContentType contentType = getContentType(fileName);
         response.setContentType(contentType.getContentType());
