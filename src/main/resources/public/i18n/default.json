@@ -8,5 +8,8 @@
     "files.greeting" : "Files",
     "files.search.label" : "Search",
 
+    "upload.caption" : "Upload",
+    "upload.greeting" : "Upload file",
+
     "loading.error" : "Loading Error"
 }

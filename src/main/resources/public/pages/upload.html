@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Upload</title>
+
+    <script src="scripts/ajax-utils.js"></script>
+    <script src="scripts/file-tree.js"></script>
+    <script src="scripts/jquery.js"></script>
+    <script src="scripts/locale-utils.js"></script>
+    <script src="scripts/menu.js"></script>
+
+    <script>
+        $(function() {
+            Menu.insert("menu");
+            Locales.write("title", "upload.greeting");
+        });
+    </script>
+</head>
+<body>
+    <h3 id="title"></h3>
+    <div id="menu"></div>
+</body>
+</html>

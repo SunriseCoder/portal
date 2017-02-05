@@ -14,4 +14,9 @@ public class PageController {
     public String files() {
         return "files";
     }
+
+    @RequestMapping("/upload")
+    public String upload() {
+        return "upload";
+    }
 }
