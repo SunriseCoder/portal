@@ -26,8 +26,6 @@ public class HttpUtils {
         Range range = getRequestRange(rangeHeader, file.length());
         fillContentRange(response, range);
 
-        System.out.println(range);
-
         FileUtils.writeFile(response, file, range.start, range.length);
 
         response.flushBuffer();
