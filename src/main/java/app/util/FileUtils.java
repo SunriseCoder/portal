@@ -48,7 +48,7 @@ public class FileUtils {
 				folder.addFile(fileEntity);
 			}
 		}
-	
+
 		return folder;
 	}
 
