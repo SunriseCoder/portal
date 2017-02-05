@@ -8,6 +8,10 @@
             "name": "files.filesystem",
             "type": "java.lang.String",
             "description": "Relative path to unsorted file archive root"
+        },{
+            "name": "files.upload",
+            "type": "java.lang.String",
+            "description": "Relative path to upload folder"
         }
     ]
 }

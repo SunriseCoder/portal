@@ -20,6 +20,8 @@ public class FileRepositoryImpl implements FileRepository {
     private String storageUrl;
     @Value("${files.filesystem}")
     private String unsortedFilesUrl;
+    @Value("${files.upload}")
+    private String uploadFilesUrl;
 
     @Override
     public FolderEntity findAll() throws Exception {
