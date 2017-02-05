@@ -1,5 +1,5 @@
 {"properties": [{
   "name": "files.folder",
   "type": "java.lang.String",
-  "description": "Relative path to audio archive root"
+  "description": "Relative path to file archive root"
 }]}

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Audio Files</title>
+	<title>Files</title>
 
 	<script src="scripts/ajax-utils.js"></script>
 	<script src="scripts/file-tree.js"></script>
@@ -12,7 +12,7 @@
 	<script>
 		$(function() {
 			Menu.insert("menu"); 
-			Locales.write("title", "audio.greeting");
+			Locales.write("title", "files.greeting");
 
 			FileTree.setHtmlNode("tree");
 			FileTree.ajaxUrl = "/rest/files/list";
