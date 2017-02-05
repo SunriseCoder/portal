@@ -113,10 +113,20 @@ public class HttpUtils {
         return range;
     }
 
-    public static void setResponseError(HttpServletResponse response, int status) {
+    public static void sendResponseError(HttpServletResponse response, int status) {
         try {
             if (!response.isCommitted()) {
                 response.sendError(status);
+            }
+        } catch (IOException e) {
+            // Swallowing exception due to close response
+        }
+    }
+
+    public static void sendResponseError(HttpServletResponse response, int status, String message) {
+        try {
+            if (!response.isCommitted()) {
+                response.sendError(status, message);
             }
         } catch (IOException e) {
             // Swallowing exception due to close response

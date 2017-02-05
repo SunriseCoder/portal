@@ -13,7 +13,9 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import app.entity.FolderEntity;
 import app.service.FileService;
@@ -44,13 +46,25 @@ public class FileRestController {
 
             service.downloadFile(request, response, safeUrl);
         } catch (ClientAbortException e) {
-            //Do not need to log this junk
+            // Do not need to log this junk
         } catch (FileNotFoundException | NotDirectoryException e) {
             logger.error(e);
-            HttpUtils.setResponseError(response, HttpServletResponse.SC_NOT_FOUND);
+            HttpUtils.sendResponseError(response, HttpServletResponse.SC_NOT_FOUND, null);
         } catch (IOException e) {
             logger.error(e);
-            HttpUtils.setResponseError(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            HttpUtils.sendResponseError(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, null);
         }
+    }
+
+    @RequestMapping("/upload")
+    public void uploadFile(@RequestParam("name") String name, @RequestParam("file") MultipartFile file,
+            HttpServletRequest request, HttpServletResponse response) {
+        LogUtils.logUploadRequest(logger, request, name, file);
+
+        if (name.isEmpty()) {
+            HttpUtils.sendResponseError(response, HttpServletResponse.SC_BAD_REQUEST, "Name is empty");
+        }
+
+        service.uploadFile(name, file);
     }
 }

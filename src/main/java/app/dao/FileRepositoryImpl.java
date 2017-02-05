@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.multipart.MultipartFile;
 
 import app.entity.FolderEntity;
 import app.util.FileUtils;
@@ -39,5 +40,10 @@ public class FileRepositoryImpl implements FileRepository {
         } else {
             HttpUtils.sendFile(request, response, file);
         }
+    }
+
+    @Override
+    public void uploadFile(String name, MultipartFile file) {
+        //TODO Implement
     }
 }

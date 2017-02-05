@@ -6,6 +6,7 @@ import java.util.regex.Pattern;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.logging.log4j.Logger;
+import org.springframework.web.multipart.MultipartFile;
 
 public class LogUtils {
 
@@ -32,5 +33,14 @@ public class LogUtils {
                         ipAddress, method, path, safeUrl, matcher.group(1), matcher.group(2));
             }
         }
+    }
+
+    public static void logUploadRequest(Logger logger, HttpServletRequest request, String name, MultipartFile file) {
+        String ipAddress = request.getRemoteAddr();
+        String method = request.getMethod();
+        String path = request.getServletPath();
+
+        String fileName = file.getName();
+        logger.info("From IP {} {} {}, Name: '{}', File: '{}'", ipAddress, method, path, name, fileName);
     }
 }

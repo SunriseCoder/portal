@@ -20,5 +20,11 @@
 <body>
     <h3 id="title"></h3>
     <div id="menu"></div>
+
+    <form action="/rest/files/upload" method="post" enctype="multipart/form-data">
+        <input type="text" name="name" value="" />
+        <input type="file" name="file" />
+        <input type="submit">
+    </form>
 </body>
 </html>
