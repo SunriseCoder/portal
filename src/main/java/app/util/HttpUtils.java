@@ -80,7 +80,7 @@ public class HttpUtils {
         fileExtension = fileExtension.toLowerCase();
 
         // Retrieving Content Type by File Extension
-        ContentType contentType = ContentType.valueOf(fileExtension);
+        ContentType contentType = ContentType.get(fileExtension);
         if (contentType == null) {
             logger.error("Content-Type for file extension '{}' was not found", fileExtension);
             contentType = ContentType.data;
@@ -171,6 +171,15 @@ public class HttpUtils {
 
         public boolean isAttachment() {
             return attachment;
+        }
+
+        public static ContentType get(String value) {
+            try {
+                return valueOf(value);
+            } catch (IllegalArgumentException e) {
+                // Swallowing exception due to return null if not found
+            }
+            return null;
         }
     }
 
