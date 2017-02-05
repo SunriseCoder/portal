@@ -1,13 +1,13 @@
 {
-	"properties": [
-		{
-			"name": "files.storage",
-			"type": "java.lang.String",
-			"description": "Relative path to root of indexed file storage"
-		},{
-			"name": "files.filesystem",
-			"type": "java.lang.String",
-			"description": "Relative path to unsorted file archive root"
-		}
-	]
+    "properties": [
+        {
+            "name": "files.storage",
+            "type": "java.lang.String",
+            "description": "Relative path to root of indexed file storage"
+        },{
+            "name": "files.filesystem",
+            "type": "java.lang.String",
+            "description": "Relative path to unsorted file archive root"
+        }
+    ]
 }

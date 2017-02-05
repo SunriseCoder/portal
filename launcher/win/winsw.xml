@@ -1,18 +1,18 @@
 <configuration>
-	<id>www.prem-prayojan.info</id>
-	<name>Portal</name>
-	<description>Portal www.prem-prayojan.info (powered by WinSW)</description>
+    <id>www.prem-prayojan.info</id>
+    <name>Portal</name>
+    <description>Portal www.prem-prayojan.info (powered by WinSW)</description>
 
-	<executable>java</executable>
-	<arguments>org.springframework.boot.loader.JarLauncher</arguments>
+    <executable>java</executable>
+    <arguments>org.springframework.boot.loader.JarLauncher</arguments>
 
-	<startmode>Automatic</startmode>
-	<depend>MySQL</depend>
+    <startmode>Automatic</startmode>
+    <depend>MySQL</depend>
 
-	<waithint>15 sec</waithint>
-	<sleeptime>1 sec</sleeptime>
+    <waithint>15 sec</waithint>
+    <sleeptime>1 sec</sleeptime>
 
-	<onfailure action="restart" delay="30 sec" />
-	<onfailure action="restart" delay="30 sec" />
-	<onfailure action="restart" delay="30 sec" />
+    <onfailure action="restart" delay="30 sec" />
+    <onfailure action="restart" delay="30 sec" />
+    <onfailure action="restart" delay="30 sec" />
 </configuration>

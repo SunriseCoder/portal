@@ -11,6 +11,6 @@ import app.entity.FolderEntity;
 
 @Repository
 public interface FileRepository {
-	FolderEntity findAll() throws Exception;
-	void downloadFile(HttpServletRequest request, HttpServletResponse response, String url) throws IOException;
+    FolderEntity findAll() throws Exception;
+    void downloadFile(HttpServletRequest request, HttpServletResponse response, String url) throws IOException;
 }

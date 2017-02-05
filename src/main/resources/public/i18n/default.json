@@ -1,12 +1,12 @@
 {
-	"app" : "Portal",
+    "app" : "Portal",
 
-	"index.caption" : "Main",
-	"index.greeting" : "Welcome to the Portal",
+    "index.caption" : "Main",
+    "index.greeting" : "Welcome to the Portal",
 
-	"files.caption" : "Files",
-	"files.greeting" : "Files",
-	"files.search.label" : "Search",
+    "files.caption" : "Files",
+    "files.greeting" : "Files",
+    "files.search.label" : "Search",
 
-	"loading.error" : "Loading Error"
+    "loading.error" : "Loading Error"
 }

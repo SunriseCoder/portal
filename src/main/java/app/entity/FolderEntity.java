@@ -4,36 +4,36 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FolderEntity {
-	private String name;
-	private List<FolderEntity> folders;
-	private List<FileEntity> files;
+    private String name;
+    private List<FolderEntity> folders;
+    private List<FileEntity> files;
 
-	public FolderEntity() {
-		folders = new ArrayList<>();
-		files = new ArrayList<>();
-	}
+    public FolderEntity() {
+        folders = new ArrayList<>();
+        files = new ArrayList<>();
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public List<FolderEntity> getFolders() {
-		return folders;
-	}
+    public List<FolderEntity> getFolders() {
+        return folders;
+    }
 
-	public List<FileEntity> getFiles() {
-		return files;
-	}
+    public List<FileEntity> getFiles() {
+        return files;
+    }
 
-	public void addFolder(FolderEntity folder) {
-		folders.add(folder);
-	}
+    public void addFolder(FolderEntity folder) {
+        folders.add(folder);
+    }
 
-	public void addFile(FileEntity file) {
-		files.add(file);
-	}
+    public void addFile(FileEntity file) {
+        files.add(file);
+    }
 }

@@ -24,33 +24,33 @@ import app.util.StringUtils;
 @RestController
 @RequestMapping("/rest/files/")
 public class FileRestController {
-	private static final Logger logger = LogManager.getLogger(FileRestController.class.getName());
+    private static final Logger logger = LogManager.getLogger(FileRestController.class.getName());
 
-	@Autowired
-	FileService service;
+    @Autowired
+    FileService service;
 
-	@RequestMapping("/list")
-	public FolderEntity list(HttpServletRequest request) throws Exception {
-		LogUtils.logRequest(logger, request);
-		FolderEntity data = service.getList();
-		return data;
-	}
+    @RequestMapping("/list")
+    public FolderEntity list(HttpServletRequest request) throws Exception {
+        LogUtils.logRequest(logger, request);
+        FolderEntity data = service.getList();
+        return data;
+    }
 
-	@RequestMapping("/get/{url}")
-	public void getFile(HttpServletRequest request, HttpServletResponse response, @PathVariable("url") String url) {
-		try {
-			String safeUrl = StringUtils.decodeDownloadPath(url);
-			LogUtils.logDecodedRequest(logger, request, safeUrl);
+    @RequestMapping("/get/{url}")
+    public void getFile(HttpServletRequest request, HttpServletResponse response, @PathVariable("url") String url) {
+        try {
+            String safeUrl = StringUtils.decodeDownloadPath(url);
+            LogUtils.logDecodedRequest(logger, request, safeUrl);
 
-			service.downloadFile(request, response, safeUrl);
-		} catch (ClientAbortException e) {
-			//Do not need to log this junk
-		} catch (FileNotFoundException | NotDirectoryException e) {
-			logger.error(e);
-			HttpUtils.setResponseError(response, HttpServletResponse.SC_NOT_FOUND);
-		} catch (IOException e) {
-			logger.error(e);
-			HttpUtils.setResponseError(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-		}
-	}
+            service.downloadFile(request, response, safeUrl);
+        } catch (ClientAbortException e) {
+            //Do not need to log this junk
+        } catch (FileNotFoundException | NotDirectoryException e) {
+            logger.error(e);
+            HttpUtils.setResponseError(response, HttpServletResponse.SC_NOT_FOUND);
+        } catch (IOException e) {
+            logger.error(e);
+            HttpUtils.setResponseError(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        }
+    }
 }

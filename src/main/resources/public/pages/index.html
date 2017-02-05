@@ -1,22 +1,22 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Main Page</title>
+    <title>Main Page</title>
 
-	<script src="scripts/jquery.js"></script>
-	<script src="scripts/locale-utils.js"></script>
-	<script src="scripts/menu.js"></script>
+    <script src="scripts/jquery.js"></script>
+    <script src="scripts/locale-utils.js"></script>
+    <script src="scripts/menu.js"></script>
 
-	<script>
-		$(function() {
-			Menu.insert("menu"); 
-			Locales.write("title", "index.greeting");
-		});
-	</script>
+    <script>
+        $(function() {
+            Menu.insert("menu");
+            Locales.write("title", "index.greeting");
+        });
+    </script>
 </head>
 
 <body>
-	<h3 id="title"></h3>
-	<div id="menu"></div>
+    <h3 id="title"></h3>
+    <div id="menu"></div>
 </body>
 </html>

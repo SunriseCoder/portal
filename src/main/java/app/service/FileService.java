@@ -13,15 +13,15 @@ import app.entity.FolderEntity;
 
 @Service
 public class FileService {
-	@Autowired
-	FileRepository repository;
+    @Autowired
+    FileRepository repository;
 
-	public FolderEntity getList() throws Exception {
-		FolderEntity result = repository.findAll();
-		return result;
-	}
+    public FolderEntity getList() throws Exception {
+        FolderEntity result = repository.findAll();
+        return result;
+    }
 
-	public void downloadFile(HttpServletRequest request, HttpServletResponse response, String url) throws IOException {
-		repository.downloadFile(request, response, url);
-	}
+    public void downloadFile(HttpServletRequest request, HttpServletResponse response, String url) throws IOException {
+        repository.downloadFile(request, response, url);
+    }
 }
