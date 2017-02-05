@@ -22,8 +22,8 @@ public class HttpUtils {
         String fileName = file.getName();
         fillResponseHeaders(request, response, fileName);
 
-        String rangeHeader = request.getHeader("range");
-        Range range = getRequestRange(rangeHeader, file.length());
+        String rangeHeaderValue = request.getHeader("range");
+        Range range = prepareResponseRange(rangeHeaderValue, file.length());
         fillContentRange(response, range);
 
         FileUtils.writeFile(response, file, range.start, range.length);
@@ -88,7 +88,7 @@ public class HttpUtils {
         return contentType;
     }
 
-    static Range getRequestRange(String rangeHeader, long fileLength) {
+    static Range prepareResponseRange(String rangeHeader, long fileLength) {
         Range range = new Range();
         if (rangeHeader == null) {
             range.start = 0;
