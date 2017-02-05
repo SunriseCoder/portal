@@ -79,11 +79,11 @@ var FileTree = {
 	},
 
 	_getReadableSize(size) {
+		var unit = 1024;
 		if (size < unit) {
 			return size + " B";
 		}
 
-		var unit = 1024;
 		var exp = Math.log(size) / Math.log(unit);
 		exp = Math.floor(exp);
 		var suffix = "kMGTPE".charAt(exp - 1);
