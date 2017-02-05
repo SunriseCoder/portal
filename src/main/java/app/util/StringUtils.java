@@ -24,8 +24,13 @@ public class StringUtils {
             logger.error(e);
         }
 
-        // Deleting double dots and slashes at the beginning
-        String safeUrl = decodedUrl.replaceAll("\\.\\.", "");
+        String safeUrl = cleanFilePath(decodedUrl);
+        return safeUrl;
+    }
+
+    public static String cleanFilePath(String filePath) {
+        // Deleting double dots, followed by slashes
+        String safeUrl = filePath.replaceAll("\\.\\.(/|\\\\)", "");
         return safeUrl;
     }
 }

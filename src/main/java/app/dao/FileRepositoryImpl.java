@@ -45,7 +45,8 @@ public class FileRepositoryImpl implements FileRepository {
     }
 
     @Override
-    public void uploadFile(String name, MultipartFile file) {
-        //TODO Implement
+    public void uploadFile(String name, MultipartFile file) throws IOException {
+        String path = uploadFilesUrl + "/" + name;
+        FileUtils.uploadFile(file, path);
     }
 }

@@ -40,7 +40,7 @@ public class LogUtils {
         String method = request.getMethod();
         String path = request.getServletPath();
 
-        String fileName = file.getName();
+        String fileName = file.getOriginalFilename();
         logger.info("From IP {} {} {}, Name: '{}', File: '{}'", ipAddress, method, path, name, fileName);
     }
 }

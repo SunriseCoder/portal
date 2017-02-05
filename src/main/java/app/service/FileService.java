@@ -26,7 +26,7 @@ public class FileService {
         repository.downloadFile(request, response, url);
     }
 
-    public void uploadFile(String name, MultipartFile file) {
+    public void uploadFile(String name, MultipartFile file) throws IOException {
         repository.uploadFile(name, file);
     }
 }

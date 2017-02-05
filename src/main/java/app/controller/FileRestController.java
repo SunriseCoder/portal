@@ -49,10 +49,10 @@ public class FileRestController {
             // Do not need to log this junk
         } catch (FileNotFoundException | NotDirectoryException e) {
             logger.error(e);
-            HttpUtils.sendResponseError(response, HttpServletResponse.SC_NOT_FOUND, null);
+            HttpUtils.sendResponseError(response, HttpServletResponse.SC_NOT_FOUND);
         } catch (IOException e) {
             logger.error(e);
-            HttpUtils.sendResponseError(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, null);
+            HttpUtils.sendResponseError(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -65,6 +65,11 @@ public class FileRestController {
             HttpUtils.sendResponseError(response, HttpServletResponse.SC_BAD_REQUEST, "Name is empty");
         }
 
-        service.uploadFile(name, file);
+        try {
+            service.uploadFile(name, file);
+        } catch (IOException e) {
+            logger.error(e);
+            HttpUtils.sendResponseError(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        }
     }
 }
