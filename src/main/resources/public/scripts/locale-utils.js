@@ -22,7 +22,7 @@ var Locales = {
     },
 
     writeTitle(key) {
-        var title = document.getElementByTagName("title")[0];
+        var title = document.getElementsByTagName("title")[0];
         var value = this.i18n(key);
         title.text = value;
     },
