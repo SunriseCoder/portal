@@ -15,13 +15,14 @@ import app.util.HttpUtils;
 
 @ManagedBean
 public class FileRepositoryImpl implements FileRepository {
-
-	@Value("${files.folder}")
-	private String filesFolder;
+	@Value("${files.storage}")
+	private String storageUrl;
+	@Value("${files.filesystem}")
+	private String unsortedFilesUrl;
 
 	@Override
 	public FolderEntity findAll() throws Exception {
-		File folderOnDisk = new File(filesFolder); 
+		File folderOnDisk = new File(unsortedFilesUrl); 
 		FileUtils.checkDirectoryExists(folderOnDisk);
 		FolderEntity virtualTree = FileUtils.getVirtualTreeRecursively(folderOnDisk);
 		return virtualTree;
@@ -29,7 +30,7 @@ public class FileRepositoryImpl implements FileRepository {
 
 	@Override
 	public void downloadFile(HttpServletRequest request, HttpServletResponse response, String url) throws IOException {
-		String path = filesFolder + "/" + url;
+		String path = unsortedFilesUrl + "/" + url;
 		File file = new File(path);
 		FileUtils.checkExists(file);
 
