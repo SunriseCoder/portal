@@ -38,10 +38,11 @@ var UploadUtils = {
         text.className = "label";
         label.appendChild(text);
 
-        var foreground = document.createElement("div");
-        foreground.className = "bar"
-        foreground.className += " progressForeground";
-        background.appendChild(foreground);
+        var indicator = document.createElement("div");
+        indicator.className = "bar";
+        indicator.className += " progressForeground";
+        background.appendChild(indicator);
+
         return background;
     },
 
