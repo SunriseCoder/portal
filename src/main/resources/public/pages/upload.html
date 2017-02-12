@@ -17,6 +17,8 @@
             Menu.insert("menu");
             Locales.writeTitle("upload.caption");
             Locales.write("title", "upload.greeting");
+
+            UploadUtils.uploadUrl = "/rest/files/upload";
         });
     </script>
 </head>
@@ -24,16 +26,9 @@
     <h3 id="title"></h3>
     <div id="menu"></div>
 
-    <form action="/rest/files/upload" method="post" enctype="multipart/form-data">
-        Your name: <input type="text" name="name" value="" /><br />
-        <table id="uploadTable"></table>
-        <input type="button" value="Add" onclick="document.getElementById('file').click();"/>
-        <input type="button" value="Save" />
-    </form>
-
+    Your name: <input type="text" name="name" onchange="UploadUtils.onNameChange(this);" /><br />
+    <table id="uploadTable"></table>
     <input id="file" type="file" multiple="multiple" onchange="UploadUtils.onChange(this);" style="display: none" />
-
-    <!-- TODO Remove after multiupload is ready -->
-    <script type="text/javascript">UploadUtils.stub();</script>
+    <input type="button" value="Add" onclick="document.getElementById('file').click();"/>
 </body>
 </html>

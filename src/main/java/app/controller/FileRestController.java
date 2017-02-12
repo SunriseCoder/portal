@@ -62,7 +62,9 @@ public class FileRestController {
         LogUtils.logUploadRequest(logger, request, name, file);
 
         if (name.isEmpty()) {
+            logger.error("Name is empty");
             HttpUtils.sendResponseError(response, HttpServletResponse.SC_BAD_REQUEST, "Name is empty");
+            return;
         }
 
         try {
