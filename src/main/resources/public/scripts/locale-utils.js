@@ -21,13 +21,13 @@ var Locales = {
         return value;
     },
 
-    writeTitle(key) {
+    writeTitle: function(key) {
         var title = document.getElementsByTagName("title")[0];
         var value = this.i18n(key);
         title.text = value;
     },
 
-    write(id, key) {
+    write: function(id, key) {
         var element = document.getElementById(id);
         var value = this.i18n(key);
         element.innerHTML = value;
