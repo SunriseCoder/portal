@@ -78,7 +78,7 @@ var FileTree = {
         folder.readableSize = this._getReadableSize(folder.size);
     },
 
-    _getReadableSize(size) {
+    _getReadableSize: function(size) {
         var unit = 1024;
         if (size < unit) {
             return size + " B";
