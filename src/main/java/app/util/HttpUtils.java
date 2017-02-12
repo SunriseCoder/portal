@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -17,6 +19,8 @@ import org.springframework.http.HttpHeaders;
 
 public class HttpUtils {
     private static final Logger logger = LogManager.getLogger(HttpUtils.class.getName());
+
+    private static Map<String, ContentType> contentTypes;
 
     public static void sendFile(HttpServletRequest request, HttpServletResponse response, File file) throws IOException {
         String fileName = file.getName();
@@ -80,10 +84,13 @@ public class HttpUtils {
         fileExtension = fileExtension.toLowerCase();
 
         // Retrieving Content Type by File Extension
-        ContentType contentType = ContentType.get(fileExtension);
+        if (contentTypes == null) {
+            fillContentTypes();
+        }
+        ContentType contentType = contentTypes.get(fileExtension);
         if (contentType == null) {
             logger.error("Content-Type for file extension '{}' was not found", fileExtension);
-            contentType = ContentType.data;
+            contentType = contentTypes.get("data");
         }
         return contentType;
     }
@@ -133,44 +140,49 @@ public class HttpUtils {
         }
     }
 
-    private static enum ContentType {
+    private static void fillContentTypes() {
+        contentTypes = new HashMap<>();
+
         // Default content type - just to be able to download file
-        data("application/octet-stream", true),
+        contentTypes.put("data", new ContentType("application/octet-stream", true));
 
         // Text files
-        htm("text/html", false),
-        html("text/html", false),
-        txt("text/plain", false),
+        contentTypes.put("htm", new ContentType("text/html", false));
+        contentTypes.put("html", new ContentType("text/html", false));
+        contentTypes.put("txt", new ContentType("text/plain", false));
 
         // Documents
-        pdf("application/pdf", false),
+        contentTypes.put("pdf", new ContentType("application/pdf", false));
 
         // Images
-        gif("image/gif", false),
-        jpeg("image/jpeg", false),
-        jpg("image/jpeg", false),
-        png("image/png", false),
+        contentTypes.put("gif", new ContentType("image/gif", false));
+        contentTypes.put("jpeg", new ContentType("image/jpeg", false));
+        contentTypes.put("jpg", new ContentType("image/jpeg", false));
+        contentTypes.put("png", new ContentType("image/png", false));
 
         // Audio
-        m4a("audio/mp4", false),
-        mp3("audio/mpeg", false),
-        ogg("audio/ogg", false),
-        wav("audio/wave", false),
-        wave("audio/wave", false),
-        wma("audio/x-ms-wma", false),
+        contentTypes.put("m4a", new ContentType("audio/mp4", false));
+        contentTypes.put("mp3", new ContentType("audio/mpeg", false));
+        contentTypes.put("ogg", new ContentType("audio/ogg", false));
+        contentTypes.put("wav", new ContentType("audio/wave", false));
+        contentTypes.put("wave", new ContentType("audio/wave", false));
+        contentTypes.put("wma", new ContentType("audio/x-ms-wma", false));
 
         // Video
-        mp4("video/mp4", false),
-        m4v("video/mp4", false),
-        wmv("video/x-ms-wmv", false),
+        contentTypes.put("3gp", new ContentType("video/3gp", false));
+        contentTypes.put("mp4", new ContentType("video/mp4", false));
+        contentTypes.put("m4v", new ContentType("video/mp4", false));
+        contentTypes.put("wmv", new ContentType("video/x-ms-wmv", false));
 
         // Archives
-        zip("application/zip", true);
+        contentTypes.put("zip", new ContentType("application/zip", true));
+    }
 
+    private static class ContentType {
         private String contentType;
         private boolean attachment;
 
-        ContentType(String contentType, boolean attachment) {
+        private ContentType(String contentType, boolean attachment) {
             this.contentType = contentType;
             this.attachment = attachment;
         }
@@ -181,15 +193,6 @@ public class HttpUtils {
 
         public boolean isAttachment() {
             return attachment;
-        }
-
-        public static ContentType get(String value) {
-            try {
-                return valueOf(value);
-            } catch (IllegalArgumentException e) {
-                // Swallowing exception due to return null if not found
-            }
-            return null;
         }
     }
 
