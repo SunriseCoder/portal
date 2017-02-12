@@ -78,10 +78,30 @@ public class FileUtils {
         String fileName = file.getOriginalFilename();
         fileName = StringUtils.cleanFilePath(fileName);
         File destinationFile = new File(folder, fileName);
+        destinationFile = getNewNameIfExists(destinationFile);
 
         try (InputStream input = file.getInputStream();
                 OutputStream output = new FileOutputStream(destinationFile);) {
             IOUtils.copyLarge(input, output);
         }
+    }
+
+    private static File getNewNameIfExists(File file) {
+        if (!file.exists()) {
+            return file;
+        }
+
+        String fileName = file.getAbsolutePath();
+        int dotPos = fileName.lastIndexOf(".");
+        String prefix = dotPos == -1 ? fileName : fileName.substring(0, dotPos);
+        String postfix = dotPos == -1 ? "" : fileName.substring(dotPos);
+
+        int counter = 1;
+        do {
+            fileName = prefix + "-" + counter++ + postfix;
+            file = new File(fileName);
+        } while (file.exists());
+
+        return file;
     }
 }
