@@ -3,11 +3,14 @@
 <head>
     <title>Upload</title>
 
+    <link rel="stylesheet" href="styles/upload.css">
+
     <script src="scripts/ajax-utils.js"></script>
     <script src="scripts/file-tree.js"></script>
     <script src="scripts/jquery.js"></script>
     <script src="scripts/locale-utils.js"></script>
     <script src="scripts/menu.js"></script>
+    <script src="scripts/upload-utils.js"></script>
 
     <script>
         $(function() {
@@ -23,8 +26,14 @@
 
     <form action="/rest/files/upload" method="post" enctype="multipart/form-data">
         Your name: <input type="text" name="name" value="" /><br />
-        <input type="file" name="file" /><br />
-        <input type="submit">
+        <table id="uploadTable"></table>
+        <input type="button" value="Add" onclick="document.getElementById('file').click();"/>
+        <input type="button" value="Save" />
     </form>
+
+    <input id="file" type="file" multiple="multiple" onchange="UploadUtils.onChange(this);" style="display: none" />
+
+    <!-- TODO Remove after multiupload is ready -->
+    <script type="text/javascript">UploadUtils.stub();</script>
 </body>
 </html>

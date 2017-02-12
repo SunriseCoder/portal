@@ -1,0 +1,23 @@
+td.progress {
+    width: 200px;
+}
+
+div.progressBackground {
+    background-color: #eee;
+    height: 20px;
+    width: 100%;
+    position: relative;
+}
+
+div.progressForeground {
+    background-color: #4c4;
+    height: 100%;
+    width: 0;
+}
+
+div.progressLabel {
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    text-align: center;
+}
