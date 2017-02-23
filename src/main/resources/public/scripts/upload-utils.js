@@ -3,7 +3,9 @@ var UploadUtils = {
     _name: "",
 
     onNameChange: function(input) {
-        this._name = input.value;
+        var name = input.value;
+        this._name = name;
+        CookieUtils.put("upload-name", name);
     },
 
     onChange: function(input) {
