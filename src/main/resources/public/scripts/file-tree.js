@@ -1,10 +1,10 @@
 var FileTree = {
     // Settings
     htmlNode: undefined,
-    ajaxUrl: undefined,
+    listUrl: undefined,
     downloadUrl: undefined,
 
-    // Ajax data
+    // Request data
     serverData: undefined,
 
     // Filtering data
@@ -29,10 +29,10 @@ var FileTree = {
     },
 
     refresh: function() {
-        Ajax.call(this, this.ajaxUrl, this._onAjaxSuccess, this._onAjaxError);
+        HttpUtils.get(this, this.listUrl, this._onSuccess, this._onError);
     },
 
-    _onAjaxSuccess: function(object, data) {
+    _onSuccess: function(object, data) {
         var response = data.response;
         object.serverData = JSON.parse(response);
 
@@ -126,7 +126,7 @@ var FileTree = {
         this.applyFilter();
     },
     
-    _onAjaxError: function(object, data) {
+    _onError: function(object, data) {
         Locales.write("tree", "loading.error");
     },
 
@@ -257,7 +257,7 @@ var FileTree = {
     _markBranchPassedFilter: function(folder) {
         if (!folder.passedFilter) {
             folder.passedFilter = true;
-            this.filteredFoldersCount++;            
+            this.filteredFoldersCount++;
         }
 
         if (folder.parent) {

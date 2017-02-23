@@ -3,7 +3,7 @@
 <head>
     <title>Files</title>
 
-    <script src="scripts/ajax-utils.js"></script>
+    <script src="scripts/http-utils.js"></script>
     <script src="scripts/file-tree.js"></script>
     <script src="scripts/jquery.js"></script>
     <script src="scripts/locale-utils.js"></script>
@@ -16,7 +16,7 @@
             Locales.write("title", "files.greeting");
 
             FileTree.setHtmlNode("tree");
-            FileTree.ajaxUrl = "/rest/files/list";
+            FileTree.listUrl = "/rest/files/list";
             FileTree.downloadUrl = "/rest/files/get/";
             FileTree.build();
         });

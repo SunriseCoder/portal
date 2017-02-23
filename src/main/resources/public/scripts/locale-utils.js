@@ -2,12 +2,18 @@ var Locales = {
     _keys: undefined,
 
     _load: function() {
+        var response = this._loadData('/i18n/default.json');
+        _keys = JSON.parse(response);
+    },
+
+    _loadData: function(url) {
         var xhrObject = new XMLHttpRequest();
         xhrObject.overrideMimeType("application/json");
         // synchronous AJAX is deprecated, but important to load resources
-        xhrObject.open('GET', '/i18n/default.json', false);
+        xhrObject.open('GET', url, false);
         xhrObject.send();
-        _keys = JSON.parse(xhrObject.responseText);
+        var response = xhrObject.responseText;
+        return response;
     },
 
     i18n: function(key) {

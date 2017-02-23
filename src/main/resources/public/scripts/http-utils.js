@@ -1,14 +1,14 @@
-var Ajax = {
-    call: function(object, url, success, error) {
+var HttpUtils = {
+    get: function(caller, url, success, error) {
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function() {
             if (this.readyState != 4) {
                 return;
             }
             if (this.status == 200) {
-                success(object, this);
+                success(caller, this);
             } else {
-                error(object, this);
+                error(caller, this);
             }
         };
         xhttp.open("GET", url, true);

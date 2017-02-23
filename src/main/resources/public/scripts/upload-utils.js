@@ -79,7 +79,7 @@ var UploadUtils = {
         var formData = new FormData();
         formData.append("name", that._name);
         formData.append("file", job.file);
-        Ajax.upload(that.uploadUrl, formData, job.progressBar, that._fileUploadedSuccess, that._fileUploadError);
+        HttpUtils.upload(that.uploadUrl, formData, job.progressBar, that._fileUploadedSuccess, that._fileUploadError);
     },
 
     _fileUploadedSuccess: function(progressBar) {
