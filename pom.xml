@@ -5,7 +5,7 @@
 
     <groupId>sunrisecoder</groupId>
     <artifactId>portal</artifactId>
-    <version>0.0.1</version>
+    <version>0.0.2</version>
 
     <scm>
         <connection>scm:git:git@github.com:SunriseCoder/portal.git</connection>
