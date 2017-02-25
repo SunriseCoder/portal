@@ -4,7 +4,7 @@
     <description>Portal www.prem-prayojan.info (powered by WinSW)</description>
 
     <executable>java</executable>
-    <arguments>org.springframework.boot.loader.JarLauncher</arguments>
+    <arguments>-cp server org.springframework.boot.loader.JarLauncher</arguments>
 
     <startmode>Automatic</startmode>
     <depend>MySQL</depend>
