@@ -61,25 +61,21 @@ var UploadUtils = {
     },
 
     _runJobs: function(jobs) {
-        var that = this;
-        var promise = new Promise(function(resolve, reject) {
-            that._processJobs(that, jobs);
-            resolve();
-        });
+        this._processJobs(jobs);
     },
 
-    _processJobs(that, jobs) {
+    _processJobs(jobs) {
         while (jobs.length > 0) {
             var job = jobs.shift();
-            that._processJob(that, job);
+            this._processJob(job);
         }
     },
 
-    _processJob(that, job) {
+    _processJob(job) {
         var formData = new FormData();
-        formData.append("name", that._name);
+        formData.append("name", this._name);
         formData.append("file", job.file);
-        HttpUtils.upload(that.uploadUrl, formData, job.progressBar, that._fileUploadedSuccess, that._fileUploadError);
+        HttpUtils.upload(this.uploadUrl, formData, job.progressBar, this._fileUploadedSuccess, this._fileUploadError);
     },
 
     _fileUploadedSuccess: function(progressBar) {
