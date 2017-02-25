@@ -1,0 +1,12 @@
+log
+server
+backup.bat
+install.bat
+uninstall.bat
+winsw.exe
+backup.list
+winsw.err.log
+winsw.out.log
+winsw.wrapper.log
+winsw.version
+winsw.xml
