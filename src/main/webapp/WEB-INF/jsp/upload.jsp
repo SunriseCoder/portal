@@ -34,6 +34,7 @@
         <div class="starter-template">
 
             Your name: <input id="name" type="text" name="name" onchange="UploadUtils.onNameChange(this);" /><br />
+            <input id="csrf" type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
             <table id="uploadTable"></table>
             <input id="file" type="file" multiple="multiple" onchange="UploadUtils.onChange(this);" style="display: none" />
             <input type="button" value="Add" onclick="document.getElementById('file').click();"/>

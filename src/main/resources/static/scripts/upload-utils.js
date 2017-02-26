@@ -74,6 +74,8 @@ var UploadUtils = {
     _processJob(job) {
         var formData = new FormData();
         formData.append("name", this._name);
+        var csrf = document.getElementById("csrf");
+        formData.append(csrf.name, csrf.value);
         formData.append("file", job.file);
         HttpUtils.upload(this.uploadUrl, formData, job.progressBar, this._fileUploadedSuccess, this._fileUploadError);
     },
