@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <html>
 <head>
     <title>Upload</title>
@@ -10,14 +11,11 @@
     <script src="scripts/file-tree.js"></script>
     <script src="scripts/jquery.js"></script>
     <script src="scripts/locale-utils.js"></script>
-    <script src="scripts/menu.js"></script>
     <script src="scripts/upload-utils.js"></script>
 
     <script>
         $(function() {
-            Menu.insert("menu");
             Locales.writeTitle("upload.caption");
-            Locales.write("title", "upload.greeting");
 
             UploadUtils.uploadUrl = "/rest/files/upload";
             var name = CookieUtils.get("upload-name");
@@ -30,12 +28,17 @@
     </script>
 </head>
 <body>
-    <h3 id="title"></h3>
-    <div id="menu"></div>
+    <jsp:include page="includes/header.jsp" />
 
-    Your name: <input id="name" type="text" name="name" onchange="UploadUtils.onNameChange(this);" /><br />
-    <table id="uploadTable"></table>
-    <input id="file" type="file" multiple="multiple" onchange="UploadUtils.onChange(this);" style="display: none" />
-    <input type="button" value="Add" onclick="document.getElementById('file').click();"/>
+    <div class="container">
+        <div class="starter-template">
+
+            Your name: <input id="name" type="text" name="name" onchange="UploadUtils.onNameChange(this);" /><br />
+            <table id="uploadTable"></table>
+            <input id="file" type="file" multiple="multiple" onchange="UploadUtils.onChange(this);" style="display: none" />
+            <input type="button" value="Add" onclick="document.getElementById('file').click();"/>
+
+        </div>
+    </div>
 </body>
 </html>

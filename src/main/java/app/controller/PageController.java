@@ -8,6 +8,16 @@ public class PageController {
 
     @RequestMapping("/")
     public String index() {
-        return "/index.html";
+        return "index";
+    }
+
+    @RequestMapping("/files")
+    public String files() {
+        return "files";
+    }
+
+    @RequestMapping("/upload")
+    public String upload() {
+        return "upload";
     }
 }

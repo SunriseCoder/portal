@@ -13,7 +13,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-            .antMatchers("/upload.html").hasRole("USER")
+            .antMatchers("/upload").hasRole("USER")
             .and().formLogin()
             .and().logout();
     }
