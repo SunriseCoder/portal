@@ -1,0 +1,20 @@
+.nav > li > div {
+    color: #9d9d9d;
+    padding: 15px;
+    padding-left: 200px;
+}
+
+.nav > li > div > a {
+    color: inherit;
+}
+
+.nav > li > div > a:hover,
+.nav > li > div > a:focus {
+    color: #fff;
+    text-decoration: none;
+}
+
+.nav > li > div > form > input {
+    color: #000;
+    width: 80px;
+}

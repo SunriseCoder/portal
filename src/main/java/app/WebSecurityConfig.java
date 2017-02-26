@@ -15,7 +15,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
             .antMatchers("/upload").hasRole("USER")
             .and().formLogin()
-            .and().logout();
+            .and().logout().logoutSuccessUrl("/");
     }
 
     @Autowired
