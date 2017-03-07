@@ -11,8 +11,8 @@ public class UserEntity {
     @GeneratedValue
     private Long id;
     @Column(unique = true)
-    private String name;
-    private String password;
+    private String login;
+    private String pass;
 
     public Long getId() {
         return id;
@@ -22,19 +22,19 @@ public class UserEntity {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getLogin() {
+        return login;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setLogin(String login) {
+        this.login = login;
     }
 
-    public String getPassword() {
-        return password;
+    public String getPass() {
+        return pass;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setPass(String pass) {
+        this.pass = pass;
     }
 }

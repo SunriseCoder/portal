@@ -17,15 +17,15 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     private UserService userService;
 
     @Override
-    public UserDetails loadUserByUsername(String name) throws UsernameNotFoundException {
-        UserEntity userEntity = userService.findByName(name);
+    public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
+        UserEntity userEntity = userService.findByLogin(login);
 
         if (userEntity == null) {
-            throw new UsernameNotFoundException(name);
+            throw new UsernameNotFoundException(login);
         }
 
         // TODO Replace new ArrayList with List of Roles after implementation
-        User user = new User(userEntity.getName(), userEntity.getPassword(), new ArrayList<>());
+        User user = new User(userEntity.getLogin(), userEntity.getPass(), new ArrayList<>());
         return user;
     }
 }

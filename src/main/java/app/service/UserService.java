@@ -6,5 +6,5 @@ import app.entity.UserEntity;
 
 @Service
 public interface UserService {
-    UserEntity findByName(String name);
+    UserEntity findByLogin(String login);
 }
