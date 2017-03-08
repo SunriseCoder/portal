@@ -7,4 +7,5 @@ import app.entity.UserEntity;
 @Service
 public interface UserService {
     UserEntity findByLogin(String login);
+    void save(UserEntity user);
 }

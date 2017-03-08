@@ -4,6 +4,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Transient;
 
 @Entity(name = "users")
 public class UserEntity {
@@ -13,6 +14,8 @@ public class UserEntity {
     @Column(unique = true)
     private String login;
     private String pass;
+    @Transient
+    private String confirm;
 
     public Long getId() {
         return id;
@@ -36,5 +39,13 @@ public class UserEntity {
 
     public void setPass(String pass) {
         this.pass = pass;
+    }
+
+    public String getConfirm() {
+        return confirm;
+    }
+
+    public void setConfirm(String confirm) {
+        this.confirm = confirm;
     }
 }

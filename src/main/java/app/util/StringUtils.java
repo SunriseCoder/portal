@@ -33,4 +33,8 @@ public class StringUtils {
         String safeUrl = filePath.replaceAll("\\.\\.(/|\\\\)", "");
         return safeUrl;
     }
+
+    public static boolean safeEquals(String s1, String s2) {
+        return s1 == null ? s1 == s2 : s1.equals(s2);
+    }
 }

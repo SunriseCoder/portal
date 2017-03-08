@@ -23,7 +23,7 @@
                                 </form>
                             </div>
                         </li>
-                        <li><a href="#">Register</a></li>
+                        <li><a href="/register">Register</a></li>
                     </c:when>
                     <c:otherwise>
                         <li>

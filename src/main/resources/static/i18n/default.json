@@ -7,6 +7,8 @@
     "files.caption" : "Files",
     "files.search.label" : "Search",
 
+    "register.caption" : "Register",
+
     "upload.caption" : "Upload",
 
     "loading.error" : "Loading Error"

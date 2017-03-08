@@ -9,7 +9,7 @@
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" primaryKeyName="pk_users" nullable="false" />
             </column>
-            <column name="login" type="varchar(64)">
+            <column name="login" type="varchar(32)">
                 <constraints unique="true" uniqueConstraintName="ui_users_login" nullable="false" />
             </column>
             <column name="pass" type="varchar(64)">
