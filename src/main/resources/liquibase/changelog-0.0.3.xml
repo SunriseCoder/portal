@@ -4,7 +4,7 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                                        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
 
-    <changeSet author="SunriseCoder" id="0.0.3-01">
+    <changeSet id="0.0.3-01" author="SunriseCoder">
         <createTable tableName="users">
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" primaryKeyName="pk_users" nullable="false" />
@@ -13,6 +13,23 @@
                 <constraints unique="true" uniqueConstraintName="ui_users_login" nullable="false" />
             </column>
             <column name="pass" type="varchar(64)">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="0.0.3-02" author="SunriseCoder">
+        <createTable tableName="persistent_logins">
+            <column name="username" type="varchar(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="series" type="varchar(64)">
+                <constraints primaryKey="true" primaryKeyName="pk_persistent_logins" nullable="false" />
+            </column>
+            <column name="token" type="varchar(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="last_used" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
                 <constraints nullable="false" />
             </column>
         </createTable>
