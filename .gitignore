@@ -19,3 +19,4 @@ log
 # Secret
 TODO
 src/main/resources/env/
+src/main/resources/liquibase/diff.xml

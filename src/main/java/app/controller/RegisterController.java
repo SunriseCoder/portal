@@ -1,5 +1,7 @@
 package app.controller;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.logging.log4j.LogManager;
@@ -11,7 +13,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import app.entity.RoleEntity;
 import app.entity.UserEntity;
+import app.service.RolesService;
 import app.service.SecurityService;
 import app.service.UserService;
 import app.util.LogUtils;
@@ -27,6 +31,8 @@ public class RegisterController {
     private SecurityService securityService;
     @Autowired
     private UserEntityValidator userValidator;
+    @Autowired
+    private RolesService rolesService;
 
     @PostMapping("/register")
     public String registration(@ModelAttribute("user") UserEntity user, BindingResult bindingResult, Model model,
@@ -40,6 +46,10 @@ public class RegisterController {
 
         // Getting password before it becomes encrypted
         String pass = user.getPass();
+
+        // Assigning default role for new user
+        List<RoleEntity> roles = rolesService.getRoleByName("User");
+        user.setRoles(roles);
 
         userService.save(user);
 

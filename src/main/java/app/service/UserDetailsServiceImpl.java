@@ -1,8 +1,11 @@
 package app.service;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -24,8 +27,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             throw new UsernameNotFoundException(login);
         }
 
-        // TODO Replace new ArrayList with List of Roles after implementation
-        User user = new User(userEntity.getLogin(), userEntity.getPass(), new ArrayList<>());
+        List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
+        userEntity.getPermissions().stream().forEach(permission ->
+                grantedAuthorities.add(new SimpleGrantedAuthority(permission.getName())));
+        User user = new User(userEntity.getLogin(), userEntity.getPass(), grantedAuthorities);
         return user;
     }
 }
