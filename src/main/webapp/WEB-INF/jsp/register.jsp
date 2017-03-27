@@ -47,6 +47,13 @@
                         </td>
                     </tr>
                     <tr>
+                        <td>E-Mail: </td>
+                        <td>
+                            <form:input path="email" type="text" />
+                            <form:errors path="email" cssClass="error-text" />
+                        </td>
+                    </tr>
+                    <tr>
                         <td colspan="2"><input type="submit" value="Register"></td>
                     </tr>
                 </table>

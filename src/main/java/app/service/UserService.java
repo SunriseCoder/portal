@@ -8,4 +8,5 @@ import app.entity.UserEntity;
 public interface UserService {
     UserEntity findByLogin(String login);
     void save(UserEntity user);
+    UserEntity findByEmail(String email);
 }

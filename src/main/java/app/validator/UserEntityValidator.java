@@ -1,5 +1,7 @@
 package app.validator;
 
+import java.util.regex.Pattern;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
@@ -11,6 +13,9 @@ import app.service.UserService;
 
 @Component
 public class UserEntityValidator implements Validator {
+    private static final String EMAIL_PATTERN_STRING = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
+    private static final Pattern EMAIL_PATTERN = Pattern.compile(EMAIL_PATTERN_STRING);
+
     @Autowired
     private UserService userService;
 
@@ -38,6 +43,17 @@ public class UserEntityValidator implements Validator {
 
         if (!user.getPass().equals(user.getConfirm())) {
             errors.rejectValue("confirm", "user.confirm.different");
+        }
+
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "email", "required");
+        if (userService.findByEmail(user.getEmail()) != null) {
+            errors.rejectValue("email", "user.email.duplication");
+        }
+        if (user.getEmail().length() > 254) {
+            errors.rejectValue("email", "user.email.size");
+        }
+        if (!EMAIL_PATTERN.matcher(user.getEmail()).matches()) {
+            errors.rejectValue("email", "user.email.wrong_format");
         }
     }
 }

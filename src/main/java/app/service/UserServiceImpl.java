@@ -23,10 +23,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public void save(UserEntity user) {
         if (user.getId() == null) {
+            // For new user encrypting password
             encryptPass(user);
         } else {
             UserEntity storedUser = repository.getOne(user.getId());
             if (!StringUtils.safeEquals(user.getPass(), storedUser.getPass())) {
+                // For existing user if password was changed, updating it
                 encryptPass(user);
             }
         }
@@ -37,5 +39,10 @@ public class UserServiceImpl implements UserService {
         String encodedPass = bCryptPasswordEncoder.encode(user.getPass());
         user.setPass(encodedPass);
         user.setConfirm(encodedPass);
+    }
+
+    @Override
+    public UserEntity findByEmail(String email) {
+        return repository.findByEmail(email);
     }
 }

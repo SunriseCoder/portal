@@ -24,6 +24,8 @@ public class UserEntity {
     private String pass;
     @Transient
     private String confirm;
+    @Column
+    private String email;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "zz_users_roles", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
@@ -60,6 +62,14 @@ public class UserEntity {
 
     public void setConfirm(String confirm) {
         this.confirm = confirm;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public List<RoleEntity> getRoles() {
