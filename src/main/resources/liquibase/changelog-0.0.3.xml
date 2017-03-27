@@ -96,7 +96,7 @@
 
         <insert tableName="permissions">
             <column name="id" value="1" />
-            <column name="name" value="UPLOAD_FILES" />
+            <column name="name" value="ROLE_UPLOAD_FILES" />
             <column name="comment" value="Allows users to upload files to server" />
         </insert>
 
@@ -106,7 +106,7 @@
             <column name="comment" value="Just an ordinary registered user" />
         </insert>
 
-        <!-- Grant UPLOAD_FILES to Role User -->
+        <!-- Grant Permission ROLE_UPLOAD_FILES to Role User -->
         <insert tableName="zz_roles_permissions">
             <column name="role_id" value="1" />
             <column name="permission_id" value="1" />

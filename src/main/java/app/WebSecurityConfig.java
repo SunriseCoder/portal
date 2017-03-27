@@ -37,7 +37,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-            .antMatchers("/upload").hasRole("USER")
+            .antMatchers("/upload").hasRole("UPLOAD_FILES")
             .and().formLogin()
             .and().rememberMe().alwaysRemember(true).tokenRepository(persistentTokenRepository()).tokenValiditySeconds(31536000)
             .and().logout().logoutSuccessUrl("/");
