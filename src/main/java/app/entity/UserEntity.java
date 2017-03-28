@@ -32,6 +32,9 @@ public class UserEntity {
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
     private List<RoleEntity> roles;
 
+    @Transient
+    private Set<String> permissions;
+
     public Long getId() {
         return id;
     }
@@ -80,9 +83,11 @@ public class UserEntity {
         this.roles = roles;
     }
 
-    public Set<PermissionEntity> getPermissions() {
-        Set<PermissionEntity> permissions = new HashSet<>();
-        roles.stream().forEach(role -> permissions.addAll(role.getAllPermissions()));
+    public Set<String> getPermissions() {
+        if (permissions == null) {
+            permissions = new HashSet<>();
+            roles.stream().forEach(role -> permissions.addAll(role.getAllPermissions()));
+        }
         return permissions;
     }
 }

@@ -1,8 +1,8 @@
 package app.entity;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -72,9 +72,9 @@ public class RoleEntity {
         this.includedRoles = includedRoles;
     }
 
-    public Set<PermissionEntity> getAllPermissions() {
-        Set<PermissionEntity> permissions = new HashSet<>();
-        permissions.addAll(this.permissions);
+    public Set<String> getAllPermissions() {
+        Set<String> permissions = this.permissions.stream()
+                .map(PermissionEntity::getName).collect(Collectors.toSet());
         includedRoles.stream().forEach(role -> permissions.addAll(role.getAllPermissions()));
         return permissions;
     }

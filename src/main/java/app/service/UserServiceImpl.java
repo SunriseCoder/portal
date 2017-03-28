@@ -1,6 +1,7 @@
 package app.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -44,5 +45,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserEntity findByEmail(String email) {
         return repository.findByEmail(email);
+    }
+
+    @Override
+    public UserEntity getLoggedInUser() {
+        String name = SecurityContextHolder.getContext().getAuthentication().getName();
+        UserEntity user = findByLogin(name);
+        return user;
     }
 }

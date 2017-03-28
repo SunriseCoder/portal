@@ -1,12 +1,5 @@
 var UploadUtils = {
     uploadUrl: undefined,
-    _name: "",
-
-    onNameChange: function(input) {
-        var name = input.value;
-        this._name = name;
-        CookieUtils.put("upload-name", name);
-    },
 
     onChange: function(input) {
         var table = document.getElementById('uploadTable');
@@ -73,7 +66,6 @@ var UploadUtils = {
 
     _processJob(job) {
         var formData = new FormData();
-        formData.append("name", this._name);
         var csrf = document.getElementById("csrf");
         formData.append(csrf.name, csrf.value);
         formData.append("file", job.file);

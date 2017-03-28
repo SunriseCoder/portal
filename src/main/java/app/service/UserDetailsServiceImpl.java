@@ -1,7 +1,7 @@
 package app.service;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -27,9 +27,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             throw new UsernameNotFoundException(login);
         }
 
-        List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
-        userEntity.getPermissions().stream().forEach(permission ->
-                grantedAuthorities.add(new SimpleGrantedAuthority(permission.getName())));
+        List<GrantedAuthority> grantedAuthorities = userEntity.getPermissions().stream()
+                .map(p -> new SimpleGrantedAuthority(p)).collect(Collectors.toList());
         User user = new User(userEntity.getLogin(), userEntity.getPass(), grantedAuthorities);
         return user;
     }

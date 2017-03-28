@@ -9,4 +9,5 @@ public interface UserService {
     UserEntity findByLogin(String login);
     void save(UserEntity user);
     UserEntity findByEmail(String email);
+    UserEntity getLoggedInUser();
 }
