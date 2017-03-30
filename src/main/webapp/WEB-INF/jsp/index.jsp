@@ -4,7 +4,8 @@
 <head>
     <title>Main</title>
 
-    <script src="scripts/locale-utils.js"></script>
+    <script src="/scripts/jquery.js"></script>
+    <script src="/scripts/locale-utils.js"></script>
 
     <script>
         $(function() {

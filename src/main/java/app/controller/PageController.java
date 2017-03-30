@@ -3,9 +3,9 @@ package app.controller;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.servlet.ModelAndView;
 
 import app.dto.LoginDTO;
 import app.entity.UserEntity;
@@ -14,35 +14,43 @@ import app.entity.UserEntity;
 public class PageController {
 
     @RequestMapping("/")
-    public String index() {
+    public String index(Model model) {
+        addLoginDto(model);
         return "index";
     }
 
     @RequestMapping("/files")
-    public String files() {
+    public String files(Model model) {
+        addLoginDto(model);
         return "files";
     }
 
     @RequestMapping("/login")
-    public ModelAndView login(HttpServletRequest request, ModelAndView mav) {
-        mav.addObject("login", new LoginDTO());
+    public String login(HttpServletRequest request, Model model) {
+        addLoginDto(model);
+
         Exception e = (Exception) request.getSession().getAttribute("SPRING_SECURITY_LAST_EXCEPTION");
         if (e != null) {
-            mav.addObject("error", e.getMessage());
+            model.addAttribute("error", e.getMessage());
         }
-        mav.setViewName("login");
-        return mav;
+
+        return "login";
     }
 
     @GetMapping("/register")
-    public ModelAndView register(ModelAndView mav) {
-        mav.addObject("user", new UserEntity());
-        mav.setViewName("register");
-        return mav;
+    public String register(Model model) {
+        addLoginDto(model);
+        model.addAttribute("user", new UserEntity());
+        return "register";
     }
 
     @RequestMapping("/upload")
-    public String upload() {
+    public String upload(Model model) {
+        addLoginDto(model);
         return "upload";
+    }
+
+    private void addLoginDto(Model model) {
+        model.addAttribute("login", new LoginDTO());
     }
 }

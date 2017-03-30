@@ -6,10 +6,10 @@
 <head>
     <title>Files</title>
 
-    <script src="scripts/http-utils.js"></script>
-    <script src="scripts/file-tree.js"></script>
-    <script src="scripts/jquery.js"></script>
-    <script src="scripts/locale-utils.js"></script>
+    <script src="/scripts/http-utils.js"></script>
+    <script src="/scripts/file-tree.js"></script>
+    <script src="/scripts/jquery.js"></script>
+    <script src="/scripts/locale-utils.js"></script>
 
     <script>
         $(function() {

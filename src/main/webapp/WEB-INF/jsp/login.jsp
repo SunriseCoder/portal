@@ -7,11 +7,10 @@
 <head>
     <title>Login</title>
 
-    <link rel="stylesheet" href="styles/register.css">
-    <link rel="stylesheet" href="styles/form.css">
+    <link rel="stylesheet" href="/styles/form.css">
 
-    <script src="scripts/jquery.js"></script>
-    <script src="scripts/locale-utils.js"></script>
+    <script src="/scripts/jquery.js"></script>
+    <script src="/scripts/locale-utils.js"></script>
 
     <script>
         $(function() {
@@ -19,7 +18,7 @@
         });
     </script>
 </head>
-<body onload='document.forms.login.username.focus();'>
+<body onload='document.forms.loginForm.username.focus();'>
     <jsp:include page="includes/header.jsp" />
 
     <div class="container">
@@ -30,7 +29,10 @@
                 <h5 class="error-text">${error}</h5>
             </c:if>
 
-            <jsp:include page="includes/login-form.jsp" />
+            <jsp:include page="includes/login-form.jsp">
+                <jsp:param name="formId" value="loginForm" />
+            </jsp:include>
+            <input type="submit" value="Login" onclick="document.getElementById('loginForm').submit();" />
 
         </div>
     </div>

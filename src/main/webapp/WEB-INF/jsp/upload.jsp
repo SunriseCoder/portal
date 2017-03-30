@@ -6,14 +6,14 @@
 <head>
     <title>Upload</title>
 
-    <link rel="stylesheet" href="styles/upload.css">
+    <link rel="stylesheet" href="/styles/upload.css">
 
-    <script src="scripts/http-utils.js"></script>
-    <script src="scripts/cookie-utils.js"></script>
-    <script src="scripts/file-tree.js"></script>
-    <script src="scripts/jquery.js"></script>
-    <script src="scripts/locale-utils.js"></script>
-    <script src="scripts/upload-utils.js"></script>
+    <script src="/scripts/http-utils.js"></script>
+    <script src="/scripts/cookie-utils.js"></script>
+    <script src="/scripts/file-tree.js"></script>
+    <script src="/scripts/jquery.js"></script>
+    <script src="/scripts/locale-utils.js"></script>
+    <script src="/scripts/upload-utils.js"></script>
 
     <script>
         $(function() {

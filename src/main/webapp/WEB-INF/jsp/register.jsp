@@ -7,10 +7,10 @@
 <head>
     <title>Register</title>
 
-    <link rel="stylesheet" href="styles/register.css">
     <link rel="stylesheet" href="styles/form.css">
 
-    <script src="scripts/locale-utils.js"></script>
+    <script src="/scripts/jquery.js"></script>
+    <script src="/scripts/locale-utils.js"></script>
 
     <script>
         $(function() {

@@ -1,7 +1,10 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<link rel="stylesheet" type="text/css" href="webjars/bootstrap/3.3.7/css/bootstrap.min.css" />
+<link rel="stylesheet" type="text/css" href="/webjars/bootstrap/3.3.7/css/bootstrap.min.css" />
 <link rel="stylesheet" type="text/css" href="/styles/header.css" />
+
+<script src="/scripts/form-utils.js"></script>
+<script src="/scripts/popup-utils.js"></script>
 
 <nav class="navbar navbar-inverse">
     <div class="container">
@@ -14,17 +17,25 @@
                 <c:choose>
                     <c:when test="${pageContext.request.userPrincipal.name == null}">
                         <li>
-                            <div>
-                                <form id="headerLogin" action="/login" method="POST">
-                                    User: <input type="text" name="username" value="" />
-                                    Password: <input type="password" name="password" />
-                                    <input id="csrf" type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-                                    <input type="submit" name="submit" value="Login" />
-                                </form>
+
+                            <div class="popup">
+                                <span id="popup" class="popupspan">
+                                    <jsp:include page="login-form.jsp">
+                                        <jsp:param name="formId" value="headerLoginForm" />
+                                    </jsp:include>
+                                    <span class="buttons">
+                                        <button onclick="FormUtils.submitForm('headerLoginForm')">Login</button>
+                                        <button onclick="PopupUtils.hidePopup()">Cancel</button>
+                                    </span>
+                                </span>
                             </div>
+
                         </li>
-                        <li><a href="/login">Login</a></li>
+                        <li><a href="#" onclick="PopupUtils.showPopup()">Login</a></li>
                         <li><a href="/register">Register</a></li>
+                        <script>
+                            
+                        </script>
                     </c:when>
                     <c:otherwise>
                         <li>
