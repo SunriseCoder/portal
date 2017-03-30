@@ -5,6 +5,10 @@ public class LoginDTO {
     private String password;
     private Boolean rememberMe;
 
+    public LoginDTO() {
+        rememberMe = Boolean.TRUE;
+    }
+
     public String getUsername() {
         return username;
     }
