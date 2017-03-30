@@ -84,10 +84,20 @@ public class UserEntity {
     }
 
     public Set<String> getPermissions() {
+        checkInitPermissions();
+        return permissions;
+    }
+
+    public Boolean hasPermission(String permission) {
+        checkInitPermissions();
+        boolean result = permissions.contains(permission);
+        return result;
+    }
+
+    private void checkInitPermissions() {
         if (permissions == null) {
             permissions = new HashSet<>();
             roles.stream().forEach(role -> permissions.addAll(role.getAllPermissions()));
         }
-        return permissions;
     }
 }
