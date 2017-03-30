@@ -12,7 +12,8 @@
 
     <script>
         $(function() {
-        Locales.writeTitle("register.caption");
+            Locales.writeTitle("register.caption");
+        });
     </script>
 </head>
 <body>
@@ -22,7 +23,7 @@
         <div class="starter-template">
             <h3>Registration</h3>
 
-            <form:form action="/register" method="post" modelAttribute="user">
+            <form:form action="/register" method="POST" modelAttribute="user">
                 <input id="csrf" type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
                 <table>
                     <tr>

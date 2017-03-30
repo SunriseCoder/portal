@@ -2,8 +2,8 @@ package app.util;
 
 import java.util.Set;
 
-import app.entity.Permissions;
 import app.entity.UserEntity;
+import app.enums.Permissions;
 
 public class SecurityUtils {
     public static boolean hasPermission(UserEntity user, Permissions permission) {

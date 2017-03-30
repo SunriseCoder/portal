@@ -18,8 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import app.entity.FolderEntity;
-import app.entity.Permissions;
 import app.entity.UserEntity;
+import app.enums.Permissions;
 import app.service.FileService;
 import app.service.UserService;
 import app.util.HttpUtils;
@@ -75,7 +75,7 @@ public class FileRestController {
             return;
         }
 
-        Permissions permssion = Permissions.ROLE_UPLOAD_FILES;
+        Permissions permssion = Permissions.UPLOAD_FILES;
         if (!SecurityUtils.hasPermission(user, permssion)) {
             logger.error("User {} don't have permission {} for this action.", user.getLogin(), permssion);
             HttpUtils.sendResponseError(response, HttpServletResponse.SC_FORBIDDEN,

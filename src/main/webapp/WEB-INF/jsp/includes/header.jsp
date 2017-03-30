@@ -15,7 +15,7 @@
                     <c:when test="${pageContext.request.userPrincipal.name == null}">
                         <li>
                             <div>
-                                <form action="/login" method="post">
+                                <form id="headerLogin" action="/login" method="POST">
                                     User: <input type="text" name="username" value="" />
                                     Password: <input type="password" name="password" />
                                     <input id="csrf" type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
@@ -23,6 +23,7 @@
                                 </form>
                             </div>
                         </li>
+                        <li><a href="/login">Login</a></li>
                         <li><a href="/register">Register</a></li>
                     </c:when>
                     <c:otherwise>

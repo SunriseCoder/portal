@@ -7,7 +7,8 @@
 
     <script>
         $(function() {
-        Locales.writeTitle("index.caption");
+            Locales.writeTitle("index.caption");
+        });
     </script>
 </head>
 <body>

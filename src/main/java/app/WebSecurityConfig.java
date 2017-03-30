@@ -14,6 +14,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 
+import app.enums.Permissions;
+
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
@@ -37,8 +39,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-            .antMatchers("/upload", "/rest/files/upload").hasRole("UPLOAD_FILES")
-            .and().formLogin()
+            .antMatchers("/upload", "/rest/files/upload").hasAuthority(Permissions.UPLOAD_FILES.name())
+            .and().formLogin().loginPage("/login").permitAll()
             .and().rememberMe().alwaysRemember(true).tokenRepository(persistentTokenRepository()).tokenValiditySeconds(31536000)
             .and().logout().logoutSuccessUrl("/");
     }
