@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 import app.dao.UserRepository;
 import app.entity.UserEntity;
+import app.enums.Users;
 import app.util.StringUtils;
 
 @Component
@@ -19,6 +20,25 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserEntity findByLogin(String login) {
         return repository.findByLogin(login);
+    }
+
+    @Override
+    public UserEntity findByEmail(String email) {
+        return repository.findByEmail(email);
+    }
+
+    @Override
+    public Boolean isAuthenticated() {
+        boolean result = !Users.anonymousUser.name().equals(
+                SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        return Boolean.valueOf(result);
+    }
+
+    @Override
+    public UserEntity getLoggedInUser() {
+        String name = SecurityContextHolder.getContext().getAuthentication().getName();
+        UserEntity user = findByLogin(name);
+        return user;
     }
 
     @Override
@@ -40,17 +60,5 @@ public class UserServiceImpl implements UserService {
         String encodedPass = bCryptPasswordEncoder.encode(user.getPass());
         user.setPass(encodedPass);
         user.setConfirm(encodedPass);
-    }
-
-    @Override
-    public UserEntity findByEmail(String email) {
-        return repository.findByEmail(email);
-    }
-
-    @Override
-    public UserEntity getLoggedInUser() {
-        String name = SecurityContextHolder.getContext().getAuthentication().getName();
-        UserEntity user = findByLogin(name);
-        return user;
     }
 }

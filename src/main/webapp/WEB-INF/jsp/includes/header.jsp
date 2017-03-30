@@ -12,10 +12,13 @@
             <ul class="nav navbar-nav">
                 <li><a href="/">Main</a></li>
                 <li><a href="/files">Files</a></li>
-                <li><a href="/upload">Upload</a></li>
+
+                <c:if test="${not empty user && user.hasPermission('UPLOAD_FILES')}">
+                    <li><a href="/upload">Upload</a></li>
+                </c:if>
 
                 <c:choose>
-                    <c:when test="${pageContext.request.userPrincipal.name == null}">
+                    <c:when test="${empty user}">
                         <li>
 
                             <div class="popup">
@@ -31,7 +34,7 @@
                             </div>
 
                         </li>
-                        <li><a href="#" onclick="PopupUtils.showPopup()">Login</a></li>
+                        <li><a href="#" onclick="PopupUtils.showPopup(document.getElementById('headerLoginForm').username)">Login</a></li>
                         <li><a href="/register">Register</a></li>
                         <script>
                             
@@ -40,7 +43,7 @@
                     <c:otherwise>
                         <li>
                             <div>
-                                Welcome, ${pageContext.request.userPrincipal.name}
+                                Welcome, ${user.login}
                                 (<a href="#" onclick="logout.submit();">Logout</a>)
                             </div>
                         </li>

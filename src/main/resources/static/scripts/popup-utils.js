@@ -1,7 +1,8 @@
 var PopupUtils = {
-    showPopup: function() {
+    showPopup: function(focus) {
         var popup = document.getElementById("popup");
         popup.classList.add("show");
+        focus.focus();
     },
 
     hidePopup: function() {

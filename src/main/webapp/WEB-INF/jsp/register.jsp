@@ -18,14 +18,14 @@
         });
     </script>
 </head>
-<body>
+<body onload="document.forms.userForm.login.focus()">
     <jsp:include page="includes/header.jsp" />
 
     <div class="container">
         <div class="starter-template">
             <h3>Registration</h3>
 
-            <form:form action="/register" method="POST" modelAttribute="user">
+            <form:form action="/register" method="POST" modelAttribute="userForm">
                 <input id="csrf" type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
                 <table>
                     <tr>

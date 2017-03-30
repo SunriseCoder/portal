@@ -18,7 +18,7 @@
         });
     </script>
 </head>
-<body onload='document.forms.loginForm.username.focus();'>
+<body onload="document.forms.loginForm.username.focus()">
     <jsp:include page="includes/header.jsp" />
 
     <div class="container">
