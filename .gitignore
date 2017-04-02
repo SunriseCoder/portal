@@ -15,8 +15,12 @@ files
 
 # Logs
 log
+logs
 
 # Secret
 TODO
-src/main/resources/env/
+src/main/resources/env/prod/
+src/main/resources/env/uat/
+
+# Generated
 src/main/resources/liquibase/diff.xml

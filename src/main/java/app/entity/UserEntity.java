@@ -95,9 +95,16 @@ public class UserEntity {
     }
 
     private void checkInitPermissions() {
-        if (permissions == null) {
-            permissions = new HashSet<>();
-            roles.stream().forEach(role -> permissions.addAll(role.getAllPermissions()));
+        if (permissions != null) {
+            return;
         }
+
+        permissions = new HashSet<>();
+
+        if (roles == null) {
+            return;
+        }
+
+        roles.stream().forEach(role -> permissions.addAll(role.getAllPermissions()));
     }
 }

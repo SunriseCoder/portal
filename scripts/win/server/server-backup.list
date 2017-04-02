@@ -1,7 +1,10 @@
 log
 server
 lib
+database-dump.bat
+database-restore.bat
 liquibase.properties
+liquibase-readme.txt
 liquibase-update.bat
 liquibase-rollback.bat
 server-backup.bat

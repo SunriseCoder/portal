@@ -13,6 +13,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import app.dto.LoginDTO;
 import app.entity.RoleEntity;
 import app.entity.UserEntity;
 import app.service.RolesService;
@@ -35,12 +36,13 @@ public class RegisterController {
     private RolesService rolesService;
 
     @PostMapping("/register")
-    public String registration(@ModelAttribute("user") UserEntity user, BindingResult bindingResult, Model model,
+    public String registration(@ModelAttribute("userForm") UserEntity user, BindingResult bindingResult, Model model,
             HttpServletRequest request) {
         LogUtils.logRequest(logger, request);
 
         userValidator.validate(user, bindingResult);
         if (bindingResult.hasErrors()) {
+            model.addAttribute("login", new LoginDTO());
             return "register";
         }
 
