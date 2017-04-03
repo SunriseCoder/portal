@@ -13,7 +13,6 @@ var FileTree = {
     displayLimit: 100,
 
     // Counters
-    displayLimitCounter: 0,
     totalFilesCount: 0,
     totalFoldersCount: 0,
     filteredFilesCount: 0,
@@ -118,58 +117,80 @@ var FileTree = {
             return;
         }
 
-        this.displayLimitCounter = 0;
-        var nodes = [];
-        var tree = this.serverData;
-        this._buildTreeRecursively(this.htmlNode, tree);
-
-        //var htmlText = 
-        //this.htmlNode.innerText = "";
-        //this._makeHtmlText(this.htmlNode, nodes);
-
-        //this.htmlNode.html(htmlText);
-    },
-
-    toggleNode: function(node) {
-    	var treeElement = node.parentElement;
-    	treeElement.collapsed = !treeElement.collapsed;
-    	this.render();
+        this._buildTree();
     },
 
     _onError: function(object, data) {
         Locales.write("tree", "loading.error");
     },
 
-    _buildTreeRecursively: function(parentNode, folder) {
-    	function appendElement(node, type) {
-    		var element = document.createElement(type);
-    		node.appendChild(element);
-    		return element;
-    	}
+    _buildTree: function() {
+        this.htmlNode.innerHTML = "";
 
-    	function appendText(node, text, newLine) {
-    		var child = document.createTextNode(text);
-    		node.appendChild(child);
-    		if (newLine) {
-    			appendElement(node, "br");
-    		}
-    		return child;
-    	}
+        appendTextWithNewLine(this.htmlNode, "Total: " + this.totalFilesCount + " file(s) and " + this.totalFoldersCount + " folder(s)");
+        appendTextWithNewLine(this.htmlNode, "Found: " + this.filteredFilesCount + " file(s) and " + this.filteredFoldersCount + " folder(s)");
 
-        if (this.displayLimit > 0 && this.displayLimit <= this.displayLimitCounter) {
-            return;
+        var rootNode = appendElement(this.htmlNode, "div");
+        var folder = this.serverData;
+        renderFolder(rootNode, folder);
+        var displayLimitCounter = 0;
+        buildRecursive(rootNode, folder);
+
+        function buildRecursive(parentNode, folder) {
+            if (FileTree.displayLimit > 0 && FileTree.displayLimit <= displayLimitCounter) {
+                return;
+            }
+
+            if (!folder.passedFilter || folder.collapsed) {
+                return;
+            }
+
+            for (var i = 0; i < folder.folders.length; i++) {
+                if (FileTree.displayLimit > 0 && FileTree.displayLimit <= displayLimitCounter) {
+                    return;
+                }
+
+                //Add Folder
+                var nextFolder = folder.folders[i];
+                var nextFolderNode = appendElement(parentNode, "div");
+                renderFolder(nextFolderNode, nextFolder);
+
+                //Scan Recursively
+                buildRecursive(nextFolderNode, nextFolder);
+            }
+
+            for (var i = 0; i < folder.files.length; i++) {
+                if (FileTree.displayLimit > 0 && FileTree.displayLimit <= displayLimitCounter) {
+                    appendText(parentNode, "There are more files...")
+                    return;
+                }
+
+                var file = folder.files[i];
+
+                if (file.passedFilter) {
+                    //Add File
+                    var fileNode = appendElement(parentNode, "div");
+                    renderFile(fileNode, file);
+                    displayLimitCounter++;
+                }
+            }
         }
 
-        if (!folder.passedFilter) {
-        	return;
-        }
-            //Add Folder
-        	folderNode = appendElement(parentNode, "div");
-        	folderNode.style = "padding-left: 20px;";
-        	folderNode.data = folder;
-        	appendText(folderNode, folder.name)
-        	
-            /*var element = {};
+        function renderFolder(folderNode, folder) {
+            folderNode.data = folder;
+            folderNode.style = "padding-left: 20px;";
+
+            var iconName = folder.collapsed ? "collapsed" : "expanded";
+            var a = appendElement(folderNode, "a");
+            appendElement(a, "img").src = "/icons/" + iconName + ".png";
+            appendElement(a, "img").src = "/icons/folder.png";
+            appendText(a, folder.name);
+            a.style = "cursor: pointer;";
+            a.onclick = toggleNode;
+
+            /* TODO Finish folder rendering
+            htmlText += ' (' + node.readableSize + '<a href="' + node.url + '"><img src="/icons/download-as-archive.png" /></a>)';
+            var element = {};
             element.data = folder;
             element.indent = indent;
             element.name = folder.name;
@@ -179,80 +200,70 @@ var FileTree = {
             element.collapsed = this.filter == "";
             nodes.push(element);*/
 
-        if (folder.collapsed) {
-        	return;
+            return folderNode;
         }
 
-        for (var i = 0; i < folder.folders.length; i++) {
-            //Scan Recursively
-            var nextFolder = folder.folders[i];
-            // TODO here is a problem with recursion variable scope. folderNode getting overwritten.
-            this._buildTreeRecursively(folderNode, nextFolder);
+        function renderFile(fileNode, file) {
+            fileNode.data = file;
+            fileNode.style = "padding-left: 20px;";
+
+            appendText(fileNode, file.name)
+
+            /* TODO Finish file rendering
+            var htmlText = '<a href="' + node.url + '"><img src="/icons/file.png" />' + node.name + '</a>';
+            htmlText += " (" + node.readableSize + ")";
+            var element = {};
+            element.indent = indent + 1;
+            element.name = file.name;
+            element.isFile = true;
+            element.index = index++;
+            element.readableSize = file.readableSize;
+            element.url = file.url;
+            nodes.push(element);*/
         }
-        var index = 0;
-        for (var i = 0; i < folder.files.length; i++) {
-            if (this.displayLimit > 0 && this.displayLimit <= this.displayLimitCounter) {
-                return;
+
+        function appendElement(node, type) {
+            var element = document.createElement(type);
+            node.appendChild(element);
+            return element;
+        }
+
+        function appendText(node, text) {
+            var child = document.createTextNode(text);
+            node.appendChild(child);
+            return child;
+        }
+
+        function appendTextWithNewLine(node, text) {
+            var child = document.createTextNode(text);
+            node.appendChild(child);
+            appendElement(node, "br");
+            return child;
+        }
+
+        function toggleNode(event) {
+            var node = event.srcElement;
+            while (node.nodeName != "DIV") {
+                node = node.parentElement;   
             }
-            var file = folder.files[i];
-            if (file.passedFilter) {
-                //Add File
-            	var fileNode = appendElement(folderNode, "div");
-            	fileNode.style = "padding-left: 20px;";
-            	fileNode.data = file;
-            	appendText(fileNode, file.name)
-                /*var element = {};
-                element.indent = indent + 1;
-                element.name = file.name;
-                element.isFile = true;
-                element.index = index++;
-                element.readableSize = file.readableSize;
-                element.url = file.url;
-                nodes.push(element);*/
-                this.displayLimitCounter++;
+
+            var folder = node.data;
+            folder.collapsed = !folder.collapsed;
+
+            var iconName = folder.collapsed ? "collapsed" : "expanded";
+            node.getElementsByTagName("img")[0].src = "/icons/" + iconName + ".png";
+
+            clearNodeChildren(node);
+            displayLimitCounter = 0;
+            buildRecursive(node, folder);
+        }
+
+        function clearNodeChildren(node) {
+            while (node.childNodes.length > 1) {
+                var element = node.childNodes[1];
+                node.removeChild(element);
             }
         }
-    },
-
-    _makeHtmlText: function(htmlNode, nodes) {
-    	function appendElement(node, type) {
-    		var element = document.createElement(type);
-    		node.appendChild(element);
-    		return element;
-    	}
-
-    	function appendText(node, text, newLine) {
-    		var child = document.createTextNode(text);
-    		node.appendChild(child);
-    		if (newLine) {
-    			appendElement(node, "br");
-    		}
-    		return child;
-    	}
-
-    	appendText(htmlNode, "Total: " + this.totalFilesCount + " file(s) and " + this.totalFoldersCount + " folder(s)", true);
-    	appendText(htmlNode, "Found: " + this.filteredFilesCount + " file(s) and " + this.filteredFoldersCount + " folder(s)", true);
-        //htmlNode.appendChild(document.createTextNode("Total: " + this.totalFilesCount + " file(s) and " + this.totalFoldersCount + " folder(s)"));
-        //htmlNode.appendChild(document.createTextNode("Found: " + this.filteredFilesCount + " file(s) and " + this.filteredFoldersCount + " folder(s)"));
-
-        for (var i = 0; i < nodes.length; i++) {
-            var node = nodes[i];
-            var treeElement = appendElement(htmlNode, "div");
-            treeElement.data = node;
-            treeElement.style = 'position: relative; left: ' + node.indent * 20 + 'px;';
-            // += '<div style="position: relative; left: ' + node.indent * 20 + 'px;">';
-            if (node.isFolder) {
-                var htmlText = '<a href="#" onclick="FileTree.toggleNode(this)">';
-                htmlText += '<img src="/icons/' + (node.collapsed ? 'collapsed' : 'expanded') + '.png" />';
-                htmlText += '<img src="/icons/folder.png" />' + node.name + '</a>';
-                htmlText += ' (' + node.readableSize + '<a href="' + node.url + '"><img src="/icons/download-as-archive.png" /></a>)';
-            } else if (node.isFile) {
-                var htmlText = '<a href="' + node.url + '"><img src="/icons/file.png" />' + node.name + '</a>';
-                htmlText += " (" + node.readableSize + ")";
-            }
-            treeElement.innerHTML = htmlText;
-        }
-        return htmlText;
     },
 
     _applyFilter: function() {
