@@ -152,6 +152,9 @@ var FileTree = {
 
                 //Add Folder
                 var nextFolder = folder.folders[i];
+                if (nextFolder.passedFilter == false) {
+                    continue;
+                }
                 var nextFolderNode = appendElement(parentNode, "div");
                 renderFolder(nextFolderNode, nextFolder);
 
@@ -244,7 +247,7 @@ var FileTree = {
         function toggleNode(event) {
             var node = event.srcElement;
             while (node.nodeName != "DIV") {
-                node = node.parentElement;   
+                node = node.parentElement;
             }
 
             var folder = node.data;
@@ -278,6 +281,9 @@ var FileTree = {
         this.filteredFoldersCount = 0,
 
         folder.passedFilter = false;
+
+        folder.collapsed = this._needToCollapse(folder);
+
         for (var i = 0; i < folder.folders.length; i++) {
             var nextFolder = folder.folders[i];
             this._resetFiltered(nextFolder);
@@ -286,6 +292,12 @@ var FileTree = {
             var file = folder.files[i];
             file.passedFilter = false;
         }
+    },
+
+    _needToCollapse: function(folder) {
+        var result = !this.filter;
+        result = result && folder.folders.length == 0;
+        return result;
     },
 
     _filterData: function(folder) {
