@@ -121,11 +121,11 @@ var FileTree = {
         this.displayLimitCounter = 0;
         var nodes = [];
         var tree = this.serverData;
-        this._buildTreeRecursively(tree, nodes, 0);
+        this._buildTreeRecursively(this.htmlNode, tree);
 
         //var htmlText = 
-        this.htmlNode.innerText = "";
-        this._makeHtmlText(this.htmlNode, nodes);
+        //this.htmlNode.innerText = "";
+        //this._makeHtmlText(this.htmlNode, nodes);
 
         //this.htmlNode.html(htmlText);
     },
@@ -140,14 +140,36 @@ var FileTree = {
         Locales.write("tree", "loading.error");
     },
 
-    _buildTreeRecursively: function(folder, nodes, indent) {
+    _buildTreeRecursively: function(parentNode, folder) {
+    	function appendElement(node, type) {
+    		var element = document.createElement(type);
+    		node.appendChild(element);
+    		return element;
+    	}
+
+    	function appendText(node, text, newLine) {
+    		var child = document.createTextNode(text);
+    		node.appendChild(child);
+    		if (newLine) {
+    			appendElement(node, "br");
+    		}
+    		return child;
+    	}
+
         if (this.displayLimit > 0 && this.displayLimit <= this.displayLimitCounter) {
             return;
         }
 
-        if (folder.passedFilter) {
+        if (!folder.passedFilter) {
+        	return;
+        }
             //Add Folder
-            var element = {};
+        	folderNode = appendElement(parentNode, "div");
+        	folderNode.style = "padding-left: 20px;";
+        	folderNode.data = folder;
+        	appendText(folderNode, folder.name)
+        	
+            /*var element = {};
             element.data = folder;
             element.indent = indent;
             element.name = folder.name;
@@ -155,15 +177,17 @@ var FileTree = {
             element.readableSize = folder.readableSize;
             element.url = folder.url;
             element.collapsed = this.filter == "";
-            nodes.push(element);
+            nodes.push(element);*/
+
+        if (folder.collapsed) {
+        	return;
         }
 
         for (var i = 0; i < folder.folders.length; i++) {
             //Scan Recursively
             var nextFolder = folder.folders[i];
-            if (!nextFolder.collapsed) {
-                this._buildTreeRecursively(nextFolder, nodes, indent + 1);
-            }
+            // TODO here is a problem with recursion variable scope. folderNode getting overwritten.
+            this._buildTreeRecursively(folderNode, nextFolder);
         }
         var index = 0;
         for (var i = 0; i < folder.files.length; i++) {
@@ -173,14 +197,18 @@ var FileTree = {
             var file = folder.files[i];
             if (file.passedFilter) {
                 //Add File
-                var element = {};
+            	var fileNode = appendElement(folderNode, "div");
+            	fileNode.style = "padding-left: 20px;";
+            	fileNode.data = file;
+            	appendText(fileNode, file.name)
+                /*var element = {};
                 element.indent = indent + 1;
                 element.name = file.name;
                 element.isFile = true;
                 element.index = index++;
                 element.readableSize = file.readableSize;
                 element.url = file.url;
-                nodes.push(element);
+                nodes.push(element);*/
                 this.displayLimitCounter++;
             }
         }
