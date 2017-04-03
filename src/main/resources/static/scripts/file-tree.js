@@ -20,7 +20,7 @@ var FileTree = {
     filteredFoldersCount: 0,
 
     setHtmlNode: function(id) {
-        var node = $("#" + id);
+        var node = $("#" + id)[0];
         this.htmlNode = node;
     },
 
@@ -103,29 +103,39 @@ var FileTree = {
     applyFilter: function() {
         var filter = $('#filter')[0].value;
         this.filter = filter.toLowerCase().trim();
+        this._applyFilter();
+        this.render();
+    },
 
+    applyLimit: function() {
+        var limit = $('#limit')[0].value;
+        this.displayLimit = limit;
+        this.render();
+    },
+
+    render: function() {
         if (this.serverData == undefined) {
             return;
         }
-
-        this._applyFilter();
 
         this.displayLimitCounter = 0;
         var nodes = [];
         var tree = this.serverData;
         this._buildTreeRecursively(tree, nodes, 0);
 
-        var htmlText = this._makeHtmlText(nodes);
+        //var htmlText = 
+        this.htmlNode.innerText = "";
+        this._makeHtmlText(this.htmlNode, nodes);
 
-        this.htmlNode.html(htmlText);
+        //this.htmlNode.html(htmlText);
     },
-    
-    applyLimit: function() {
-        var limit = $('#limit')[0].value;
-        this.displayLimit = limit;
-        this.applyFilter();
+
+    toggleNode: function(node) {
+    	var treeElement = node.parentElement;
+    	treeElement.collapsed = !treeElement.collapsed;
+    	this.render();
     },
-    
+
     _onError: function(object, data) {
         Locales.write("tree", "loading.error");
     },
@@ -138,18 +148,22 @@ var FileTree = {
         if (folder.passedFilter) {
             //Add Folder
             var element = {};
+            element.data = folder;
             element.indent = indent;
             element.name = folder.name;
             element.isFolder = true;
             element.readableSize = folder.readableSize;
             element.url = folder.url;
+            element.collapsed = this.filter == "";
             nodes.push(element);
         }
 
         for (var i = 0; i < folder.folders.length; i++) {
             //Scan Recursively
             var nextFolder = folder.folders[i];
-            this._buildTreeRecursively(nextFolder, nodes, indent + 1);
+            if (!nextFolder.collapsed) {
+                this._buildTreeRecursively(nextFolder, nodes, indent + 1);
+            }
         }
         var index = 0;
         for (var i = 0; i < folder.files.length; i++) {
@@ -172,21 +186,43 @@ var FileTree = {
         }
     },
 
-    _makeHtmlText: function(nodes) {
-        var htmlText = "Total: " + this.totalFilesCount + " file(s) and " + this.totalFoldersCount + " folder(s)<br />";
-        htmlText += "Found: " + this.filteredFilesCount + " file(s) and " + this.filteredFoldersCount + " folder(s)<br />";
+    _makeHtmlText: function(htmlNode, nodes) {
+    	function appendElement(node, type) {
+    		var element = document.createElement(type);
+    		node.appendChild(element);
+    		return element;
+    	}
+
+    	function appendText(node, text, newLine) {
+    		var child = document.createTextNode(text);
+    		node.appendChild(child);
+    		if (newLine) {
+    			appendElement(node, "br");
+    		}
+    		return child;
+    	}
+
+    	appendText(htmlNode, "Total: " + this.totalFilesCount + " file(s) and " + this.totalFoldersCount + " folder(s)", true);
+    	appendText(htmlNode, "Found: " + this.filteredFilesCount + " file(s) and " + this.filteredFoldersCount + " folder(s)", true);
+        //htmlNode.appendChild(document.createTextNode("Total: " + this.totalFilesCount + " file(s) and " + this.totalFoldersCount + " folder(s)"));
+        //htmlNode.appendChild(document.createTextNode("Found: " + this.filteredFilesCount + " file(s) and " + this.filteredFoldersCount + " folder(s)"));
 
         for (var i = 0; i < nodes.length; i++) {
             var node = nodes[i];
-            htmlText += '<div style="position: relative; left: ' + node.indent * 20 + 'px;">';
+            var treeElement = appendElement(htmlNode, "div");
+            treeElement.data = node;
+            treeElement.style = 'position: relative; left: ' + node.indent * 20 + 'px;';
+            // += '<div style="position: relative; left: ' + node.indent * 20 + 'px;">';
             if (node.isFolder) {
-                htmlText += '<a href="' + node.url + '"><img src="/icons/folder.png" />' + node.name + '</a>';
-                htmlText += " (" + node.readableSize + ")";
+                var htmlText = '<a href="#" onclick="FileTree.toggleNode(this)">';
+                htmlText += '<img src="/icons/' + (node.collapsed ? 'collapsed' : 'expanded') + '.png" />';
+                htmlText += '<img src="/icons/folder.png" />' + node.name + '</a>';
+                htmlText += ' (' + node.readableSize + '<a href="' + node.url + '"><img src="/icons/download-as-archive.png" /></a>)';
             } else if (node.isFile) {
-                htmlText += '<a href="' + node.url + '"><img src="/icons/file.png" />' + node.name + '</a>';
+                var htmlText = '<a href="' + node.url + '"><img src="/icons/file.png" />' + node.name + '</a>';
                 htmlText += " (" + node.readableSize + ")";
             }
-            htmlText += '</div>';
+            treeElement.innerHTML = htmlText;
         }
         return htmlText;
     },
