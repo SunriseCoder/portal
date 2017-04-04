@@ -250,8 +250,9 @@ var FileTree = {
         }
 
         function clearNodeChildren(node) {
-            while (node.childNodes.length > 1) {
-                var element = node.childNodes[1];
+            var children = node.getElementsByTagName("div");
+            while (children.length > 0) {
+                var element = children[0];
                 node.removeChild(element);
             }
         }
