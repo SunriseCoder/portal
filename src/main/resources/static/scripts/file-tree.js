@@ -191,17 +191,12 @@ var FileTree = {
             a.style = "cursor: pointer;";
             a.onclick = toggleNode;
 
-            /* TODO Finish folder rendering
-            htmlText += ' (' + node.readableSize + '<a href="' + node.url + '"><img src="/icons/download-as-archive.png" /></a>)';
-            var element = {};
-            element.data = folder;
-            element.indent = indent;
-            element.name = folder.name;
-            element.isFolder = true;
-            element.readableSize = folder.readableSize;
-            element.url = folder.url;
-            element.collapsed = this.filter == "";
-            nodes.push(element);*/
+            appendText(folderNode, " (" + folder.readableSize + ") ");
+
+            a = appendElement(folderNode, "a");
+            a.href = folder.url;
+            a.title = "Download as ZIP-archive";
+            appendElement(a, "img").src = "/icons/download-as-archive.png";
 
             return folderNode;
         }
@@ -210,19 +205,12 @@ var FileTree = {
             fileNode.data = file;
             fileNode.style = "padding-left: 20px;";
 
-            appendText(fileNode, file.name)
+            var a = appendElement(fileNode, "a");
+            a.href = file.url;
+            appendElement(a, "img").src = "/icons/file.png";
+            appendText(a, file.name);
 
-            /* TODO Finish file rendering
-            var htmlText = '<a href="' + node.url + '"><img src="/icons/file.png" />' + node.name + '</a>';
-            htmlText += " (" + node.readableSize + ")";
-            var element = {};
-            element.indent = indent + 1;
-            element.name = file.name;
-            element.isFile = true;
-            element.index = index++;
-            element.readableSize = file.readableSize;
-            element.url = file.url;
-            nodes.push(element);*/
+            appendText(fileNode, " (" + file.readableSize + ")");
         }
 
         function appendElement(node, type) {
