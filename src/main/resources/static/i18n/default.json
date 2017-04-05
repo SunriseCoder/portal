@@ -1,0 +1,17 @@
+{
+    "app" : "Portal",
+
+    "index.caption" : "Main",
+    "index.greeting" : "Welcome to the Portal",
+
+    "files.caption" : "Files",
+    "files.search.label" : "Search",
+
+    "login.caption" : "Login",
+
+    "register.caption" : "Register",
+
+    "upload.caption" : "Upload",
+
+    "loading.error" : "Loading Error"
+}
