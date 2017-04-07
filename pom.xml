@@ -61,7 +61,7 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>jstl</groupId>
+            <groupId>javax.servlet</groupId>
             <artifactId>jstl</artifactId>
         </dependency>
         <dependency>
@@ -279,7 +279,7 @@
 
     <profiles>
         <profile>
-            <id>prod</id>
+            <id>dev</id>
             <build>
                 <plugins>
                     <plugin>
@@ -293,7 +293,7 @@
                                 <configuration>
                                     <target>
                                         <delete file="${project.build.outputDirectory}/application.properties" />
-                                        <copy file="src/main/resources/env/prod/application.properties"
+                                        <copy file="src/main/resources/env/dev/application.properties"
                                               toFile="${project.build.outputDirectory}/application.properties" />
                                         <delete dir="${project.build.outputDirectory}/env" />
                                     </target>
@@ -312,6 +312,7 @@
                 </plugins>
             </build>
         </profile>
+
         <profile>
             <id>uat</id>
             <build>
@@ -346,8 +347,9 @@
                 </plugins>
             </build>
         </profile>
+
         <profile>
-            <id>dev</id>
+            <id>prod</id>
             <build>
                 <plugins>
                     <plugin>
@@ -361,7 +363,7 @@
                                 <configuration>
                                     <target>
                                         <delete file="${project.build.outputDirectory}/application.properties" />
-                                        <copy file="src/main/resources/env/dev/application.properties"
+                                        <copy file="src/main/resources/env/prod/application.properties"
                                               toFile="${project.build.outputDirectory}/application.properties" />
                                         <delete dir="${project.build.outputDirectory}/env" />
                                     </target>
