@@ -12,8 +12,10 @@
     </parent>
 
     <artifactId>portal</artifactId>
-    <packaging>war</packaging>
     <version>0.0.2</version>
+    <packaging>war</packaging>
+
+    <name>portal</name>
 
     <scm>
         <connection>scm:git:git@github.com:SunriseCoder/portal.git</connection>
@@ -54,6 +56,15 @@
 
         <!-- JSP and JSTL -->
         <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>jstl</groupId>
+            <artifactId>jstl</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.apache.tomcat.embed</groupId>
             <artifactId>tomcat-embed-jasper</artifactId>
             <scope>provided</scope>
@@ -63,10 +74,6 @@
             <artifactId>ecj</artifactId>
             <version>4.6.1</version>
             <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>jstl</artifactId>
         </dependency>
 
         <!-- Bootstrap -->
