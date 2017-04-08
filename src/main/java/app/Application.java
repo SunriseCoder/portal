@@ -1,12 +1,20 @@
 package app;
 
+import java.util.Locale;
+
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
+import org.springframework.context.MessageSource;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.support.ReloadableResourceBundleMessageSource;
+import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 
+@ComponentScan
+@Configuration
 @SpringBootApplication
-@ComponentScan("app")
 public class Application extends SpringBootServletInitializer {
 
     @Override
@@ -20,5 +28,19 @@ public class Application extends SpringBootServletInitializer {
 
     private static SpringApplicationBuilder configureApplication(SpringApplicationBuilder builder) {
         return builder.sources(Application.class);
+    }
+
+    @Bean
+    public CookieLocaleResolver localeResolver() {
+        CookieLocaleResolver resolver = new CookieLocaleResolver();
+        resolver.setDefaultLocale(Locale.ENGLISH);
+        return resolver;
+    }
+
+    @Bean
+    public MessageSource messageSource() {
+        ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
+        messageSource.setBasename("/WEB-INF/i18n/messages");
+        return messageSource;
     }
 }
