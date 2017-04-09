@@ -4,14 +4,31 @@
             "name": "files.storage",
             "type": "java.lang.String",
             "description": "Relative path to root of indexed file storage"
-        },{
+        },
+        {
             "name": "files.filesystem",
             "type": "java.lang.String",
             "description": "Relative path to unsorted file archive root"
-        },{
+        },
+        {
             "name": "files.upload",
             "type": "java.lang.String",
             "description": "Relative path to upload folder"
+        },
+        {
+            "name": "deploy.tomcat.url",
+            "type": "java.lang.String",
+            "description": "Url for deploy using tomcat7-maven-plugin"
+        },
+        {
+            "name": "deploy.tomcat.username",
+            "type": "java.lang.String",
+            "description": "Deployer username"
+        },
+        {
+            "name": "deploy.tomcat.password",
+            "type": "java.lang.String",
+            "description": "Deployer password"
         }
     ]
 }
