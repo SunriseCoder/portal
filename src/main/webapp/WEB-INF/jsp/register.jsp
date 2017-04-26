@@ -1,19 +1,21 @@
-<!DOCTYPE html>
-
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 
+<c:set var="appRoot" value="${pageContext.request.contextPath}" />
+
+<!DOCTYPE html>
 <html>
 <head>
     <title>Register</title>
 
-    <link rel="stylesheet" href="styles/form.css" />
+    <link rel="stylesheet" href="${appRoot}/styles/form.css" />
 
-    <script src="/scripts/jquery.js"></script>
-    <script src="/scripts/locale-utils.js"></script>
+    <script src="${appRoot}/scripts/jquery.js"></script>
+    <script src="${appRoot}/scripts/locale-utils.js"></script>
 
     <script>
         $(function() {
+            Locales.appRoot = '${appRoot}';
             Locales.writeTitle("register.caption");
         });
     </script>
@@ -25,7 +27,7 @@
         <div class="starter-template">
             <h3>Registration</h3>
 
-            <form:form action="/register" method="POST" modelAttribute="userForm">
+            <form:form action="${appRoot}/register" method="POST" modelAttribute="userForm">
                 <input id="csrf" type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
                 <table>
                     <tr>

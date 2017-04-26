@@ -1,8 +1,9 @@
 var Locales = {
+    appRoot: undefined,
     _keys: undefined,
 
     _load: function() {
-        var response = this._loadData('/i18n/default.json');
+        var response = this._loadData(this.appRoot + '/i18n/default.json');
         _keys = JSON.parse(response);
     },
 
@@ -17,6 +18,10 @@ var Locales = {
     },
 
     i18n: function(key) {
+        if (this._keys == undefined) {
+            this._load();
+        }
+
         var value = _keys[key];
 
         if (!value) {
@@ -39,5 +44,3 @@ var Locales = {
         element.innerHTML = value;
     }
 }
-
-Locales._load();

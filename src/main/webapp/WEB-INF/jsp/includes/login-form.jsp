@@ -1,11 +1,14 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<link rel="stylesheet" type="text/css" href="/webjars/bootstrap/3.3.7/css/bootstrap.min.css" />
-<link rel="stylesheet" type="text/css" href="/styles/form.css" />
+<c:set var="appRoot" value="${pageContext.request.contextPath}" />
 
-<script src="/scripts/form-utils.js"></script>
+<link rel="stylesheet" type="text/css" href="${appRoot}/webjars/bootstrap/3.3.7/css/bootstrap.min.css" />
+<link rel="stylesheet" type="text/css" href="${appRoot}/styles/form.css" />
 
-<form:form id="${param.formId}" action="/login" method="POST" modelAttribute="login">
+<script src="${appRoot}/scripts/form-utils.js"></script>
+
+<form:form id="${param.formId}" action="${appRoot}/login" method="POST" modelAttribute="login">
     <table>
         <tr>
             <td>User:</td>

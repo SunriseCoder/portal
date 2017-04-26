@@ -1,5 +1,6 @@
 var FileTree = {
     // Settings
+    appRoot: undefined,
     htmlNode: undefined,
     listUrl: undefined,
     downloadUrl: undefined,
@@ -185,8 +186,8 @@ var FileTree = {
 
             var iconName = folder.collapsed ? "collapsed" : "expanded";
             var a = appendElement(folderNode, "a");
-            appendElement(a, "img").src = "/icons/" + iconName + ".png";
-            appendElement(a, "img").src = "/icons/folder.png";
+            appendElement(a, "img").src = FileTree.appRoot + "/icons/" + iconName + ".png";
+            appendElement(a, "img").src = FileTree.appRoot + "/icons/folder.png";
             appendText(a, folder.name);
             a.style = "cursor: pointer;";
             a.onclick = toggleNode;
@@ -196,7 +197,7 @@ var FileTree = {
             a = appendElement(folderNode, "a");
             a.href = folder.url;
             a.title = "Download as ZIP-archive";
-            appendElement(a, "img").src = "/icons/download-as-archive.png";
+            appendElement(a, "img").src = FileTree.appRoot + "/icons/download-as-archive.png";
 
             return folderNode;
         }
@@ -207,7 +208,7 @@ var FileTree = {
 
             var a = appendElement(fileNode, "a");
             a.href = file.url;
-            appendElement(a, "img").src = "/icons/file.png";
+            appendElement(a, "img").src = FileTree.appRoot + "/icons/file.png";
             appendText(a, file.name);
 
             appendText(fileNode, " (" + file.readableSize + ")");
@@ -242,7 +243,7 @@ var FileTree = {
             folder.collapsed = !folder.collapsed;
 
             var iconName = folder.collapsed ? "collapsed" : "expanded";
-            node.getElementsByTagName("img")[0].src = "/icons/" + iconName + ".png";
+            node.getElementsByTagName("img")[0].src = FileTree.appRoot + "/icons/" + iconName + ".png";
 
             clearNodeChildren(node);
             displayLimitCounter = 0;

@@ -1,14 +1,18 @@
-<!DOCTYPE html>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
+<c:set var="appRoot" value="${pageContext.request.contextPath}" />
+
+<!DOCTYPE html>
 <html>
 <head>
     <title>Main</title>
 
-    <script src="/scripts/jquery.js"></script>
-    <script src="/scripts/locale-utils.js"></script>
+    <script src="${appRoot}/scripts/jquery.js"></script>
+    <script src="${appRoot}/scripts/locale-utils.js"></script>
 
     <script>
         $(function() {
+            Locales.appRoot = '${appRoot}';
             Locales.writeTitle("index.caption");
         });
     </script>
