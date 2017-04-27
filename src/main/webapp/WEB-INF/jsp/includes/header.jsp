@@ -45,7 +45,7 @@
                     <c:otherwise>
                         <li>
                             <div>
-                                Welcome, ${user.login}
+                                Welcome, ${user.displayName}
                                 (<a href="#" onclick="logout.submit();">Logout</a>)
                             </div>
                         </li>

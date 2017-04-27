@@ -21,9 +21,12 @@ public class UserEntity {
     private Long id;
     @Column(unique = true)
     private String login;
+    @Column
     private String pass;
     @Transient
     private String confirm;
+    @Column(unique = true)
+    private String displayName;
     @Column
     private String email;
 
@@ -65,6 +68,14 @@ public class UserEntity {
 
     public void setConfirm(String confirm) {
         this.confirm = confirm;
+    }
+
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
     }
 
     public String getEmail() {

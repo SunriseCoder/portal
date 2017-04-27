@@ -23,6 +23,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public UserEntity findByDisplayName(String displayName) {
+        return repository.findByDisplayName(displayName);
+    }
+
+    @Override
     public UserEntity findByEmail(String email) {
         return repository.findByEmail(email);
     }

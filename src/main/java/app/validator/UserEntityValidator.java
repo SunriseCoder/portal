@@ -13,8 +13,9 @@ import app.service.UserService;
 
 @Component
 public class UserEntityValidator implements Validator {
-    private static final String EMAIL_PATTERN_STRING = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
-    private static final Pattern EMAIL_PATTERN = Pattern.compile(EMAIL_PATTERN_STRING);
+    private static final Pattern LOGIN_PATTERN = Pattern.compile("^[A-Za-z0-9]*$");
+    private static final Pattern DISPLAY_NAME_PATTERN = Pattern.compile("^[A-Za-z0-9\\-\\ \\_\\(\\)]*$");
+    private static final Pattern EMAIL_PATTERN = Pattern.compile("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
 
     @Autowired
     private UserService userService;
@@ -32,6 +33,9 @@ public class UserEntityValidator implements Validator {
         if (user.getLogin().length() < 4 || user.getLogin().length() > 32) {
             errors.rejectValue("login", "user.login.size");
         }
+        if (!LOGIN_PATTERN.matcher(user.getLogin()).matches()) {
+            errors.rejectValue("login", "user.login.not_allowed_chars");
+        }
         if (userService.findByLogin(user.getLogin()) != null) {
             errors.rejectValue("login", "user.login.duplication");
         }
@@ -45,11 +49,22 @@ public class UserEntityValidator implements Validator {
             errors.rejectValue("confirm", "user.confirm.different");
         }
 
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "displayName", "required");
+        if (userService.findByDisplayName(user.getDisplayName()) != null) {
+            errors.rejectValue("displayName", "user.displayName.duplication");
+        }
+        if (!DISPLAY_NAME_PATTERN.matcher(user.getDisplayName()).matches()) {
+            errors.rejectValue("displayName", "user.displayName.not_allowed_chars");
+        }
+        if (user.getDisplayName().length() > 64) {
+            errors.rejectValue("displayName", "user.displayName.size");
+        }
+
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "email", "required");
         if (userService.findByEmail(user.getEmail()) != null) {
             errors.rejectValue("email", "user.email.duplication");
         }
-        if (user.getEmail().length() > 254) {
+        if (user.getEmail().length() > 64) {
             errors.rejectValue("email", "user.email.size");
         }
         if (!EMAIL_PATTERN.matcher(user.getEmail()).matches()) {

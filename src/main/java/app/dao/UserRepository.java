@@ -6,5 +6,6 @@ import app.entity.UserEntity;
 
 public interface UserRepository extends JpaRepository<UserEntity, Long> {
     UserEntity findByLogin(String login);
+    UserEntity findByDisplayName(String displayName);
     UserEntity findByEmail(String email);
 }

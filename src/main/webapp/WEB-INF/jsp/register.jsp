@@ -33,7 +33,7 @@
                     <tr>
                         <td>Login: </td>
                         <td>
-                            <form:input path="login" type="text" />
+                            <form:input path="login" type="text" maxlength="32" /> (just for log in, nobody will see it)<br />
                             <form:errors path="login" cssClass="error-text" />
                         </td>
                     </tr>
@@ -52,9 +52,16 @@
                         </td>
                     </tr>
                     <tr>
+                        <td>Display Name: </td>
+                        <td>
+                            <form:input path="displayName" type="text" maxlength="64" /> (how the other people will see You)<br />
+                            <form:errors path="displayName" cssClass="error-text" />
+                        </td>
+                    </tr>
+                    <tr>
                         <td>E-Mail: </td>
                         <td>
-                            <form:input path="email" type="text" />
+                            <form:input path="email" type="text" maxlength="64" />
                             <form:errors path="email" cssClass="error-text" />
                         </td>
                     </tr>

@@ -17,6 +17,9 @@
             <column name="pass" type="varchar(64)">
                 <constraints nullable="false" />
             </column>
+            <column name="display_name" type="varchar(64)">
+                <constraints unique="true" uniqueConstraintName="ui_users_display_name" nullable="false" />
+            </column>
             <column name="email" type="varchar(64)">
                 <constraints unique="true" uniqueConstraintName="ui_users_email" nullable="false" />
             </column>
