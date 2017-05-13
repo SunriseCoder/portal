@@ -5,10 +5,10 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -18,19 +18,24 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpHeaders;
 
 public class HttpUtils {
+    public static final String HEADER_PROPERTY_PREFIX = "header.";
+    public static final String HEADER_RESPONSE_STATUS = "response.status";
     private static final Logger logger = LogManager.getLogger(HttpUtils.class.getName());
 
     private static Map<String, ContentType> contentTypes;
 
     public static void sendFile(HttpServletRequest request, HttpServletResponse response, File file) throws IOException {
-        String fileName = file.getName();
-        fillResponseHeaders(request, response, fileName);
+        Map<String, String> requestHeaders = getRequestHeaders(request);
+        Map<String, String> fileProperties = getFileProperties(file);
 
-        String rangeHeaderValue = request.getHeader("range");
-        Range range = prepareResponseRange(rangeHeaderValue, file.length());
-        fillContentRange(response, range);
+        Map<String, String> sendFileParameters = calculateSendFile(requestHeaders, fileProperties);
 
-        FileUtils.writeFile(response, file, range.start, range.length);
+        setResponseHeaders(response, sendFileParameters);
+        response.setStatus(Integer.parseInt(sendFileParameters.get(HEADER_RESPONSE_STATUS)));
+
+        long start = Long.parseLong(sendFileParameters.get(Properties.STREAM_START.getPropertyName()));
+        long length = Long.parseLong(sendFileParameters.get(Properties.STREAM_LENGTH.getPropertyName()));
+        FileUtils.writeFile(response, file, start, length);
 
         response.flushBuffer();
     }
@@ -38,7 +43,13 @@ public class HttpUtils {
     public static void sendFolderAsZip(HttpServletRequest request, HttpServletResponse response, File file) throws IOException {
         try {
             String fileName = file.getName() + ".zip";
-            fillResponseHeaders(request, response, fileName);
+
+            Map<String, String> requestHeaders = getRequestHeaders(request);
+            Map<String, String> fileProperties = new HashMap<>();
+            fileProperties.put(Properties.FILE_NAME.getPropertyName(), fileName);
+
+            Map<String, String> sendFileParameters = calculateSendFolderAsZip(requestHeaders, fileProperties);
+            setResponseHeaders(response, sendFileParameters);
 
             OutputStream outputStream = response.getOutputStream();
             ZipUtils.createAndWriteZipArchive(file, outputStream);
@@ -51,25 +62,91 @@ public class HttpUtils {
         }
     }
 
-    private static void fillResponseHeaders(HttpServletRequest request, HttpServletResponse response, String fileName) throws UnsupportedEncodingException {
-        fileName = URLEncoder.encode(fileName, "UTF-8");
+    private static Map<String, String> getRequestHeaders(HttpServletRequest request) {
+        Map<String, String> headersMap = Collections.list(request.getHeaderNames()).stream()
+                .collect(Collectors.toMap(header -> header.toString().toLowerCase(), header -> request.getHeader(header)));
+        return headersMap;
+    }
+
+    private static Map<String, String> getFileProperties(File file) {
+        Map<String, String> properties = new HashMap<>();
+        properties.put(Properties.FILE_NAME.getPropertyName(), file.getName());
+        properties.put(Properties.FILE_LENGTH.getPropertyName(), String.valueOf(file.length()));
+        return properties;
+    }
+
+    static Map<String, String> calculateSendFile(Map<String, String> requestHeaders, Map<String, String> fileProperties) {
+        Map<String, String> sendFileParameters = new HashMap<>();
+
+        Long fileLength = Long.parseLong(fileProperties.get(Properties.FILE_LENGTH.getPropertyName()));
+        Long contentLength = 0L;
+        Long streamStart = 0L;
+        Long streamLength = fileLength;
+        String rangeHeader = requestHeaders.get(HttpHeaders.RANGE.toLowerCase());
+        if (rangeHeader != null) {
+            sendFileParameters.put(HEADER_RESPONSE_STATUS, String.valueOf(HttpServletResponse.SC_PARTIAL_CONTENT));
+
+            String[] range = rangeHeader.split("=")[1].split("-");
+            streamStart = Long.valueOf(range[0]);
+            Long end = Long.valueOf(range.length > 1 ? range[1] : fileProperties.get(Properties.FILE_LENGTH.getPropertyName()));
+            end = Math.min(end, fileLength - 1);
+
+            contentLength = Math.max(end - streamStart + 1, 0);
+            streamLength = contentLength;
+
+            String contentRange = "bytes " + streamStart + "-" + end + "/" + fileLength;
+            sendFileParameters.put(HEADER_PROPERTY_PREFIX + HttpHeaders.CONTENT_RANGE, contentRange);
+        } else {
+            sendFileParameters.put(HEADER_RESPONSE_STATUS, String.valueOf(HttpServletResponse.SC_OK));
+
+            sendFileParameters.put(HEADER_PROPERTY_PREFIX + HttpHeaders.ACCEPT_RANGES, "bytes");
+            contentLength = fileLength;
+        }
+        sendFileParameters.put(HEADER_PROPERTY_PREFIX + HttpHeaders.CONTENT_LENGTH, String.valueOf(contentLength));
+
+        sendFileParameters.put(Properties.STREAM_START.getPropertyName(), String.valueOf(streamStart));
+        sendFileParameters.put(Properties.STREAM_LENGTH.getPropertyName(), String.valueOf(streamLength));
+
+        setContentHeaders(requestHeaders, fileProperties, sendFileParameters);
+
+        return sendFileParameters;
+    }
+
+    static Map<String, String> calculateSendFolderAsZip(Map<String, String> requestHeaders, Map<String, String> fileProperties) {
+        Map<String, String> sendFileParameters = new HashMap<>();
+        setContentHeaders(requestHeaders, fileProperties, sendFileParameters);
+        return sendFileParameters;
+    }
+
+    private static void setContentHeaders(Map<String, String> requestHeaders, Map<String, String> fileProperties,
+            Map<String, String> sendFileParameters) {
+
+        String fileName = fileProperties.get(Properties.FILE_NAME.getPropertyName());
+
+        try {
+            fileName = URLEncoder.encode(fileName, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            logger.error(e);
+        }
+
         // URL Encoder replaces whitespaces with pluses,
         // therefore filename by saving contains pluses instead of whitespaces
         fileName = fileName.replaceAll("\\+", "%20");
         fileName = "filename*=UTF-8''" + fileName;
 
         ContentType contentType = getContentType(fileName);
-        response.setContentType(contentType.getContentType());
+        sendFileParameters.put(HEADER_PROPERTY_PREFIX + HttpHeaders.CONTENT_TYPE, contentType.getContentType());
 
         // Use "attachment; filename=..." to download instead of playing file
         String contentDisposition = contentType.isAttachment() ? "attachment; " + fileName : fileName;
-        response.setHeader(HttpHeaders.CONTENT_DISPOSITION, contentDisposition);
+        sendFileParameters.put(HEADER_PROPERTY_PREFIX + HttpHeaders.CONTENT_DISPOSITION, contentDisposition);
     }
 
-    private static void fillContentRange(HttpServletResponse response, Range range) {
-        response.setContentLengthLong(range.length);
-        String contentRange = range.start + "-" + range.end + "/" + range.total;
-        response.setHeader(HttpHeaders.CONTENT_RANGE, contentRange);
+    private static void setResponseHeaders(HttpServletResponse response, Map<String, String> sendFileParameters) {
+        sendFileParameters.keySet().stream()
+                .filter(key -> key.startsWith(HEADER_PROPERTY_PREFIX))
+                .forEach(key -> response.setHeader(
+                        key.substring(HEADER_PROPERTY_PREFIX.length()), sendFileParameters.get(key)));
     }
 
     private static ContentType getContentType(String fileName) {
@@ -93,31 +170,6 @@ public class HttpUtils {
             contentType = contentTypes.get("data");
         }
         return contentType;
-    }
-
-    static Range prepareResponseRange(String rangeHeader, long fileLength) {
-        Range range = new Range();
-        if (rangeHeader == null) {
-            range.start = 0;
-            range.end = fileLength;
-        } else {
-            long parsedEnd = Long.MAX_VALUE;
-            // Parsing string like "bytes=100-" or "bytes=100-200"
-            Matcher matcher = Pattern.compile("^bytes=(\\d+)-(\\d*)$").matcher(rangeHeader);
-            if (matcher.matches()) {
-                range.start = Long.parseLong(matcher.group(1));
-                if (!matcher.group(2).isEmpty()) {
-                    parsedEnd = Long.parseLong(matcher.group(2));
-                }
-            } else {
-                range.start = 0;
-            }
-            range.end = Math.max(range.start, parsedEnd);
-            range.end = Math.min(range.end, fileLength);
-        }
-        range.calculateLength();
-        range.total = fileLength;
-        return range;
     }
 
     public static void sendResponseError(HttpServletResponse response, int status) {
@@ -196,19 +248,18 @@ public class HttpUtils {
         }
     }
 
-    static class Range {
-        long start;
-        long end;
-        long length;
-        long total;
+    public static enum Properties {
+        FILE_NAME("file.name"), FILE_LENGTH("file.length"),
+        STREAM_START("stream.start"), STREAM_LENGTH("stream.length");
 
-        public void calculateLength() {
-            length = end > start ? end - start : 0;
+        private String propertyName;
+
+        Properties(String propertyName) {
+            this.propertyName = propertyName;
         }
 
-        @Override
-        public String toString() {
-            return "Range: {start: " + start + ", end: " + end + ", length: " + length + ", total: " + total + "}";
+        public String getPropertyName() {
+            return propertyName;
         }
     }
 }
