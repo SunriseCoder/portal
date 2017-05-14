@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
 <c:set var="appRoot" value="${pageContext.request.contextPath}" />
 
@@ -18,11 +19,17 @@
     </script>
 </head>
 <body>
+    <spring:eval var="env" expression="@environment.getProperty('environment')" />
+
     <jsp:include page="includes/header.jsp" />
 
     <div class="container">
         <div class="starter-template">
-            <h3>Welcome to the Portal</h3>
+            <h3>Welcome to the Portal
+                <c:if test="${not empty env}">
+                    (${env})
+                </c:if>
+            </h3>
         </div>
     </div>
 </body>
