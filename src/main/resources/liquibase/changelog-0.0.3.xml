@@ -68,6 +68,12 @@
 
         <insert tableName="permissions">
             <column name="id" value="1" />
+            <column name="name" value="ADMIN_PAGE" />
+            <column name="comment" value="Allows users to upload files to server" />
+        </insert>
+
+        <insert tableName="permissions">
+            <column name="id" value="2" />
             <column name="name" value="UPLOAD_FILES" />
             <column name="comment" value="Allows users to upload files to server" />
         </insert>
@@ -113,16 +119,22 @@
             </column>
         </createTable>
 
-        <!-- Grant Permission UPLOAD_FILES to Role Admin -->
+        <!-- Grant Permission ADMIN_PAGE to Role Admin -->
         <insert tableName="zz_roles_permissions">
             <column name="role_id" value="1" />
             <column name="permission_id" value="1" />
         </insert>
 
+        <!-- Grant Permission UPLOAD_FILES to Role Admin -->
+        <insert tableName="zz_roles_permissions">
+            <column name="role_id" value="1" />
+            <column name="permission_id" value="2" />
+        </insert>
+
         <!-- Grant Permission UPLOAD_FILES to Role User -->
         <insert tableName="zz_roles_permissions">
             <column name="role_id" value="2" />
-            <column name="permission_id" value="1" />
+            <column name="permission_id" value="2" />
         </insert>
 
     </changeSet>

@@ -1,6 +1,8 @@
 {
     "app" : "Portal",
 
+    "admin.caption" : "Administration",
+
     "index.caption" : "Main",
     "index.greeting" : "Welcome to the Portal",
 

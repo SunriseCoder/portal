@@ -28,6 +28,8 @@
 <body>
     <jsp:include page="includes/header.jsp" />
 
+    <span>&nbsp;</span>
+
     <div class="container">
         <div class="starter-template">
 

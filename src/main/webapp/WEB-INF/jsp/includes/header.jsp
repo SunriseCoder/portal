@@ -19,6 +19,10 @@
                     <li><a href="${appRoot}/upload">Upload</a></li>
                 </c:if>
 
+                <c:if test="${not empty user && user.hasPermission('ADMIN_PAGE')}">
+                    <li><a href="${appRoot}/admin">Administration</a></li>
+                </c:if>
+
                 <c:choose>
                     <c:when test="${empty user}">
                         <li>
@@ -38,9 +42,6 @@
                         </li>
                         <li><a href="#" onclick="PopupUtils.showPopup(document.getElementById('headerLoginForm').username)">Login</a></li>
                         <li><a href="${appRoot}/register">Register</a></li>
-                        <script>
-                            
-                        </script>
                     </c:when>
                     <c:otherwise>
                         <li>
