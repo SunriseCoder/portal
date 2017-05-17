@@ -25,6 +25,14 @@
             </column>
         </createTable>
 
+        <insert tableName="users">
+            <column name="id" value="1" />
+            <column name="login" value="admin" />
+            <column name="pass" value="$2a$10$hHBkdPDV.oI6pXhmbLYdJucXyMl3FPWL3cHzSwm/0ieSwamSQ7fT6" /><!-- "password" -->
+            <column name="display_name" value="Admin" />
+            <column name="email" value="ch@ange.it" />
+        </insert>
+
     </changeSet>
 
     <changeSet author="SunriseCoder" id="0.0.3-02">
@@ -58,6 +66,16 @@
             <column name="comment" type="VARCHAR(255)" />
         </createTable>
 
+        <insert tableName="permissions">
+            <column name="id" value="1" />
+            <column name="name" value="UPLOAD_FILES" />
+            <column name="comment" value="Allows users to upload files to server" />
+        </insert>
+
+    </changeSet>
+
+    <changeSet author="SunriseCoder" id="0.0.3-04">
+
         <createTable tableName="roles">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints primaryKey="true" primaryKeyName="rolesPK" />
@@ -67,6 +85,22 @@
             </column>
             <column name="comment" type="VARCHAR(255)" />
         </createTable>
+
+        <insert tableName="roles">
+            <column name="id" value="1" />
+            <column name="name" value="Admin" />
+            <column name="comment" value="Admin with full permissions" />
+        </insert>
+
+        <insert tableName="roles">
+            <column name="id" value="2" />
+            <column name="name" value="User" />
+            <column name="comment" value="Just an ordinary registered user" />
+        </insert>
+
+    </changeSet>
+
+    <changeSet author="SunriseCoder" id="0.0.3-05">
 
         <createTable tableName="zz_roles_permissions">
             <column name="role_id" type="BIGINT">
@@ -79,6 +113,22 @@
             </column>
         </createTable>
 
+        <!-- Grant Permission UPLOAD_FILES to Role Admin -->
+        <insert tableName="zz_roles_permissions">
+            <column name="role_id" value="1" />
+            <column name="permission_id" value="1" />
+        </insert>
+
+        <!-- Grant Permission UPLOAD_FILES to Role User -->
+        <insert tableName="zz_roles_permissions">
+            <column name="role_id" value="2" />
+            <column name="permission_id" value="1" />
+        </insert>
+
+    </changeSet>
+
+    <changeSet author="SunriseCoder" id="0.0.3-06">
+
         <createTable tableName="zz_roles_roles">
             <column name="role_id" type="BIGINT">
                 <constraints nullable="false" foreignKeyName="fk_zz_roles_roles_role"
@@ -89,6 +139,10 @@
                     referencedTableName="roles" referencedColumnNames="id" />
             </column>
         </createTable>
+
+    </changeSet>
+
+    <changeSet author="SunriseCoder" id="0.0.3-07">
 
         <createTable tableName="zz_users_roles">
             <column name="user_id" type="BIGINT">
@@ -101,22 +155,10 @@
             </column>
         </createTable>
 
-        <insert tableName="permissions">
-            <column name="id" value="1" />
-            <column name="name" value="UPLOAD_FILES" />
-            <column name="comment" value="Allows users to upload files to server" />
-        </insert>
-
-        <insert tableName="roles">
-            <column name="id" value="1" />
-            <column name="name" value="User" />
-            <column name="comment" value="Just an ordinary registered user" />
-        </insert>
-
-        <!-- Grant Permission ROLE_UPLOAD_FILES to Role User -->
-        <insert tableName="zz_roles_permissions">
+        <!-- Grant Role Admin to User Admin -->
+        <insert tableName="zz_users_roles">
+            <column name="user_id" value="1" />
             <column name="role_id" value="1" />
-            <column name="permission_id" value="1" />
         </insert>
 
     </changeSet>
