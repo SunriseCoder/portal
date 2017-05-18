@@ -1,5 +1,7 @@
 package app.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -16,6 +18,11 @@ public class UserServiceImpl implements UserService {
     private BCryptPasswordEncoder bCryptPasswordEncoder;
     @Autowired
     private UserRepository repository;
+
+    @Override
+    public List<UserEntity> findAll() {
+        return repository.findAll();
+    }
 
     @Override
     public UserEntity findByLogin(String login) {

@@ -10,6 +10,7 @@
         <div id="navbar" class="collapse navbar-collapse">
             <ul class="nav navbar-nav">
                 <li><a href="${appRoot}/admin/">Dashboard</a></li>
+                <li><a href="${appRoot}/admin/users">Users</a></li>
             </ul>
         </div>
     </div>
