@@ -31,7 +31,7 @@
                 <h5 class="error-text">${error}</h5>
             </c:if>
 
-            <jsp:include page="includes/login-form.jsp">
+            <jsp:include page="includes/loginForm.jsp">
                 <jsp:param name="formId" value="loginForm" />
             </jsp:include>
             <input type="submit" value="Login" onclick="document.getElementById('loginForm').submit();" />

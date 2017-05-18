@@ -29,7 +29,7 @@
 
                             <div class="popup">
                                 <span id="popup" class="popupspan">
-                                    <jsp:include page="login-form.jsp">
+                                    <jsp:include page="loginForm.jsp">
                                         <jsp:param name="formId" value="headerLoginForm" />
                                     </jsp:include>
                                     <span class="buttons">

@@ -24,7 +24,7 @@
 
     <jsp:include page="../includes/header.jsp" />
 
-    <jsp:include page="admin_header.jsp" />
+    <jsp:include page="adminHeader.jsp" />
 
     <div class="container">
         <div class="starter-template">
