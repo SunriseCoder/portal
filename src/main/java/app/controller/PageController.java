@@ -20,7 +20,7 @@ public class PageController extends BaseController {
     @GetMapping("/admin")
     public String admin(Model model) {
         injectUser(model);
-        return "admin/index";
+        return "admin/dashboard";
     }
 
     @GetMapping("/files")

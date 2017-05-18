@@ -12,6 +12,6 @@ public class AdminController extends BaseController {
     @GetMapping("/")
     public String index(Model model) {
         injectUser(model);
-        return "admin/index";
+        return "admin/dashboard";
     }
 }

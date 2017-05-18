@@ -9,7 +9,7 @@
     <div class="container">
         <div id="navbar" class="collapse navbar-collapse">
             <ul class="nav navbar-nav">
-                <li><a href="${appRoot}/admin/">Home</a></li>
+                <li><a href="${appRoot}/admin/">Dashboard</a></li>
             </ul>
         </div>
     </div>

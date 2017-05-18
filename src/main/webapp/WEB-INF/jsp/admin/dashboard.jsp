@@ -26,7 +26,7 @@
 
     <div class="container">
         <div class="starter-template">
-            <h3>Administration page</h3>
+            <h3>Dashboard</h3>
         </div>
     </div>
 
