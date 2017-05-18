@@ -3,7 +3,6 @@
 
 <c:set var="appRoot" value="${pageContext.request.contextPath}" />
 
-<link rel="stylesheet" type="text/css" href="${appRoot}/webjars/bootstrap/3.3.7/css/bootstrap.min.css" />
 <link rel="stylesheet" type="text/css" href="${appRoot}/styles/form.css" />
 
 <script src="${appRoot}/scripts/form-utils.js"></script>

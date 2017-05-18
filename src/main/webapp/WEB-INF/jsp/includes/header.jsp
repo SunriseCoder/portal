@@ -4,6 +4,7 @@
 
 <link rel="stylesheet" type="text/css" href="${appRoot}/webjars/bootstrap/3.3.7/css/bootstrap.min.css" />
 <link rel="stylesheet" type="text/css" href="${appRoot}/styles/header.css" />
+<link rel="stylesheet" type="text/css" href="${appRoot}/styles/popup.css" />
 
 <script src="${appRoot}/scripts/form-utils.js"></script>
 <script src="${appRoot}/scripts/popup-utils.js"></script>
@@ -18,6 +19,8 @@
                 <c:if test="${not empty user && user.hasPermission('UPLOAD_FILES')}">
                     <li><a href="${appRoot}/upload">Upload</a></li>
                 </c:if>
+
+                <li class="separator">&nbsp;</li>
 
                 <c:choose>
                     <c:when test="${empty user}">
@@ -36,17 +39,23 @@
                             </div>
 
                         </li>
-                        <li><a href="#" onclick="PopupUtils.showPopup(document.getElementById('headerLoginForm').username)">Login</a></li>
+                        <li><a id="loginLink" href="#" onclick="PopupUtils.showPopup('loginLink', document.getElementById('headerLoginForm').username)">Login</a></li>
                         <li><a href="${appRoot}/register">Register</a></li>
-                        <script>
-                            
-                        </script>
                     </c:when>
                     <c:otherwise>
                         <li>
+                            <div class="popup">
+                                <span id="popup" class="popupspan">
+                                    <jsp:include page="user-menu.jsp" />
+                                </span>
+                            </div>
+                        </li>
+                        <li>
                             <div>
-                                Welcome, ${user.displayName}
-                                (<a href="#" onclick="logout.submit();">Logout</a>)
+                                Welcome,
+                                <a id="userName" href="#" onclick="PopupUtils.showPopup('userName');">${user.displayName}</a>
+<%--                                  ${user.displayName} --%>
+<!--                                 (<a href="#" onclick="logout.submit();">Logout</a>) -->
                             </div>
                         </li>
 

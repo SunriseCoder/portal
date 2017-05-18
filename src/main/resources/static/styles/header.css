@@ -1,7 +1,7 @@
 .nav > li > div {
     color: #9d9d9d;
     padding: 15px;
-    padding-left: 200px;
+    padding-left: 0;
 }
 
 .nav > li > div > a {
@@ -17,4 +17,8 @@
 .nav > li > div > form > input {
     color: #000;
     width: 80px;
+}
+
+.nav > li.separator {
+    width: 300px;
 }
