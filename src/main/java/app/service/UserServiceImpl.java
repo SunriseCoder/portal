@@ -25,6 +25,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public UserEntity findById(Long id) {
+        return repository.findOne(id);
+    }
+
+    @Override
     public UserEntity findByLogin(String login) {
         return repository.findByLogin(login);
     }

@@ -9,6 +9,7 @@ import app.entity.UserEntity;
 @Service
 public interface UserService {
     List<UserEntity> findAll();
+    UserEntity findById(Long id);
     UserEntity findByLogin(String login);
     UserEntity findByDisplayName(String displayName);
     UserEntity findByEmail(String email);

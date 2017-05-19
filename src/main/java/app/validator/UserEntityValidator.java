@@ -29,16 +29,7 @@ public class UserEntityValidator implements Validator {
     public void validate(Object o, Errors errors) {
         UserEntity user = (UserEntity) o;
 
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "login", "required");
-        if (user.getLogin().length() < 4 || user.getLogin().length() > 32) {
-            errors.rejectValue("login", "user.login.size");
-        }
-        if (!LOGIN_PATTERN.matcher(user.getLogin()).matches()) {
-            errors.rejectValue("login", "user.login.not_allowed_chars");
-        }
-        if (userService.findByLogin(user.getLogin()) != null) {
-            errors.rejectValue("login", "user.login.duplication");
-        }
+        validateLogin(user.getLogin(), errors);
 
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "pass", "required");
         if (user.getPass().length() < 8 || user.getPass().length() > 32) {
@@ -69,6 +60,19 @@ public class UserEntityValidator implements Validator {
         }
         if (!EMAIL_PATTERN.matcher(user.getEmail()).matches()) {
             errors.rejectValue("email", "user.email.wrong_format");
+        }
+    }
+
+    public void validateLogin(String login, Errors errors) {
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "login", "required");
+        if (login.length() < 4 || login.length() > 32) {
+            errors.rejectValue("login", "user.login.size");
+        }
+        if (!LOGIN_PATTERN.matcher(login).matches()) {
+            errors.rejectValue("login", "user.login.not_allowed_chars");
+        }
+        if (userService.findByLogin(login) != null) {
+            errors.rejectValue("login", "user.login.duplication");
         }
     }
 }

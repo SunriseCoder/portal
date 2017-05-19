@@ -69,13 +69,25 @@
         <insert tableName="permissions">
             <column name="id" value="1" />
             <column name="name" value="ADMIN_PAGE" />
-            <column name="comment" value="Allows users to upload files to server" />
+            <column name="comment" value="Allows access to administration section" />
         </insert>
 
         <insert tableName="permissions">
             <column name="id" value="2" />
             <column name="name" value="UPLOAD_FILES" />
             <column name="comment" value="Allows users to upload files to server" />
+        </insert>
+
+        <insert tableName="permissions">
+            <column name="id" value="3" />
+            <column name="name" value="ADMIN_DASHBOARD" />
+            <column name="comment" value="Allows access to administration dashboard" />
+        </insert>
+
+        <insert tableName="permissions">
+            <column name="id" value="4" />
+            <column name="name" value="ADMIN_USERS" />
+            <column name="comment" value="Allows access to administration dashboard" />
         </insert>
 
     </changeSet>
@@ -129,6 +141,18 @@
         <insert tableName="zz_roles_permissions">
             <column name="role_id" value="1" />
             <column name="permission_id" value="2" />
+        </insert>
+
+        <!-- Grant Permission ADMIN_DASHBOARD to Role Admin -->
+        <insert tableName="zz_roles_permissions">
+            <column name="role_id" value="1" />
+            <column name="permission_id" value="3" />
+        </insert>
+
+        <!-- Grant Permission ADMIN_USERS to Role Admin -->
+        <insert tableName="zz_roles_permissions">
+            <column name="role_id" value="1" />
+            <column name="permission_id" value="4" />
         </insert>
 
         <!-- Grant Permission UPLOAD_FILES to Role User -->

@@ -27,6 +27,10 @@
     <div class="container">
         <div class="starter-template">
             <h3>Dashboard</h3>
+
+            <c:if test="${not empty user && user.hasPermission('ADMIN_DASHBOARD')}">
+                <p>Secret block here</p>
+            </c:if>
         </div>
     </div>
 

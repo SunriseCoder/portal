@@ -2,6 +2,8 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
 <c:set var="appRoot" value="${pageContext.request.contextPath}" />
+<c:set var="adminRoot" value="${appRoot}/admin" />
+<c:set var="usersRoot" value="${adminRoot}/users" />
 
 <!DOCTYPE html>
 <html>
@@ -22,9 +24,9 @@
 </head>
 <body>
 
-    <jsp:include page="../includes/header.jsp" />
+    <jsp:include page="../../includes/header.jsp" />
 
-    <jsp:include page="adminHeader.jsp" />
+    <jsp:include page="../adminHeader.jsp" />
 
     <div class="container">
         <div class="starter-template">
@@ -43,8 +45,7 @@
                         <td>${item.displayName}</td>
                         <td>${item.email }</td>
                         <td>
-                            <a href="#">Details</a> /
-                            <a href="#">Edit</a> /
+                            <a href="${usersRoot}/details/${item.id}">Details</a> /
                             <a href="#">Ban</a> /
                             <a href="#">Lock</a> /
                             <a href="#">Delete</a> /
