@@ -45,10 +45,8 @@
                         <td>${item.displayName}</td>
                         <td>${item.email }</td>
                         <td>
-                            <a href="${usersRoot}/details/${item.id}">Details</a> /
-                            <a href="#">Ban</a> /
+                            <a href="${usersRoot}/edit/${item.id}">Edit</a> /
                             <a href="#">Lock</a> /
-                            <a href="#">Delete</a> /
                             <a href="#">Confirm</a>
                         </td>
                     </tr>

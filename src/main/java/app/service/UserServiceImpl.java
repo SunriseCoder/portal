@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import app.dao.UserRepository;
 import app.entity.UserEntity;
+import app.enums.Permissions;
 import app.enums.Users;
 import app.util.StringUtils;
 
@@ -59,6 +60,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public boolean hasPermission(Permissions permission) {
+        UserEntity user = getLoggedInUser();
+        return user.hasPermission(permission.name());
+    }
+
+    @Override
     public void save(UserEntity user) {
         if (user.getId() == null) {
             // For new user encrypting password
@@ -73,7 +80,8 @@ public class UserServiceImpl implements UserService {
         repository.saveAndFlush(user);
     }
 
-    private void encryptPass(UserEntity user) {
+    @Override
+    public void encryptPass(UserEntity user) {
         String encodedPass = bCryptPasswordEncoder.encode(user.getPass());
         user.setPass(encodedPass);
         user.setConfirm(encodedPass);

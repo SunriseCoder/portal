@@ -69,6 +69,10 @@ public class FileRestController {
         String name = user == null ? "" : user.getLogin();
         LogUtils.logUploadRequest(logger, request, name, file);
 
+        if (!userService.hasPermission(Permissions.UPLOAD_FILES)) {
+            return;
+        }
+
         if (user == null) {
             logger.error("User is not authorized");
             HttpUtils.sendResponseError(response, HttpServletResponse.SC_FORBIDDEN, "You are not authorized.");

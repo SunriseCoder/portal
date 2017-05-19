@@ -7,6 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import app.entity.UserEntity;
+import app.enums.Permissions;
 
 @Controller
 public class PageController extends BaseController {
@@ -15,12 +16,6 @@ public class PageController extends BaseController {
     public String index(Model model) {
         injectUser(model);
         return "index";
-    }
-
-    @GetMapping("/admin")
-    public String admin(Model model) {
-        injectUser(model);
-        return "admin/dashboard";
     }
 
     @GetMapping("/files")
@@ -58,6 +53,10 @@ public class PageController extends BaseController {
 
     @GetMapping("/upload")
     public String upload(Model model) {
+        if (!userService.hasPermission(Permissions.UPLOAD_FILES)) {
+            return REDIRECT_MAIN;
+        }
+
         injectUser(model);
         return "upload";
     }

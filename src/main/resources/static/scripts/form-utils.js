@@ -8,5 +8,10 @@ var FormUtils = {
         if (event.keyCode == 13) {
             FormUtils.submitForm(formId);
         }
+    },
+
+    generatePassword: function(target) {
+        var pass = Math.random().toString(36).slice(-8);
+        document.getElementById(target).value = pass;
     }
 }

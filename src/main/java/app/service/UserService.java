@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import app.entity.UserEntity;
+import app.enums.Permissions;
 
 @Service
 public interface UserService {
@@ -15,5 +16,7 @@ public interface UserService {
     UserEntity findByEmail(String email);
     Boolean isAuthenticated();
     UserEntity getLoggedInUser();
+    boolean hasPermission(Permissions permission);
     void save(UserEntity user);
+    void encryptPass(UserEntity user);
 }

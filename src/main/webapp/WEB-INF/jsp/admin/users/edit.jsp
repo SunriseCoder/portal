@@ -13,6 +13,7 @@
     <link rel="stylesheet" type="text/css" href="${appRoot}/styles/form.css" />
 
     <script src="${appRoot}/scripts/jquery.js"></script>
+    <script src="${appRoot}/scripts/form-utils.js"></script>
     <script src="${appRoot}/scripts/locale-utils.js"></script>
 
     <script>
@@ -48,8 +49,23 @@
                         <td><input type="submit" value="Change" /></td>
                     </form:form>
                 </tr>
+                <tr>
+                    <form:form action="${usersRoot}/password" method="post" modelAttribute="changePassword">
+                        <form:hidden path="id" />
+                        <td>Password:</td>
+                        <td>
+                            <form:input id="changePasswordField" path="pass" type="text" /><br />
+                            <form:errors path="pass" cssClass="error-text" />
+                        </td>
+                        <td>
+                            <input type="button" value="Generate" onclick="FormUtils.generatePassword('changePasswordField');" />
+                            <input type="submit" value="Change" />
+                        </td>
+                    </form:form>
+                </tr>
             </table>
-            <p>${userEntity.displayName}</p>
+            <!-- TODO displayName -->
+            <!-- email -->
         </div>
     </div>
 

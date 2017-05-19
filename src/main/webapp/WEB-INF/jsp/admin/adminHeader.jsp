@@ -10,8 +10,15 @@
     <div class="container">
         <div id="navbar" class="collapse navbar-collapse">
             <ul class="nav navbar-nav">
+
                 <li><a href="${adminRoot}/">Dashboard</a></li>
-                <li><a href="${adminRoot}/users">Users</a></li>
+
+                <c:if test="${not empty user && user.hasPermission('ADMIN_USERS_VIEW')}">
+                    <li><a href="${adminRoot}/users">Users</a></li>
+                </c:if>
+
+                <li><a href="#">Roles</a></li>
+
             </ul>
         </div>
     </div>

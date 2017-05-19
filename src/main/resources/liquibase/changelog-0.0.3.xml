@@ -86,8 +86,14 @@
 
         <insert tableName="permissions">
             <column name="id" value="4" />
-            <column name="name" value="ADMIN_USERS" />
-            <column name="comment" value="Allows access to administration dashboard" />
+            <column name="name" value="ADMIN_USERS_VIEW" />
+            <column name="comment" value="Allows access to View user information" />
+        </insert>
+
+        <insert tableName="permissions">
+            <column name="id" value="5" />
+            <column name="name" value="ADMIN_USERS_EDIT" />
+            <column name="comment" value="Allows access to Edit user information" />
         </insert>
 
     </changeSet>
@@ -149,10 +155,16 @@
             <column name="permission_id" value="3" />
         </insert>
 
-        <!-- Grant Permission ADMIN_USERS to Role Admin -->
+        <!-- Grant Permission ADMIN_USERS_VIEW to Role Admin -->
         <insert tableName="zz_roles_permissions">
             <column name="role_id" value="1" />
             <column name="permission_id" value="4" />
+        </insert>
+
+        <!-- Grant Permission ADMIN_USERS_EDIT to Role Admin -->
+        <insert tableName="zz_roles_permissions">
+            <column name="role_id" value="1" />
+            <column name="permission_id" value="5" />
         </insert>
 
         <!-- Grant Permission UPLOAD_FILES to Role User -->

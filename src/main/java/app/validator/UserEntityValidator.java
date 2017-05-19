@@ -30,11 +30,7 @@ public class UserEntityValidator implements Validator {
         UserEntity user = (UserEntity) o;
 
         validateLogin(user.getLogin(), errors);
-
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "pass", "required");
-        if (user.getPass().length() < 8 || user.getPass().length() > 32) {
-            errors.rejectValue("pass", "user.pass.size");
-        }
+        validatePassword(user.getPass(), errors);
 
         if (!user.getPass().equals(user.getConfirm())) {
             errors.rejectValue("confirm", "user.confirm.different");
@@ -64,7 +60,9 @@ public class UserEntityValidator implements Validator {
     }
 
     public void validateLogin(String login, Errors errors) {
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "login", "required");
+        if (login == null || login.trim().isEmpty()) {
+            errors.rejectValue("login", "required");
+        }
         if (login.length() < 4 || login.length() > 32) {
             errors.rejectValue("login", "user.login.size");
         }
@@ -73,6 +71,15 @@ public class UserEntityValidator implements Validator {
         }
         if (userService.findByLogin(login) != null) {
             errors.rejectValue("login", "user.login.duplication");
+        }
+    }
+
+    public void validatePassword(String password, Errors errors) {
+        if (password == null || password.trim().isEmpty()) {
+            errors.rejectValue("pass", "required");
+        }
+        if (password.length() < 8 || password.length() > 32) {
+            errors.rejectValue("pass", "user.pass.size");
         }
     }
 }
