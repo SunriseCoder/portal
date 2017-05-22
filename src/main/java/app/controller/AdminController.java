@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import app.dto.ChangeDisplayNameDTO;
+import app.dto.ChangeEmailDTO;
 import app.dto.ChangeLoginDTO;
 import app.dto.ChangePasswordDTO;
 import app.entity.UserEntity;
@@ -83,6 +84,7 @@ public class AdminController extends BaseController {
         injectChangeLoginDTO(model, user);
         injectChangePasswordDTO(model, user);
         injectChangeDisplayNameDTO(model, user);
+        injectChangeEmailDTO(model, user);
         return ADMIN_USERS_EDIT;
     }
 
@@ -107,6 +109,7 @@ public class AdminController extends BaseController {
         UserEntity user = injectUserEntity(model, changeLogin.getId());
         injectChangePasswordDTO(model, user);
         injectChangeDisplayNameDTO(model, user);
+        injectChangeEmailDTO(model, user);
         return ADMIN_USERS_EDIT;
     }
 
@@ -132,6 +135,7 @@ public class AdminController extends BaseController {
         UserEntity user = injectUserEntity(model, changePassword.getId());
         injectChangeLoginDTO(model, user);
         injectChangeDisplayNameDTO(model, user);
+        injectChangeEmailDTO(model, user);
         return ADMIN_USERS_EDIT;
     }
 
@@ -156,8 +160,35 @@ public class AdminController extends BaseController {
         UserEntity user = injectUserEntity(model, changeDisplayName.getId());
         injectChangeLoginDTO(model, user);
         injectChangePasswordDTO(model, user);
+        injectChangeEmailDTO(model, user);
         return ADMIN_USERS_EDIT;
     }
+
+    @PostMapping("/users/email")
+    public String changeEmail(@ModelAttribute("changeEmail") ChangeEmailDTO changeEmail, Model model,
+                    HttpServletRequest request, BindingResult bindingResult) {
+
+        LogUtils.logRequest(logger, request);
+        if (!userService.hasPermission(Permissions.ADMIN_USERS_VIEW)) {
+            return REDIRECT_ADMIN;
+        }
+
+        validatePermission(Permissions.ADMIN_USERS_EDIT, bindingResult, "email");
+        userValidator.validateEmail(changeEmail.getEmail(), bindingResult);
+        if (!bindingResult.hasErrors()) {
+            UserEntity user = userService.findById(changeEmail.getId());
+            user.setEmail(changeEmail.getEmail());
+            userService.save(user);
+        }
+
+        injectUser(model);
+        UserEntity user = injectUserEntity(model, changeEmail.getId());
+        injectChangeLoginDTO(model, user);
+        injectChangePasswordDTO(model, user);
+        injectChangeDisplayNameDTO(model, user);
+        return ADMIN_USERS_EDIT;
+    }
+
     private UserEntity injectUserEntity(Model model, Long id) {
         UserEntity user = userService.findById(id);
         model.addAttribute("userEntity", user);
@@ -177,5 +208,10 @@ public class AdminController extends BaseController {
     private void injectChangeDisplayNameDTO(Model model, UserEntity user) {
         ChangeDisplayNameDTO changeDisplayName = new ChangeDisplayNameDTO(user.getId(), user.getDisplayName());
         model.addAttribute("changeDisplayName", changeDisplayName);
+    }
+
+    private void injectChangeEmailDTO(Model model, UserEntity user) {
+        ChangeEmailDTO changeEmail = new ChangeEmailDTO(user.getId(), user.getEmail());
+        model.addAttribute("changeEmail", changeEmail);
     }
 }

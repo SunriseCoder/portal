@@ -74,8 +74,18 @@
                         <td><input type="submit" value="Change" /></td>
                     </form:form>
                 </tr>
+                <tr>
+                    <form:form action="${usersRoot}/email" method="post" modelAttribute="changeEmail">
+                        <form:hidden path="id" />
+                        <td>E-Mail:</td>
+                        <td>
+                            <form:input path="email" type="text" maxlength="64" /><br />
+                            <form:errors path="email" cssClass="error-text" />
+                        </td>
+                        <td><input type="submit" value="Change" /></td>
+                    </form:form>
+                </tr>
             </table>
-            <!-- TODO email -->
         </div>
     </div>
 

@@ -37,17 +37,7 @@ public class UserEntityValidator implements Validator {
         }
 
         validateDisplayName(user.getDisplayName(), errors);
-
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "email", "required");
-        if (userService.findByEmail(user.getEmail()) != null) {
-            errors.rejectValue("email", "user.email.duplication");
-        }
-        if (user.getEmail().length() > 64) {
-            errors.rejectValue("email", "user.email.size");
-        }
-        if (!EMAIL_PATTERN.matcher(user.getEmail()).matches()) {
-            errors.rejectValue("email", "user.email.wrong_format");
-        }
+        validateEmail(user.getEmail(), errors);
     }
 
     public void validateLogin(String login, Errors errors) {
@@ -87,6 +77,22 @@ public class UserEntityValidator implements Validator {
         }
         if (displayName.length() > 64) {
             errors.rejectValue("displayName", "user.displayName.size");
+        }
+    }
+
+    public void validateEmail(String email, Errors errors) {
+        if (email == null || email.trim().isEmpty()) {
+            errors.rejectValue("email", "required");
+        }
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "email", "required");
+        if (userService.findByEmail(email) != null) {
+            errors.rejectValue("email", "user.email.duplication");
+        }
+        if (email.length() > 64) {
+            errors.rejectValue("email", "user.email.size");
+        }
+        if (!EMAIL_PATTERN.matcher(email).matches()) {
+            errors.rejectValue("email", "user.email.wrong_format");
         }
     }
 }
