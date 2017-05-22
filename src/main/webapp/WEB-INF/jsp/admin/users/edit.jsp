@@ -63,9 +63,19 @@
                         </td>
                     </form:form>
                 </tr>
+                <tr>
+                    <form:form action="${usersRoot}/display-name" method="post" modelAttribute="changeDisplayName">
+                        <form:hidden path="id" />
+                        <td>Display Name:</td>
+                        <td>
+                            <form:input path="displayName" type="text" maxlength="64" /><br />
+                            <form:errors path="displayName" cssClass="error-text" />
+                        </td>
+                        <td><input type="submit" value="Change" /></td>
+                    </form:form>
+                </tr>
             </table>
-            <!-- TODO displayName -->
-            <!-- email -->
+            <!-- TODO email -->
         </div>
     </div>
 

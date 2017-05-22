@@ -36,16 +36,7 @@ public class UserEntityValidator implements Validator {
             errors.rejectValue("confirm", "user.confirm.different");
         }
 
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "displayName", "required");
-        if (userService.findByDisplayName(user.getDisplayName()) != null) {
-            errors.rejectValue("displayName", "user.displayName.duplication");
-        }
-        if (!DISPLAY_NAME_PATTERN.matcher(user.getDisplayName()).matches()) {
-            errors.rejectValue("displayName", "user.displayName.not_allowed_chars");
-        }
-        if (user.getDisplayName().length() > 64) {
-            errors.rejectValue("displayName", "user.displayName.size");
-        }
+        validateDisplayName(user.getDisplayName(), errors);
 
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "email", "required");
         if (userService.findByEmail(user.getEmail()) != null) {
@@ -80,6 +71,22 @@ public class UserEntityValidator implements Validator {
         }
         if (password.length() < 8 || password.length() > 32) {
             errors.rejectValue("pass", "user.pass.size");
+        }
+    }
+
+    public void validateDisplayName(String displayName, Errors errors) {
+        if (displayName == null || displayName.trim().isEmpty()) {
+            errors.rejectValue("displayName", "required");
+        }
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "displayName", "required");
+        if (userService.findByDisplayName(displayName) != null) {
+            errors.rejectValue("displayName", "user.displayName.duplication");
+        }
+        if (!DISPLAY_NAME_PATTERN.matcher(displayName).matches()) {
+            errors.rejectValue("displayName", "user.displayName.not_allowed_chars");
+        }
+        if (displayName.length() > 64) {
+            errors.rejectValue("displayName", "user.displayName.size");
         }
     }
 }

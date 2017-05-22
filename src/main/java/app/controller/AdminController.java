@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import app.dto.ChangeDisplayNameDTO;
 import app.dto.ChangeLoginDTO;
 import app.dto.ChangePasswordDTO;
 import app.entity.UserEntity;
@@ -81,6 +82,7 @@ public class AdminController extends BaseController {
 
         injectChangeLoginDTO(model, user);
         injectChangePasswordDTO(model, user);
+        injectChangeDisplayNameDTO(model, user);
         return ADMIN_USERS_EDIT;
     }
 
@@ -104,6 +106,7 @@ public class AdminController extends BaseController {
         injectUser(model);
         UserEntity user = injectUserEntity(model, changeLogin.getId());
         injectChangePasswordDTO(model, user);
+        injectChangeDisplayNameDTO(model, user);
         return ADMIN_USERS_EDIT;
     }
 
@@ -128,9 +131,33 @@ public class AdminController extends BaseController {
         injectUser(model);
         UserEntity user = injectUserEntity(model, changePassword.getId());
         injectChangeLoginDTO(model, user);
+        injectChangeDisplayNameDTO(model, user);
         return ADMIN_USERS_EDIT;
     }
 
+    @PostMapping("/users/display-name")
+    public String changeDisplayName(@ModelAttribute("changeDisplayName") ChangeDisplayNameDTO changeDisplayName, Model model,
+                    HttpServletRequest request, BindingResult bindingResult) {
+
+        LogUtils.logRequest(logger, request);
+        if (!userService.hasPermission(Permissions.ADMIN_USERS_VIEW)) {
+            return REDIRECT_ADMIN;
+        }
+
+        validatePermission(Permissions.ADMIN_USERS_EDIT, bindingResult, "displayName");
+        userValidator.validateDisplayName(changeDisplayName.getDisplayName(), bindingResult);
+        if (!bindingResult.hasErrors()) {
+            UserEntity user = userService.findById(changeDisplayName.getId());
+            user.setDisplayName(changeDisplayName.getDisplayName());
+            userService.save(user);
+        }
+
+        injectUser(model);
+        UserEntity user = injectUserEntity(model, changeDisplayName.getId());
+        injectChangeLoginDTO(model, user);
+        injectChangePasswordDTO(model, user);
+        return ADMIN_USERS_EDIT;
+    }
     private UserEntity injectUserEntity(Model model, Long id) {
         UserEntity user = userService.findById(id);
         model.addAttribute("userEntity", user);
@@ -145,5 +172,10 @@ public class AdminController extends BaseController {
     private void injectChangePasswordDTO(Model model, UserEntity user) {
         ChangePasswordDTO changePassword = new ChangePasswordDTO(user.getId(), DEFAULT_PASSWORD_STUB);
         model.addAttribute("changePassword", changePassword);
+    }
+
+    private void injectChangeDisplayNameDTO(Model model, UserEntity user) {
+        ChangeDisplayNameDTO changeDisplayName = new ChangeDisplayNameDTO(user.getId(), user.getDisplayName());
+        model.addAttribute("changeDisplayName", changeDisplayName);
     }
 }
