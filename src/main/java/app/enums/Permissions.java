@@ -5,5 +5,6 @@ public enum Permissions {
     ADMIN_DASHBOARD,
     ADMIN_USERS_VIEW,
     ADMIN_USERS_EDIT,
+    ADMIN_USERS_ROLES,
     UPLOAD_FILES
 }

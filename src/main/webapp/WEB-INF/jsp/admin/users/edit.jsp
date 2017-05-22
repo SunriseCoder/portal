@@ -46,7 +46,11 @@
                             <form:input path="login" type="text" maxlength="32" /><br />
                             <form:errors path="login" cssClass="error-text" />
                         </td>
-                        <td><input type="submit" value="Change" /></td>
+                        <td>
+                            <c:if test="${not empty user && user.hasPermission('ADMIN_USERS_EDIT')}">
+                                <input type="submit" value="Change" />
+                            </c:if>
+                        </td>
                     </form:form>
                 </tr>
                 <tr>
@@ -58,8 +62,10 @@
                             <form:errors path="pass" cssClass="error-text" />
                         </td>
                         <td>
-                            <input type="button" value="Generate" onclick="FormUtils.generatePassword('changePasswordField');" />
-                            <input type="submit" value="Change" />
+                            <c:if test="${not empty user && user.hasPermission('ADMIN_USERS_EDIT')}">
+                                <input type="button" value="Generate" onclick="FormUtils.generatePassword('changePasswordField');" />
+                                <input type="submit" value="Change" />
+                            </c:if>
                         </td>
                     </form:form>
                 </tr>
@@ -71,7 +77,11 @@
                             <form:input path="displayName" type="text" maxlength="64" /><br />
                             <form:errors path="displayName" cssClass="error-text" />
                         </td>
-                        <td><input type="submit" value="Change" /></td>
+                        <td>
+                            <c:if test="${not empty user && user.hasPermission('ADMIN_USERS_EDIT')}">
+                                <input type="submit" value="Change" />
+                            </c:if>
+                        </td>
                     </form:form>
                 </tr>
                 <tr>
@@ -82,8 +92,35 @@
                             <form:input path="email" type="text" maxlength="64" /><br />
                             <form:errors path="email" cssClass="error-text" />
                         </td>
-                        <td><input type="submit" value="Change" /></td>
+                        <td>
+                            <c:if test="${not empty user && user.hasPermission('ADMIN_USERS_EDIT')}">
+                                <input type="submit" value="Change" />
+                            </c:if>
+                        </td>
                     </form:form>
+                </tr>
+                <tr>
+                    <form:form action="${usersRoot}/roles" method="post" modelAttribute="changeRoles">
+                        <form:hidden path="id" />
+                        <td>Roles:</td>
+                        <td>
+                            <form:checkboxes items="${allRoles}" path="roles" delimiter="<br />" itemLabel="name" />
+                            <form:errors path="roles" cssClass="error-text" />
+                        </td>
+                        <td>
+                            <c:if test="${not empty user && user.hasPermission('ADMIN_USERS_ROLES')}">
+                                <input type="submit" value="Change" />
+                            </c:if>
+                        </td>
+                    </form:form>
+                </tr>
+                <tr>
+                    <td>Permissions:</td>
+                    <td>
+                        <c:forEach items="${permissionList}" var="item">
+                            ${item}<br />
+                        </c:forEach>
+                    </td>
                 </tr>
             </table>
         </div>

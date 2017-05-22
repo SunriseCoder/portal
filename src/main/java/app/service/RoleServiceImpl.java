@@ -14,6 +14,11 @@ public class RoleServiceImpl implements RolesService {
     RoleRepository repository;
 
     @Override
+    public List<RoleEntity> findAll() {
+        return repository.findAll();
+    }
+
+    @Override
     public List<RoleEntity> getRoleByName(String name) {
         List<RoleEntity> roles = repository.findByName(name);
         return roles;

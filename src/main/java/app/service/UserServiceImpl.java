@@ -62,7 +62,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean hasPermission(Permissions permission) {
         UserEntity user = getLoggedInUser();
-        return user.hasPermission(permission.name());
+        return user != null && user.hasPermission(permission.name());
     }
 
     @Override

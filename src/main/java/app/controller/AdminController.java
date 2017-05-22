@@ -1,6 +1,8 @@
 package app.controller;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -20,9 +22,11 @@ import app.dto.ChangeDisplayNameDTO;
 import app.dto.ChangeEmailDTO;
 import app.dto.ChangeLoginDTO;
 import app.dto.ChangePasswordDTO;
+import app.dto.ChangeRolesDTO;
+import app.entity.RoleEntity;
 import app.entity.UserEntity;
 import app.enums.Permissions;
-import app.service.UserService;
+import app.service.RolesService;
 import app.util.LogUtils;
 import app.validator.UserEntityValidator;
 
@@ -41,7 +45,7 @@ public class AdminController extends BaseController {
     private static final String DEFAULT_PASSWORD_STUB = "<hidden>";
 
     @Autowired
-    private UserService userService;
+    private RolesService rolesService;
 
     @Autowired
     private UserEntityValidator userValidator;
@@ -85,6 +89,8 @@ public class AdminController extends BaseController {
         injectChangePasswordDTO(model, user);
         injectChangeDisplayNameDTO(model, user);
         injectChangeEmailDTO(model, user);
+        injectChangeRolesDTO(model, user);
+        injectChangeRolesData(model, user);
         return ADMIN_USERS_EDIT;
     }
 
@@ -110,6 +116,8 @@ public class AdminController extends BaseController {
         injectChangePasswordDTO(model, user);
         injectChangeDisplayNameDTO(model, user);
         injectChangeEmailDTO(model, user);
+        injectChangeRolesDTO(model, user);
+        injectChangeRolesData(model, user);
         return ADMIN_USERS_EDIT;
     }
 
@@ -136,6 +144,8 @@ public class AdminController extends BaseController {
         injectChangeLoginDTO(model, user);
         injectChangeDisplayNameDTO(model, user);
         injectChangeEmailDTO(model, user);
+        injectChangeRolesDTO(model, user);
+        injectChangeRolesData(model, user);
         return ADMIN_USERS_EDIT;
     }
 
@@ -161,6 +171,8 @@ public class AdminController extends BaseController {
         injectChangeLoginDTO(model, user);
         injectChangePasswordDTO(model, user);
         injectChangeEmailDTO(model, user);
+        injectChangeRolesDTO(model, user);
+        injectChangeRolesData(model, user);
         return ADMIN_USERS_EDIT;
     }
 
@@ -186,6 +198,35 @@ public class AdminController extends BaseController {
         injectChangeLoginDTO(model, user);
         injectChangePasswordDTO(model, user);
         injectChangeDisplayNameDTO(model, user);
+        injectChangeRolesDTO(model, user);
+        injectChangeRolesData(model, user);
+        return ADMIN_USERS_EDIT;
+    }
+
+    @PostMapping("/users/roles")
+    public String changeRoles(@ModelAttribute("changeRoles") ChangeRolesDTO changeRoles, Model model,
+                    HttpServletRequest request, BindingResult bindingResult) {
+
+        LogUtils.logRequest(logger, request);
+        if (!userService.hasPermission(Permissions.ADMIN_USERS_VIEW)) {
+            return REDIRECT_ADMIN;
+        }
+
+        validatePermission(Permissions.ADMIN_USERS_ROLES, bindingResult, "roles");
+        validateSelectedRoles(changeRoles, bindingResult);
+        if (!bindingResult.hasErrors()) {
+            UserEntity user = userService.findById(changeRoles.getId());
+            user.setRoles(changeRoles.getRoles());
+            userService.save(user);
+        }
+
+        injectUser(model);
+        UserEntity user = injectUserEntity(model, changeRoles.getId());
+        injectChangeLoginDTO(model, user);
+        injectChangePasswordDTO(model, user);
+        injectChangeDisplayNameDTO(model, user);
+        injectChangeEmailDTO(model, user);
+        injectChangeRolesData(model, user);
         return ADMIN_USERS_EDIT;
     }
 
@@ -213,5 +254,26 @@ public class AdminController extends BaseController {
     private void injectChangeEmailDTO(Model model, UserEntity user) {
         ChangeEmailDTO changeEmail = new ChangeEmailDTO(user.getId(), user.getEmail());
         model.addAttribute("changeEmail", changeEmail);
+    }
+
+    private void injectChangeRolesDTO(Model model, UserEntity user) {
+        ChangeRolesDTO changeRoles = new ChangeRolesDTO(user.getId(), user.getRoles());
+        model.addAttribute("changeRoles", changeRoles);
+    }
+
+    private void injectChangeRolesData(Model model, UserEntity user) {
+        List<RoleEntity> allRoles = rolesService.findAll();
+        allRoles.sort((r1, r2) -> r1.getName().compareTo(r2.getName()));
+        model.addAttribute("allRoles", allRoles);
+
+        List<String> permissions = user.getPermissions().stream().sorted().collect(Collectors.toList());
+        model.addAttribute("permissionList", permissions);
+    }
+
+    private void validateSelectedRoles(ChangeRolesDTO changeRoles, BindingResult bindingResult) {
+        HashSet<RoleEntity> allRoles = new HashSet<>(rolesService.findAll());
+        if(!allRoles.containsAll(changeRoles.getRoles())) {
+            bindingResult.rejectValue("roles", "user.roles.notExists");
+        }
     }
 }
