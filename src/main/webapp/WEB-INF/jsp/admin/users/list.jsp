@@ -35,7 +35,12 @@
             <table class="listTable">
                 <thead>
                     <tr>
-                        <th>ID</th><th>Login</th><th>Display Name</th><th>E-Mail</th><th>Actions</th>
+                        <th>ID</th>
+                        <th>Login</th>
+                        <th>Display Name</th>
+                        <th>E-Mail</th>
+                        <th>Locked</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <c:forEach items="${userList}" var="item">
@@ -43,10 +48,19 @@
                         <td>${item.id}</td>
                         <td>${item.login}</td>
                         <td>${item.displayName}</td>
-                        <td>${item.email }</td>
+                        <td>${item.email}</td>
+                        <td>
+                            <c:if test="${item.locked}">
+                                <span class="warning" title="${item.lock.reason} (by ${item.lock.lockedBy.displayName})">Locked</span>
+                            </c:if>
+                        </td>
+
                         <td>
                             <a href="${usersRoot}/edit/${item.id}">Edit</a> /
-                            <a href="#">Lock</a> /
+                            <c:choose>
+                                <c:when test="${item.locked}"><a href="#">Unlock</a></c:when>
+                                <c:otherwise><a href="#">Lock</a></c:otherwise>
+                            </c:choose> /
                             <a href="#">Confirm</a>
                         </td>
                     </tr>

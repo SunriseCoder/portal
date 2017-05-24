@@ -5,7 +5,7 @@
                                        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd"
                    logicalFilePath="changelog-0.0.3">
 
-    <changeSet author="SunriseCoder" id="0.0.3-01">
+    <changeSet id="0.0.3-01" author="SunriseCoder">
 
         <createTable tableName="users">
             <column name="id" type="bigint" autoIncrement="true">
@@ -52,7 +52,28 @@
 
     </changeSet>
 
-    <changeSet author="SunriseCoder" id="0.0.3-02">
+    <changeSet id="0.0.3-02" author="SunriseCoder">
+
+        <createTable tableName="z_user_locks">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" primaryKeyName="pk_user_locks" nullable="false" />
+            </column>
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false" unique="true" uniqueConstraintName="ui_user_locks_user_id"
+                             foreignKeyName="fk_z_user_locks_user" referencedTableName="users" referencedColumnNames="id" />
+            </column>
+            <column name="reason" type="varchar(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="locked_by_id" type="BIGINT">
+                <constraints nullable="false"
+                             foreignKeyName="fk_z_user_locks_locked_by" referencedTableName="users" referencedColumnNames="id" />
+            </column>
+        </createTable>
+
+    </changeSet>
+
+    <changeSet id="0.0.3-03" author="SunriseCoder">
 
         <createTable tableName="persistent_logins">
             <column name="username" type="varchar(64)">
@@ -71,7 +92,7 @@
 
     </changeSet>
 
-    <changeSet author="SunriseCoder" id="0.0.3-03">
+    <changeSet id="0.0.3-04" author="SunriseCoder">
 
         <createTable tableName="permissions">
             <column autoIncrement="true" name="id" type="BIGINT">
@@ -121,7 +142,7 @@
 
     </changeSet>
 
-    <changeSet author="SunriseCoder" id="0.0.3-04">
+    <changeSet id="0.0.3-05" author="SunriseCoder">
 
         <createTable tableName="roles">
             <column autoIncrement="true" name="id" type="BIGINT">
@@ -153,7 +174,7 @@
 
     </changeSet>
 
-    <changeSet author="SunriseCoder" id="0.0.3-05">
+    <changeSet id="0.0.3-06" author="SunriseCoder">
 
         <createTable tableName="zz_roles_permissions">
             <column name="role_id" type="BIGINT">
@@ -228,7 +249,7 @@
 
     </changeSet>
 
-    <changeSet author="SunriseCoder" id="0.0.3-06">
+    <changeSet id="0.0.3-07" author="SunriseCoder">
 
         <createTable tableName="zz_roles_roles">
             <column name="role_id" type="BIGINT">
@@ -243,7 +264,7 @@
 
     </changeSet>
 
-    <changeSet author="SunriseCoder" id="0.0.3-07">
+    <changeSet id="0.0.3-08" author="SunriseCoder">
 
         <createTable tableName="zz_users_roles">
             <column name="user_id" type="BIGINT">

@@ -64,3 +64,8 @@ table.listTable th {
     from {opacity: 0;}
     to {opacity: 1;}
 }
+
+span.warning {
+    background-color: #ff6;
+    color: #0;
+}

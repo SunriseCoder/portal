@@ -12,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 
 @Entity(name = "users")
@@ -37,6 +38,9 @@ public class UserEntity {
 
     @Transient
     private Set<String> permissions;
+
+    @OneToOne(mappedBy = "user")
+    private UserLockEntity lock;
 
     public Long getId() {
         return id;
@@ -103,6 +107,18 @@ public class UserEntity {
         checkInitPermissions();
         boolean result = permissions.contains(permission);
         return result;
+    }
+
+    public boolean isLocked() {
+        return lock != null;
+    }
+
+    public UserLockEntity getLock() {
+        return lock;
+    }
+
+    public void setLock(UserLockEntity lock) {
+        this.lock = lock;
     }
 
     private void checkInitPermissions() {
