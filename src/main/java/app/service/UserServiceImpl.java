@@ -7,8 +7,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import app.dao.UserLockRepository;
 import app.dao.UserRepository;
 import app.entity.UserEntity;
+import app.entity.UserLockEntity;
 import app.enums.Permissions;
 import app.enums.Users;
 import app.util.StringUtils;
@@ -19,6 +21,8 @@ public class UserServiceImpl implements UserService {
     private BCryptPasswordEncoder bCryptPasswordEncoder;
     @Autowired
     private UserRepository repository;
+    @Autowired
+    private UserLockRepository userLockRepository;
 
     @Override
     public List<UserEntity> findAll() {
@@ -85,5 +89,18 @@ public class UserServiceImpl implements UserService {
         String encodedPass = bCryptPasswordEncoder.encode(user.getPass());
         user.setPass(encodedPass);
         user.setConfirm(encodedPass);
+    }
+
+    @Override
+    public void lockUser(Long id, String reason) {
+        UserEntity currentUser = getLoggedInUser();
+        UserEntity user = findById(id);
+
+        UserLockEntity lock = new UserLockEntity();
+        lock.setUser(user);
+        lock.setReason(reason);
+        lock.setLockedBy(currentUser);
+
+        userLockRepository.save(lock);
     }
 }

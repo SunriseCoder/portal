@@ -1,6 +1,5 @@
 package app.entity;
 
-import javax.persistence.Embeddable;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -8,7 +7,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 
 @Entity(name = "z_user_locks")
-@Embeddable
 public class UserLockEntity {
     @Id
     @GeneratedValue

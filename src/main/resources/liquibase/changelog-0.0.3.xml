@@ -140,6 +140,12 @@
             <column name="comment" value="Allows access to change user permissions" />
         </insert>
 
+        <insert tableName="permissions">
+            <column name="id" value="7" />
+            <column name="name" value="ADMIN_USERS_LOCK" />
+            <column name="comment" value="Allows to lock users" />
+        </insert>
+
     </changeSet>
 
     <changeSet id="0.0.3-05" author="SunriseCoder">
@@ -217,6 +223,12 @@
             <column name="permission_id" value="6" />
         </insert>
 
+        <!-- Grant Permission ADMIN_USERS_LOCK to Role Admin -->
+        <insert tableName="zz_roles_permissions">
+            <column name="role_id" value="1" />
+            <column name="permission_id" value="7" />
+        </insert>
+
         <!-- Grant Permission UPLOAD_FILES to Role User -->
         <insert tableName="zz_roles_permissions">
             <column name="role_id" value="2" />
@@ -245,6 +257,12 @@
         <insert tableName="zz_roles_permissions">
             <column name="role_id" value="3" />
             <column name="permission_id" value="5" />
+        </insert>
+
+        <!-- Grant Permission ADMIN_USERS_LOCK to Role Moder -->
+        <insert tableName="zz_roles_permissions">
+            <column name="role_id" value="3" />
+            <column name="permission_id" value="7" />
         </insert>
 
     </changeSet>

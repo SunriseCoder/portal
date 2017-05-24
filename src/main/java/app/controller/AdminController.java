@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import app.dto.ChangeDisplayNameDTO;
 import app.dto.ChangeEmailDTO;
@@ -228,6 +230,24 @@ public class AdminController extends BaseController {
         injectChangeEmailDTO(model, user);
         injectChangeRolesData(model, user);
         return ADMIN_USERS_EDIT;
+    }
+
+    @PostMapping("/users/lock")
+    public String lockUser(@RequestParam("id") Long id, @RequestParam("reason") String reason, Model model,
+                    HttpServletRequest request, RedirectAttributes redirectAttributes) {
+
+        LogUtils.logRequest(logger, request);
+        if (!userService.hasPermission(Permissions.ADMIN_USERS_LOCK)) {
+            return REDIRECT_ADMIN;
+        }
+
+        System.out.println(id);
+        if (id != null && reason != null && !reason.trim().isEmpty()) {
+            userService.lockUser(id, reason);
+            redirectAttributes.addFlashAttribute("message", "User locked successfully");
+        }
+
+        return REDIRECT_USERS;
     }
 
     private UserEntity injectUserEntity(Model model, Long id) {

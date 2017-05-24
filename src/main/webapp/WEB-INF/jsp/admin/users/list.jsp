@@ -20,6 +20,15 @@
             Locales.appRoot = '${appRoot}';
             Locales.writeTitle("admin.caption");
         });
+
+        function lockUser(id, name) {
+            var reason = prompt("Please enter lock reason for user " + name);
+            if (reason != null) {
+                $('#lockId')[0].value = id;
+                $('#lockReason')[0].value = reason;
+                $('#lockUserForm')[0].submit();
+            }
+        }
     </script>
 </head>
 <body>
@@ -31,6 +40,10 @@
     <div class="container">
         <div class="starter-template">
             <h3>Users Management</h3>
+
+            <c:if test="${not empty message}">
+                <p class="success">${message}</p>
+            </c:if>
 
             <table class="listTable">
                 <thead>
@@ -59,7 +72,7 @@
                             <a href="${usersRoot}/edit/${item.id}">Edit</a> /
                             <c:choose>
                                 <c:when test="${item.locked}"><a href="#">Unlock</a></c:when>
-                                <c:otherwise><a href="#">Lock</a></c:otherwise>
+                                <c:otherwise><a class="noHref" onclick="lockUser(${item.id}, '${item.displayName}');">Lock</a></c:otherwise>
                             </c:choose> /
                             <a href="#">Confirm</a>
                         </td>
@@ -70,5 +83,10 @@
         </div>
     </div>
 
+    <form id="lockUserForm" action="${usersRoot}/lock" method="post">
+        <input id="lockCsrf" type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+        <input id="lockId" type="hidden" name="id" />
+        <input id="lockReason" type="hidden" name="reason" />
+    </form>
 </body>
 </html>

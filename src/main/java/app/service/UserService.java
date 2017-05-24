@@ -19,4 +19,5 @@ public interface UserService {
     boolean hasPermission(Permissions permission);
     void save(UserEntity user);
     void encryptPass(UserEntity user);
+    void lockUser(Long id, String reason);
 }

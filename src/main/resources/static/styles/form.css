@@ -69,3 +69,11 @@ span.warning {
     background-color: #ff6;
     color: #0;
 }
+
+a.noHref {
+    cursor: pointer;
+}
+
+p.success {
+    color: green;
+}
