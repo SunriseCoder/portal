@@ -29,6 +29,14 @@
                 $('#lockUserForm')[0].submit();
             }
         }
+
+        function unlockUser(id, name) {
+            var confirmed = confirm("Are You sure to unlock user " + name);
+            if (confirmed) {
+                $('#unlockId')[0].value = id;
+                $('#unlockUserForm')[0].submit();
+            }
+        }
     </script>
 </head>
 <body>
@@ -71,7 +79,7 @@
                         <td>
                             <a href="${usersRoot}/edit/${item.id}">Edit</a> /
                             <c:choose>
-                                <c:when test="${item.locked}"><a href="#">Unlock</a></c:when>
+                                <c:when test="${item.locked}"><a class="noHref" onclick="unlockUser(${item.id}, '${item.displayName}');">Unlock</a></c:when>
                                 <c:otherwise><a class="noHref" onclick="lockUser(${item.id}, '${item.displayName}');">Lock</a></c:otherwise>
                             </c:choose> /
                             <a href="#">Confirm</a>
@@ -87,6 +95,11 @@
         <input id="lockCsrf" type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
         <input id="lockId" type="hidden" name="id" />
         <input id="lockReason" type="hidden" name="reason" />
+    </form>
+
+    <form id="unlockUserForm" action="${usersRoot}/unlock" method="post">
+        <input id="unlockCsrf" type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+        <input id="unlockId" type="hidden" name="id" />
     </form>
 </body>
 </html>

@@ -20,4 +20,5 @@ public interface UserService {
     void save(UserEntity user);
     void encryptPass(UserEntity user);
     void lockUser(Long id, String reason);
+    void unlockUser(Long id);
 }

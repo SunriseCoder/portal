@@ -2,6 +2,8 @@ package app.service;
 
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -92,15 +94,32 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void lockUser(Long id, String reason) {
+        UserLockEntity lock = userLockRepository.findByUserId(id);
+        if (lock != null) {
+            return;
+        }
+
         UserEntity currentUser = getLoggedInUser();
         UserEntity user = findById(id);
 
-        UserLockEntity lock = new UserLockEntity();
+        lock = new UserLockEntity();
         lock.setUser(user);
         lock.setReason(reason);
         lock.setLockedBy(currentUser);
 
         userLockRepository.save(lock);
+    }
+
+    @Override
+    @Transactional
+    public void unlockUser(Long id) {
+        UserLockEntity lock = userLockRepository.findByUserId(id);
+        if (lock == null) {
+            return;
+        }
+
+        userLockRepository.delete(lock);
     }
 }

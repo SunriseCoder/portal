@@ -241,10 +241,26 @@ public class AdminController extends BaseController {
             return REDIRECT_ADMIN;
         }
 
-        System.out.println(id);
         if (id != null && reason != null && !reason.trim().isEmpty()) {
             userService.lockUser(id, reason);
             redirectAttributes.addFlashAttribute("message", "User locked successfully");
+        }
+
+        return REDIRECT_USERS;
+    }
+
+    @PostMapping("/users/unlock")
+    public String unlockUser(@RequestParam("id") Long id, Model model,
+                    HttpServletRequest request, RedirectAttributes redirectAttributes) {
+
+        LogUtils.logRequest(logger, request);
+        if (!userService.hasPermission(Permissions.ADMIN_USERS_UNLOCK)) {
+            return REDIRECT_ADMIN;
+        }
+
+        if (id != null) {
+            userService.unlockUser(id);
+            redirectAttributes.addFlashAttribute("message", "User unlocked successfully");
         }
 
         return REDIRECT_USERS;

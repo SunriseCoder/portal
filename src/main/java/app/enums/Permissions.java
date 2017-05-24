@@ -7,5 +7,6 @@ public enum Permissions {
     ADMIN_USERS_EDIT,
     ADMIN_USERS_ROLES,
     ADMIN_USERS_LOCK,
+    ADMIN_USERS_UNLOCK,
     UPLOAD_FILES
 }
