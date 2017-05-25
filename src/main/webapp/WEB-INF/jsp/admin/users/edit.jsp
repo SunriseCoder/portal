@@ -44,11 +44,11 @@
                         <td>Login:</td>
                         <td>
                             <form:input path="login" type="text" maxlength="32" /><br />
-                            <form:errors path="login" cssClass="error-text" />
                         </td>
                         <td>
                             <c:if test="${not empty user && user.hasPermission('ADMIN_USERS_EDIT')}">
                                 <input type="submit" value="Change" />
+                                <form:errors path="login" cssClass="error-text" />
                             </c:if>
                         </td>
                     </form:form>
@@ -59,12 +59,12 @@
                         <td>Password:</td>
                         <td>
                             <form:input id="changePasswordField" path="pass" type="text" /><br />
-                            <form:errors path="pass" cssClass="error-text" />
                         </td>
                         <td>
                             <c:if test="${not empty user && user.hasPermission('ADMIN_USERS_EDIT')}">
                                 <input type="button" value="Generate" onclick="FormUtils.generatePassword('changePasswordField');" />
                                 <input type="submit" value="Change" />
+                                <form:errors path="pass" cssClass="error-text" />
                             </c:if>
                         </td>
                     </form:form>
@@ -75,11 +75,11 @@
                         <td>Display Name:</td>
                         <td>
                             <form:input path="displayName" type="text" maxlength="64" /><br />
-                            <form:errors path="displayName" cssClass="error-text" />
                         </td>
                         <td>
                             <c:if test="${not empty user && user.hasPermission('ADMIN_USERS_EDIT')}">
                                 <input type="submit" value="Change" />
+                                <form:errors path="displayName" cssClass="error-text" />
                             </c:if>
                         </td>
                     </form:form>
@@ -90,11 +90,11 @@
                         <td>E-Mail:</td>
                         <td>
                             <form:input path="email" type="text" maxlength="64" /><br />
-                            <form:errors path="email" cssClass="error-text" />
                         </td>
                         <td>
                             <c:if test="${not empty user && user.hasPermission('ADMIN_USERS_EDIT')}">
                                 <input type="submit" value="Change" />
+                                <form:errors path="email" cssClass="error-text" />
                             </c:if>
                         </td>
                     </form:form>
@@ -104,12 +104,17 @@
                         <form:hidden path="id" />
                         <td>Roles:</td>
                         <td>
-                            <form:checkboxes items="${allRoles}" path="roles" delimiter="<br />" itemLabel="name" />
-                            <form:errors path="roles" cssClass="error-text" />
+                            <c:forEach items="${allRoles}" var="role">
+                                <form:checkbox path="roles" value="${role}" label="${role.name}" /><br/>
+                                <c:forEach items="${role.permissions}" var="permission">
+                                    <span class="permission"><b>${permission.name}</b> (${permission.comment})</span><br />
+                                </c:forEach>
+                            </c:forEach>
                         </td>
                         <td>
                             <c:if test="${not empty user && user.hasPermission('ADMIN_USERS_ROLES')}">
                                 <input type="submit" value="Change" />
+                                <form:errors path="roles" cssClass="error-text" />
                             </c:if>
                         </td>
                     </form:form>
@@ -117,9 +122,12 @@
                 <tr>
                     <td>Permissions:</td>
                     <td>
-                        <c:forEach items="${permissionList}" var="item">
-                            ${item}<br />
-                        </c:forEach>
+                        <form:form commandName="userEntity">
+                            <c:forEach items="${allPermissions}" var="permission">
+                                <form:checkbox disabled="true" path="permissions" value="${permission.name}" />
+                                <b>${permission.name}</b> (${permission.comment})<br />
+                            </c:forEach>
+                        </form:form>
                     </td>
                 </tr>
             </table>

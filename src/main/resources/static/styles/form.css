@@ -77,3 +77,7 @@ a.noHref {
 p.success {
     color: green;
 }
+
+span.permission {
+    padding-left: 20px;
+}

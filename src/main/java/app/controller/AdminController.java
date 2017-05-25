@@ -2,7 +2,6 @@ package app.controller;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -25,9 +24,11 @@ import app.dto.ChangeEmailDTO;
 import app.dto.ChangeLoginDTO;
 import app.dto.ChangePasswordDTO;
 import app.dto.ChangeRolesDTO;
+import app.entity.PermissionEntity;
 import app.entity.RoleEntity;
 import app.entity.UserEntity;
 import app.enums.Permissions;
+import app.service.PermissionService;
 import app.service.RolesService;
 import app.util.LogUtils;
 import app.validator.UserEntityValidator;
@@ -46,6 +47,8 @@ public class AdminController extends BaseController {
 
     private static final String DEFAULT_PASSWORD_STUB = "<hidden>";
 
+    @Autowired
+    private PermissionService permissionService;
     @Autowired
     private RolesService rolesService;
 
@@ -302,8 +305,9 @@ public class AdminController extends BaseController {
         allRoles.sort((r1, r2) -> r1.getName().compareTo(r2.getName()));
         model.addAttribute("allRoles", allRoles);
 
-        List<String> permissions = user.getPermissions().stream().sorted().collect(Collectors.toList());
-        model.addAttribute("permissionList", permissions);
+        List<PermissionEntity> allPermissions = permissionService.findAll();
+        allPermissions.sort((p1, p2) -> p1.getName().compareTo(p2.getName()));
+        model.addAttribute("allPermissions", allPermissions);
     }
 
     private void validateSelectedRoles(ChangeRolesDTO changeRoles, BindingResult bindingResult) {
