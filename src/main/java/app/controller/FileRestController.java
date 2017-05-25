@@ -12,6 +12,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,7 +25,6 @@ import app.service.FileService;
 import app.service.UserService;
 import app.util.HttpUtils;
 import app.util.LogUtils;
-import app.util.SecurityUtils;
 import app.util.StringUtils;
 
 @RestController
@@ -62,28 +62,25 @@ public class FileRestController {
         }
     }
 
-    @RequestMapping("/upload")
+    @PostMapping("/upload")
     public void uploadFile(@RequestParam("file") MultipartFile file,
             HttpServletRequest request, HttpServletResponse response) {
+
         UserEntity user = userService.getLoggedInUser();
         String name = user == null ? "" : user.getLogin();
         LogUtils.logUploadRequest(logger, request, name, file);
 
-        if (!userService.hasPermission(Permissions.UPLOAD_FILES)) {
-            return;
-        }
-
         if (user == null) {
-            logger.error("User is not authorized");
+            logger.error("Unauthorized user tries to upload file");
             HttpUtils.sendResponseError(response, HttpServletResponse.SC_FORBIDDEN, "You are not authorized.");
             return;
         }
 
         Permissions permssion = Permissions.UPLOAD_FILES;
-        if (!SecurityUtils.hasPermission(user, permssion)) {
-            logger.error("User {} don't have permission {} for this action.", user.getLogin(), permssion);
+        if (!userService.hasPermission(permssion)) {
+            logger.error("User {} tries to upload file, but don't have permission {}", user.getLogin(), permssion);
             HttpUtils.sendResponseError(response, HttpServletResponse.SC_FORBIDDEN,
-                    "You don't have sufficient permissions to upload files.");
+                            "You don't have sufficient permissions to upload files.");
             return;
         }
 

@@ -104,7 +104,12 @@ public class UserEntity {
     }
 
     public Boolean hasPermission(String permission) {
+        if (isLocked()) {
+            return Boolean.FALSE;
+        }
+
         checkInitPermissions();
+
         boolean result = permissions.contains(permission);
         return result;
     }

@@ -1,12 +1,13 @@
 package app.enums;
 
 public enum Permissions {
+    PAGES_VIEW,
+    UPLOAD_FILES,
     ADMIN_PAGE,
     ADMIN_DASHBOARD,
     ADMIN_USERS_VIEW,
     ADMIN_USERS_EDIT,
     ADMIN_USERS_ROLES,
     ADMIN_USERS_LOCK,
-    ADMIN_USERS_UNLOCK,
-    UPLOAD_FILES
+    ADMIN_USERS_UNLOCK
 }

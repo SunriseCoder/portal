@@ -16,14 +16,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import app.dto.LoginDTO;
 import app.entity.RoleEntity;
 import app.entity.UserEntity;
+import app.security.SecurityService;
 import app.service.RolesService;
-import app.service.SecurityService;
 import app.service.UserService;
 import app.util.LogUtils;
 import app.validator.UserEntityValidator;
 
 @Controller
-public class RegisterController {
+public class RegisterController extends BaseController {
     private static final Logger logger = LogManager.getLogger(RegisterController.class.getName());
 
     @Autowired
@@ -57,6 +57,6 @@ public class RegisterController {
 
         securityService.autologin(user.getLogin(), pass);
 
-        return "redirect:/";
+        return REDIRECT_MAIN;
     }
 }

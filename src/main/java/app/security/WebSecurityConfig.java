@@ -1,4 +1,4 @@
-package app;
+package app.security;
 
 import javax.sql.DataSource;
 
@@ -44,6 +44,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder());
+        auth.userDetailsService(userDetailsService)
+            .passwordEncoder(bCryptPasswordEncoder());
     }
 }

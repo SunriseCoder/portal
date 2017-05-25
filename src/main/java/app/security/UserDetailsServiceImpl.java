@@ -1,4 +1,4 @@
-package app.service;
+package app.security;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -13,6 +13,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import app.entity.UserEntity;
+import app.service.UserService;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
@@ -27,9 +28,17 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             throw new UsernameNotFoundException(login);
         }
 
-        List<GrantedAuthority> grantedAuthorities = userEntity.getPermissions().stream()
+        String username = userEntity.getLogin();
+        String password = userEntity.getPass();
+        boolean enabled = true;
+        boolean accountNonExpired = true;
+        boolean credentialsNonExpired = true;
+        boolean accountNonLocked = !userEntity.isLocked();
+
+        List<GrantedAuthority> authorities = userEntity.getPermissions().stream()
                 .map(p -> new SimpleGrantedAuthority(p)).collect(Collectors.toList());
-        User user = new User(userEntity.getLogin(), userEntity.getPass(), grantedAuthorities);
+
+        User user = new User(username, password, enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, authorities);
         return user;
     }
 }

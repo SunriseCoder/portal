@@ -1,4 +1,4 @@
-package app.service;
+package app.security;
 
 public interface SecurityService {
     String getLoggedInUsername();

@@ -11,6 +11,7 @@ import app.service.UserService;
 
 public class BaseController {
     protected static final String REDIRECT_MAIN = "redirect:/";
+    protected static final String REDIRECT_LOGOUT = "redirect:/logout";
 
     @Autowired
     protected UserService userService;

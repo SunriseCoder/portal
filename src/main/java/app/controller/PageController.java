@@ -14,12 +14,21 @@ public class PageController extends BaseController {
 
     @GetMapping("/")
     public String index(Model model) {
+        UserEntity user = userService.getLoggedInUser();
+        if (user != null && user.isLocked()) {
+            return REDIRECT_LOGOUT;
+        }
+
         injectUser(model);
         return "index";
     }
 
     @GetMapping("/files")
     public String files(Model model) {
+        if (!userService.hasPermission(Permissions.PAGES_VIEW)) {
+            return REDIRECT_MAIN;
+        }
+
         injectUser(model);
         return "files";
     }
@@ -27,7 +36,7 @@ public class PageController extends BaseController {
     @GetMapping("/login")
     public String login(HttpServletRequest request, Model model) {
         if (userService.isAuthenticated()) {
-            return "redirect:/";
+            return REDIRECT_MAIN;
         }
 
         injectLoginDTO(model);
@@ -43,7 +52,7 @@ public class PageController extends BaseController {
     @GetMapping("/register")
     public String register(Model model) {
         if (userService.isAuthenticated()) {
-            return "redirect:/";
+            return REDIRECT_MAIN;
         }
 
         injectLoginDTO(model);
@@ -59,5 +68,14 @@ public class PageController extends BaseController {
 
         injectUser(model);
         return "upload";
+    }
+
+    @GetMapping("/logout")
+    public String logout(Model model) {
+        if (!userService.isAuthenticated()) {
+            return REDIRECT_MAIN;
+        }
+
+        return "logout";
     }
 }
