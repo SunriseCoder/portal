@@ -1,8 +1,6 @@
 package app.entity;
 
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -26,11 +24,6 @@ public class RoleEntity {
     @JoinTable(name = "zz_roles_permissions", joinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "permission_id", referencedColumnName = "id"))
     private List<PermissionEntity> permissions;
-
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "zz_roles_roles", joinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "included_role_id", referencedColumnName = "id"))
-    private List<RoleEntity> includedRoles;
 
     public Long getId() {
         return id;
@@ -62,20 +55,5 @@ public class RoleEntity {
 
     public void setPermissions(List<PermissionEntity> permissions) {
         this.permissions = permissions;
-    }
-
-    public List<RoleEntity> getIncludedRoles() {
-        return includedRoles;
-    }
-
-    public void setIncludedRoles(List<RoleEntity> includedRoles) {
-        this.includedRoles = includedRoles;
-    }
-
-    public Set<String> getAllPermissions() {
-        Set<String> permissions = this.permissions.stream()
-                .map(PermissionEntity::getName).collect(Collectors.toSet());
-        includedRoles.stream().forEach(role -> permissions.addAll(role.getAllPermissions()));
-        return permissions;
     }
 }

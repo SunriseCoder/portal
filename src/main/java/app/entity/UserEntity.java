@@ -3,6 +3,7 @@ package app.entity;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -151,12 +152,14 @@ public class UserEntity {
             return;
         }
 
-        permissions = new HashSet<>();
-
         if (roles == null) {
+            permissions = new HashSet<>();
             return;
         }
 
-        roles.stream().forEach(role -> permissions.addAll(role.getAllPermissions()));
+        permissions = roles.stream()
+                        .flatMap(r -> r.getPermissions().stream())
+                        .map(PermissionEntity::getName)
+                        .collect(Collectors.toSet());
     }
 }
