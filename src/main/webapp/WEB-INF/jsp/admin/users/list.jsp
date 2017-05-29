@@ -21,6 +21,23 @@
             Locales.writeTitle("admin.caption");
         });
 
+        function confirmUser(id, name) {
+            var comment = prompt("Optional comment to confirm identity of user " + name);
+            if (comment != null) {
+                $('#confirmId')[0].value = id;
+                $('#confirmComment')[0].value = comment;
+                $('#confirmUserForm')[0].submit();
+            }
+        }
+
+        function unconfirmUser(id, name) {
+            var confirmed = confirm("Are You sure to reject identity confirmation of user " + name);
+            if (confirmed) {
+                $('#unconfirmId')[0].value = id;
+                $('#unconfirmUserForm')[0].submit();
+            }
+        }
+
         function lockUser(id, name) {
             var reason = prompt("Please enter lock reason for user " + name);
             if (reason != null) {
@@ -61,6 +78,7 @@
                         <th>Display Name</th>
                         <th>E-Mail</th>
                         <th>Locked</th>
+                        <th>Confirmed</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -75,6 +93,11 @@
                                 <span class="warning" title="${item.lock.reason} (by ${item.lock.lockedBy.displayName})">Locked</span>
                             </c:if>
                         </td>
+                        <td>
+                            <c:if test="${item.confirmed}">
+                                <span class="confirmed" title="${item.confirmation.comment} (by ${item.confirmation.confirmedBy.displayName})">Confirmed</span>
+                            </c:if>
+                        </td>
 
                         <td>
                             <a href="${usersRoot}/edit/${item.id}">Edit</a> /
@@ -82,7 +105,10 @@
                                 <c:when test="${item.locked}"><a class="noHref" onclick="unlockUser(${item.id}, '${item.displayName}');">Unlock</a></c:when>
                                 <c:otherwise><a class="noHref" onclick="lockUser(${item.id}, '${item.displayName}');">Lock</a></c:otherwise>
                             </c:choose> /
-                            <a href="#">Confirm</a>
+                            <c:choose>
+                                <c:when test="${item.confirmed}"><a class="noHref" onclick="unconfirmUser(${item.id}, '${item.displayName}');">Reject confirm</a></c:when>
+                                <c:otherwise><a class="noHref" onclick="confirmUser(${item.id}, '${item.displayName}');">Confirm</a></c:otherwise>
+                            </c:choose>
                         </td>
                     </tr>
                 </c:forEach>
@@ -90,6 +116,17 @@
 
         </div>
     </div>
+
+    <form id="confirmUserForm" action="${usersRoot}/confirm" method="post">
+        <input id="confirmCsrf" type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+        <input id="confirmId" type="hidden" name="id" />
+        <input id="confirmComment" type="hidden" name="comment" />
+    </form>
+
+    <form id="unconfirmUserForm" action="${usersRoot}/unconfirm" method="post">
+        <input id="unconfirmCsrf" type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+        <input id="unconfirmId" type="hidden" name="id" />
+    </form>
 
     <form id="lockUserForm" action="${usersRoot}/lock" method="post">
         <input id="lockCsrf" type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
@@ -101,5 +138,6 @@
         <input id="unlockCsrf" type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
         <input id="unlockId" type="hidden" name="id" />
     </form>
+
 </body>
 </html>

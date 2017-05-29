@@ -9,8 +9,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import app.dao.UserConfirmRepository;
 import app.dao.UserLockRepository;
 import app.dao.UserRepository;
+import app.entity.UserConfirmEntity;
 import app.entity.UserEntity;
 import app.entity.UserLockEntity;
 import app.enums.Permissions;
@@ -21,10 +23,13 @@ import app.util.StringUtils;
 public class UserServiceImpl implements UserService {
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
+
     @Autowired
     private UserRepository repository;
     @Autowired
     private UserLockRepository userLockRepository;
+    @Autowired
+    private UserConfirmRepository userConfirmRepository;
 
     @Override
     public List<UserEntity> findAll() {
@@ -91,6 +96,36 @@ public class UserServiceImpl implements UserService {
         String encodedPass = bCryptPasswordEncoder.encode(user.getPass());
         user.setPass(encodedPass);
         user.setConfirm(encodedPass);
+    }
+
+    @Override
+    public void confirmUser(Long id, String comment) {
+        UserConfirmEntity confirmation = userConfirmRepository.findByUserId(id);
+        if (confirmation != null) {
+            return;
+        }
+
+        UserEntity currentUser = getLoggedInUser();
+        UserEntity user = findById(id);
+
+        confirmation = new UserConfirmEntity();
+        confirmation.setUser(user);
+        if (comment != null && !comment.trim().isEmpty()) {
+            confirmation.setComment(comment);
+        }
+        confirmation.setConfirmedBy(currentUser);
+
+        userConfirmRepository.save(confirmation);
+    }
+
+    @Override
+    public void unconfirmUser(Long id) {
+        UserConfirmEntity confirmation = userConfirmRepository.findByUserId(id);
+        if (confirmation == null) {
+            return;
+        }
+
+        userConfirmRepository.delete(confirmation);
     }
 
     @Override

@@ -70,12 +70,17 @@ span.warning {
     color: #0;
 }
 
-a.noHref {
-    cursor: pointer;
-}
-
 p.success {
     color: green;
+}
+
+span.confirmed {
+    background-color: #afa;
+    color: #0;
+}
+
+a.noHref {
+    cursor: pointer;
 }
 
 span.permission {

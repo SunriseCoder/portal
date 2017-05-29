@@ -235,6 +235,40 @@ public class AdminController extends BaseController {
         return ADMIN_USERS_EDIT;
     }
 
+    @PostMapping("/users/confirm")
+    public String confirmUser(@RequestParam("id") Long id, @RequestParam("comment") String comment, Model model,
+                    HttpServletRequest request, RedirectAttributes redirectAttributes) {
+
+        LogUtils.logRequest(logger, request);
+        if (!userService.hasPermission(Permissions.ADMIN_USERS_CONFIRM)) {
+            return REDIRECT_ADMIN;
+        }
+
+        if (id != null) {
+            userService.confirmUser(id, comment);
+            redirectAttributes.addFlashAttribute("message", "User confirmed successfully");
+        }
+
+        return REDIRECT_USERS;
+    }
+
+    @PostMapping("/users/unconfirm")
+    public String unconfirmUser(@RequestParam("id") Long id, Model model,
+                    HttpServletRequest request, RedirectAttributes redirectAttributes) {
+
+        LogUtils.logRequest(logger, request);
+        if (!userService.hasPermission(Permissions.ADMIN_USERS_UNCONFIRM)) {
+            return REDIRECT_ADMIN;
+        }
+
+        if (id != null) {
+            userService.unconfirmUser(id);
+            redirectAttributes.addFlashAttribute("message", "User identity confirmation successfully rejected");
+        }
+
+        return REDIRECT_USERS;
+    }
+
     @PostMapping("/users/lock")
     public String lockUser(@RequestParam("id") Long id, @RequestParam("reason") String reason, Model model,
                     HttpServletRequest request, RedirectAttributes redirectAttributes) {

@@ -20,14 +20,19 @@ public class UserEntity {
     @Id
     @GeneratedValue
     private Long id;
+
     @Column(unique = true)
     private String login;
+
     @Column
     private String pass;
+
     @Transient
     private String confirm;
+
     @Column(unique = true)
     private String displayName;
+
     @Column
     private String email;
 
@@ -38,6 +43,9 @@ public class UserEntity {
 
     @Transient
     private Set<String> permissions;
+
+    @OneToOne(mappedBy = "user")
+    private UserConfirmEntity confirmation;
 
     @OneToOne(mappedBy = "user")
     private UserLockEntity lock;
@@ -112,6 +120,18 @@ public class UserEntity {
 
         boolean result = permissions.contains(permission);
         return result;
+    }
+
+    public boolean isConfirmed() {
+        return confirmation != null;
+    }
+
+    public UserConfirmEntity getConfirmation() {
+        return confirmation;
+    }
+
+    public void setConfirmation(UserConfirmEntity confirmation) {
+        this.confirmation = confirmation;
     }
 
     public boolean isLocked() {
