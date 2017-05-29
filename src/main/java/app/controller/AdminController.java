@@ -41,6 +41,7 @@ public class AdminController extends BaseController {
     private static final String ADMIN_DASHBOARD = "admin/dashboard";
     private static final String ADMIN_USERS_LIST = "admin/users/list";
     private static final String ADMIN_USERS_EDIT = "admin/users/edit";
+    private static final String ADMIN_ROLES_LIST = "admin/roles/list";
 
     private static final String REDIRECT_ADMIN = "redirect:/admin";
     private static final String REDIRECT_USERS = "redirect:/admin/users";
@@ -301,6 +302,23 @@ public class AdminController extends BaseController {
         }
 
         return REDIRECT_USERS;
+    }
+
+    @GetMapping("/roles")
+    public String rolesList(Model model) {
+        if (!userService.hasPermission(Permissions.ADMIN_ROLES_VIEW)) {
+            return REDIRECT_ADMIN;
+        }
+
+        injectUser(model);
+        List<RoleEntity> roleList = rolesService.findAll();
+        roleList.sort(
+                        (r1, r2) -> r1.getName().compareTo(r2.getName()));
+        roleList.forEach(
+                        r -> r.getPermissions().sort(
+                                        (r1, r2) -> r1.getName().compareTo(r2.getName())));
+        model.addAttribute("roleList", roleList);
+        return ADMIN_ROLES_LIST;
     }
 
     private UserEntity injectUserEntity(Model model, Long id) {

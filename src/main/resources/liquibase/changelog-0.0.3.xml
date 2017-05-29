@@ -189,6 +189,18 @@
             <column name="comment" value="Allows to reject identity confirmation" />
         </insert>
 
+        <insert tableName="permissions">
+            <column name="id" value="12" />
+            <column name="name" value="ADMIN_ROLES_VIEW" />
+            <column name="comment" value="Allows to reject identity confirmation" />
+        </insert>
+
+        <insert tableName="permissions">
+            <column name="id" value="13" />
+            <column name="name" value="ADMIN_ROLES_EDIT" />
+            <column name="comment" value="Allows to reject identity confirmation" />
+        </insert>
+
     </changeSet>
 
     <changeSet id="0.0.3-06" author="SunriseCoder">
@@ -296,6 +308,18 @@
             <column name="permission_id" value="11" />
         </insert>
 
+        <!-- Grant Permission ADMIN_ROLES_VIEW to Role Admin -->
+        <insert tableName="zz_roles_permissions">
+            <column name="role_id" value="1" />
+            <column name="permission_id" value="12" />
+        </insert>
+
+        <!-- Grant Permission ADMIN_ROLES_EDIT to Role Admin -->
+        <insert tableName="zz_roles_permissions">
+            <column name="role_id" value="1" />
+            <column name="permission_id" value="13" />
+        </insert>
+
         <!-- Grant Permission UPLOAD_FILES to Role User -->
         <insert tableName="zz_roles_permissions">
             <column name="role_id" value="2" />
@@ -354,6 +378,12 @@
         <insert tableName="zz_roles_permissions">
             <column name="role_id" value="3" />
             <column name="permission_id" value="10" />
+        </insert>
+
+        <!-- Grant Permission ADMIN_ROLES_VIEW to Role Moder -->
+        <insert tableName="zz_roles_permissions">
+            <column name="role_id" value="3" />
+            <column name="permission_id" value="12" />
         </insert>
 
     </changeSet>

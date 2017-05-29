@@ -9,6 +9,7 @@ table.formTable td {
 
 table.listTable td {
     padding: 5px !important;
+    vertical-align: text-top;
 }
 
 table.listTable th {

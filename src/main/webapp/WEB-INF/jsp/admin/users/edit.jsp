@@ -8,7 +8,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Main</title>
+    <title>Edit User</title>
 
     <link rel="stylesheet" type="text/css" href="${appRoot}/styles/form.css" />
 

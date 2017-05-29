@@ -17,7 +17,9 @@
                     <li><a href="${adminRoot}/users">Users</a></li>
                 </c:if>
 
-                <li><a href="#">Roles</a></li>
+                <c:if test="${not empty user && user.hasPermission('ADMIN_ROLES_VIEW')}">
+                    <li><a href="${adminRoot}/roles">Roles</a></li>
+                </c:if>
 
             </ul>
         </div>

@@ -8,7 +8,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Main</title>
+    <title>User Management</title>
 
     <link rel="stylesheet" type="text/css" href="${appRoot}/styles/form.css" />
 
@@ -64,7 +64,7 @@
 
     <div class="container">
         <div class="starter-template">
-            <h3>Users Management</h3>
+            <h3>User Management</h3>
 
             <c:if test="${not empty message}">
                 <p class="success">${message}</p>
