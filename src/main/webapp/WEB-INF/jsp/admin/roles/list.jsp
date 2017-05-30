@@ -51,7 +51,6 @@
                     <tr>
                         <th>ID</th>
                         <th>Role</th>
-                        <th>Permissions</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -63,11 +62,6 @@
                             ${item.comment}
                         </td>
                         <td>
-                            <c:forEach items="${item.permissions}" var="permission">
-                                ${permission.name}<br />
-                            </c:forEach>
-                        </td>
-                        <td>
                             <a href="${rolesRoot}/edit/${item.id}">Edit</a> /
                             <a class="noHref" onclick="deleteRole(${item.id}, '${item.name}');">Delete</a>
                         </td>
@@ -75,6 +69,30 @@
                 </c:forEach>
             </table>
 
+            <h3>Role-Permission Matrix</h3>
+
+            <table class="listTable" border="1">
+                <thead>
+                    <tr>
+                        <th>Permissions \ Roles</th>
+                        <c:forEach items="${roleList}" var="role">
+                            <th>${role.name}</th>
+                        </c:forEach>
+                    </tr>
+                </thead>
+                <c:forEach items="${permissionList}" var="permission">
+                    <tr>
+                        <td><b>${permission.name}</b></td>
+                        <c:forEach items="${roleList}" var="role">
+                            <td style="text-align: center;">
+                                <c:if test="${role.permissions.contains(permission)}">
+                                    X
+                                </c:if>
+                            </td>
+                        </c:forEach>
+                    </tr>
+                </c:forEach>
+            </table>
         </div>
     </div>
 

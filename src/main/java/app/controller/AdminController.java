@@ -331,6 +331,7 @@ public class AdminController extends BaseController {
         }
 
         injectUser(model);
+
         List<RoleEntity> roleList = rolesService.findAll();
         roleList.sort(
                         (r1, r2) -> r1.getName().compareTo(r2.getName()));
@@ -338,6 +339,12 @@ public class AdminController extends BaseController {
                         r -> r.getPermissions().sort(
                                         (r1, r2) -> r1.getName().compareTo(r2.getName())));
         model.addAttribute("roleList", roleList);
+
+        List<PermissionEntity> permissionList = permissionService.findAll();
+        permissionList.sort(
+                        (r1, r2) -> r1.getName().compareTo(r2.getName()));
+        model.addAttribute("permissionList", permissionList);
+
         return ADMIN_ROLES_LIST;
     }
 
