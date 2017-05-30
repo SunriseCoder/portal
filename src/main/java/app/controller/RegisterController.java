@@ -1,5 +1,6 @@
 package app.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,7 +18,7 @@ import app.dto.LoginDTO;
 import app.entity.RoleEntity;
 import app.entity.UserEntity;
 import app.security.SecurityService;
-import app.service.RolesService;
+import app.service.RoleService;
 import app.service.UserService;
 import app.util.LogUtils;
 import app.validator.UserEntityValidator;
@@ -33,7 +34,7 @@ public class RegisterController extends BaseController {
     @Autowired
     private UserEntityValidator userValidator;
     @Autowired
-    private RolesService rolesService;
+    private RoleService rolesService;
 
     @PostMapping("/register")
     public String registration(@ModelAttribute("userForm") UserEntity user, BindingResult bindingResult, Model model,
@@ -50,7 +51,9 @@ public class RegisterController extends BaseController {
         String pass = user.getPass();
 
         // Assigning default role for new user
-        List<RoleEntity> roles = rolesService.getRoleByName("User");
+        List<RoleEntity> roles = new ArrayList<>();
+        RoleEntity roleUser = rolesService.findByName("User");
+        roles.add(roleUser);
         user.setRoles(roles);
 
         userService.save(user);

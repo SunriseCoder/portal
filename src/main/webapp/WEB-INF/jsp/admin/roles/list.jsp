@@ -3,7 +3,7 @@
 
 <c:set var="appRoot" value="${pageContext.request.contextPath}" />
 <c:set var="adminRoot" value="${appRoot}/admin" />
-<c:set var="rolesRoot" value="${adminRoot}/users" />
+<c:set var="rolesRoot" value="${adminRoot}/roles" />
 
 <!DOCTYPE html>
 <html>
@@ -20,6 +20,14 @@
             Locales.appRoot = '${appRoot}';
             Locales.writeTitle("admin.caption");
         });
+
+        function deleteRole(id, name) {
+            var confirmed = confirm("Are You sure to delete role " + name);
+            if (confirmed) {
+                $('#deleteRoleId')[0].value = id;
+                $('#deleteRoleForm')[0].submit();
+            }
+        }
     </script>
 </head>
 <body>
@@ -35,6 +43,8 @@
             <c:if test="${not empty message}">
                 <p class="success">${message}</p>
             </c:if>
+
+            <a href="${rolesRoot}/create">Create new Role</a>
 
             <table class="listTable">
                 <thead>
@@ -58,9 +68,8 @@
                             </c:forEach>
                         </td>
                         <td>
-                            <a href="${rolesRoot}/edit">Create</a> /
                             <a href="${rolesRoot}/edit/${item.id}">Edit</a> /
-                            <a href="${rolesRoot}/delete/${item.id}">Delete</a>
+                            <a class="noHref" onclick="deleteRole(${item.id}, '${item.name}');">Delete</a>
                         </td>
                     </tr>
                 </c:forEach>
@@ -68,6 +77,11 @@
 
         </div>
     </div>
+
+    <form id="deleteRoleForm" action="${rolesRoot}/delete" method="post">
+        <input id="deleteRoleCsrf" type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+        <input id="deleteRoleId" type="hidden" name="id" />
+    </form>
 
 </body>
 </html>
