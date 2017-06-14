@@ -1,5 +1,10 @@
 package app.security;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,9 +20,25 @@ public class SecurityServiceImpl implements SecurityService {
     private static final Logger logger = LogManager.getLogger(SecurityServiceImpl.class);
 
     @Autowired
+    private HttpServletRequest request;
+    @Autowired
     private AuthenticationManager authenticationManager;
     @Autowired
     private UserDetailsService userDetailsService;
+
+    @Override
+    public List<String> getIps() {
+        List<String> ips = new ArrayList<>();
+        addIp(ips, request.getHeader("X-FORWARDED-FOR"));
+        addIp(ips, request.getRemoteAddr());
+        return ips;
+    }
+
+    private void addIp(List<String> ips, String ip) {
+        if (ip != null && !"".equals(ip)) {
+            ips.add(ip);
+        }
+    }
 
     @Override
     public String getLoggedInUsername() {

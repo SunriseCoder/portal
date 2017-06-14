@@ -29,7 +29,10 @@ import app.dto.ChangeRolesDTO;
 import app.entity.PermissionEntity;
 import app.entity.RoleEntity;
 import app.entity.UserEntity;
+import app.enums.AuditEventTypes;
+import app.enums.OperationTypes;
 import app.enums.Permissions;
+import app.service.AuditService;
 import app.service.PermissionService;
 import app.service.RoleService;
 import app.util.LogUtils;
@@ -57,6 +60,8 @@ public class AdminController extends BaseController {
     private PermissionService permissionService;
     @Autowired
     private RoleService rolesService;
+    @Autowired
+    private AuditService auditService;
 
     @Autowired
     private UserEntityValidator userValidator;
@@ -67,10 +72,12 @@ public class AdminController extends BaseController {
     public String index(Model model) {
         if (!userService.hasPermission(Permissions.ADMIN_PAGE)) {
             logger.warn("Attempt to enter admin section without permissions");
+            auditService.log(OperationTypes.ACCESS_ADMIN_DASHBOARD, AuditEventTypes.ACCESS_DENIED);
             return REDIRECT_MAIN;
         }
 
         injectUser(model);
+        auditService.log(OperationTypes.ACCESS_ADMIN_DASHBOARD, AuditEventTypes.ACCESS_ALLOWED);
         return ADMIN_DASHBOARD;
     }
 

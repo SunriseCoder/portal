@@ -422,4 +422,82 @@
 
     </changeSet>
 
+    <changeSet id="0.0.3-09" author="SunriseCoder">
+
+        <createTable tableName="audit_event_types">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" primaryKeyName="pk_audit_event_types" nullable="false" />
+            </column>
+            <column name="name" type="varchar(64)">
+                <constraints unique="true" uniqueConstraintName="ui_audit_event_type_name" nullable="false" />
+            </column>
+            <column name="aware" type="boolean">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+
+        <insert tableName="audit_event_types">
+            <column name="id" value="1" />
+            <column name="name" value="ACCESS_ALLOWED" />
+            <column name="aware" valueBoolean="false" />
+        </insert>
+
+        <insert tableName="audit_event_types">
+            <column name="id" value="2" />
+            <column name="name" value="ACCESS_DENIED" />
+            <column name="aware" valueBoolean="true" />
+        </insert>
+
+    </changeSet>
+
+    <changeSet id="0.0.3-10" author="SunriseCoder">
+
+        <createTable tableName="operation_types">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" primaryKeyName="pk_operation_types" nullable="false" />
+            </column>
+            <column name="name" type="varchar(64)">
+                <constraints unique="true" uniqueConstraintName="ui_operation_type_name" nullable="false" />
+            </column>
+            <column name="aware" type="boolean">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+
+        <insert tableName="operation_types">
+            <column name="id" value="1" />
+            <column name="name" value="ACCESS_ADMIN_DASHBOARD" />
+            <column name="aware" valueBoolean="false" />
+        </insert>
+
+    </changeSet>
+
+    <changeSet id="0.0.3-11" author="SunriseCoder">
+
+        <createTable tableName="audit_events">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" primaryKeyName="pk_audit_events" nullable="false" />
+            </column>
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="fk_audit_events_user"
+                             referencedTableName="users" referencedColumnNames="id" />
+            </column>
+            <column name="date" type="datetime">
+                <constraints nullable="false" />
+            </column>
+            <column name="ip" type="varchar(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="operation_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="fk_audit_events_operation_type"
+                             referencedTableName="operation_types" referencedColumnNames="id" />
+            </column>
+            <column name="type_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="fk_audit_events_type"
+                             referencedTableName="audit_event_types" referencedColumnNames="id" />
+            </column>
+        </createTable>
+
+    </changeSet>
+
 </databaseChangeLog>
