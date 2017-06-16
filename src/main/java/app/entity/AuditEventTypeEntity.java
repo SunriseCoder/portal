@@ -10,7 +10,8 @@ public class AuditEventTypeEntity {
     @GeneratedValue
     private Long id;
     private String name;
-    private boolean aware;
+    private String comment;
+    private byte severity;
 
     public Long getId() {
         return id;
@@ -28,11 +29,19 @@ public class AuditEventTypeEntity {
         this.name = name;
     }
 
-    public boolean isAware() {
-        return aware;
+    public String getComment() {
+        return comment;
     }
 
-    public void setAware(boolean aware) {
-        this.aware = aware;
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+
+    public byte getSeverity() {
+        return severity;
+    }
+
+    public void setSeverity(byte severity) {
+        this.severity = severity;
     }
 }

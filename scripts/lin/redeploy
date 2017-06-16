@@ -1,0 +1,3 @@
+mvn clean package -Pdev
+rm -rf /d/tools/apache-tomcat-8.5.14/webapps/portal-*
+cp target/portal-*.war /d/tools/apache-tomcat-8.5.14/webapps/

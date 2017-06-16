@@ -431,7 +431,8 @@
             <column name="name" type="varchar(64)">
                 <constraints unique="true" uniqueConstraintName="ui_audit_event_type_name" nullable="false" />
             </column>
-            <column name="aware" type="boolean">
+            <column name="comment" type="varchar(64)" />
+            <column name="severity" type="tinyint">
                 <constraints nullable="false" />
             </column>
         </createTable>
@@ -439,13 +440,22 @@
         <insert tableName="audit_event_types">
             <column name="id" value="1" />
             <column name="name" value="ACCESS_ALLOWED" />
-            <column name="aware" valueBoolean="false" />
+            <column name="comment" value="Access to particular resource is allowed" />
+            <column name="severity" valueNumeric="0" />
         </insert>
 
         <insert tableName="audit_event_types">
             <column name="id" value="2" />
             <column name="name" value="ACCESS_DENIED" />
-            <column name="aware" valueBoolean="true" />
+            <column name="comment" value="Access to particular resource is denied" />
+            <column name="severity" valueNumeric="1" />
+        </insert>
+
+        <insert tableName="audit_event_types">
+            <column name="id" value="3" />
+            <column name="name" value="AUDIT_FAILURE" />
+            <column name="comment" value="Audit failure" />
+            <column name="severity" valueNumeric="2" />
         </insert>
 
     </changeSet>
@@ -459,7 +469,8 @@
             <column name="name" type="varchar(64)">
                 <constraints unique="true" uniqueConstraintName="ui_operation_type_name" nullable="false" />
             </column>
-            <column name="aware" type="boolean">
+            <column name="comment" type="varchar(64)" />
+            <column name="severity" type="tinyint">
                 <constraints nullable="false" />
             </column>
         </createTable>
@@ -467,7 +478,15 @@
         <insert tableName="operation_types">
             <column name="id" value="1" />
             <column name="name" value="ACCESS_ADMIN_DASHBOARD" />
-            <column name="aware" valueBoolean="false" />
+            <column name="comment" value="Access to admin dashboard" />
+            <column name="severity" valueNumeric="1" />
+        </insert>
+
+        <insert tableName="operation_types">
+            <column name="id" value="2" />
+            <column name="name" value="SAVE_AUDIT_EVENT" />
+            <column name="comment" value="Saving audit event" />
+            <column name="severity" valueNumeric="2" />
         </insert>
 
     </changeSet>
@@ -479,7 +498,7 @@
                 <constraints primaryKey="true" primaryKeyName="pk_audit_events" nullable="false" />
             </column>
             <column name="user_id" type="BIGINT">
-                <constraints nullable="false" foreignKeyName="fk_audit_events_user"
+                <constraints foreignKeyName="fk_audit_events_user"
                              referencedTableName="users" referencedColumnNames="id" />
             </column>
             <column name="date" type="datetime">
@@ -496,6 +515,8 @@
                 <constraints nullable="false" foreignKeyName="fk_audit_events_type"
                              referencedTableName="audit_event_types" referencedColumnNames="id" />
             </column>
+            <column name="object_before" type="varchar(255)" />
+            <column name="object_after" type="varchar(255)" />
         </createTable>
 
     </changeSet>

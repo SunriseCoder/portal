@@ -101,11 +101,16 @@
             <artifactId>liquibase-core</artifactId>
         </dependency>
 
-        <!-- Apache Commons IO -->
+        <!-- Apache Commons -->
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
             <version>2.5</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.4</version>
         </dependency>
 
         <!-- Logging -->
@@ -124,6 +129,7 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
         </dependency>
+
     </dependencies>
 
     <build>

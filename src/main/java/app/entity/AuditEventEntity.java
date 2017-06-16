@@ -25,6 +25,9 @@ public class AuditEventEntity {
     @ManyToOne
     private AuditEventTypeEntity type;
 
+    private String objectBefore;
+    private String objectAfter;
+
     public Long getId() {
         return id;
     }
@@ -71,5 +74,21 @@ public class AuditEventEntity {
 
     public void setType(AuditEventTypeEntity type) {
         this.type = type;
+    }
+
+    public String getObjectBefore() {
+        return objectBefore;
+    }
+
+    public void setObjectBefore(String objectBefore) {
+        this.objectBefore = objectBefore;
+    }
+
+    public String getObjectAfter() {
+        return objectAfter;
+    }
+
+    public void setObjectAfter(String objectAfter) {
+        this.objectAfter = objectAfter;
     }
 }
