@@ -1,5 +1,8 @@
 package app.dto;
 
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
 public class ChangePasswordDTO {
     private Long id;
     private String pass;
@@ -27,5 +30,10 @@ public class ChangePasswordDTO {
 
     public void setPass(String pass) {
         this.pass = pass;
+    }
+
+    @Override
+    public String toString() {
+        return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
 }

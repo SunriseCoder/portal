@@ -6,6 +6,9 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
 @Entity(name = "z_user_confirms")
 public class UserConfirmEntity {
     @Id
@@ -47,5 +50,10 @@ public class UserConfirmEntity {
 
     public void setConfirmedBy(UserEntity confirmedBy) {
         this.confirmedBy = confirmedBy;
+    }
+
+    @Override
+    public String toString() {
+        return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
 }

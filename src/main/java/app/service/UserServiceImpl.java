@@ -77,7 +77,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void save(UserEntity user) {
+    public UserEntity save(UserEntity user) {
         if (user.getId() == null) {
             // For new user encrypting password
             encryptPass(user);
@@ -88,7 +88,7 @@ public class UserServiceImpl implements UserService {
                 encryptPass(user);
             }
         }
-        repository.saveAndFlush(user);
+        return repository.saveAndFlush(user);
     }
 
     @Override

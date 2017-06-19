@@ -1,5 +1,8 @@
 package app.dto;
 
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
 public class ChangeLoginDTO {
     private Long id;
     private String login;
@@ -27,5 +30,10 @@ public class ChangeLoginDTO {
 
     public void setLogin(String login) {
         this.login = login;
+    }
+
+    @Override
+    public String toString() {
+        return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
 }

@@ -6,6 +6,9 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
 @Entity(name = "z_user_locks")
 public class UserLockEntity {
     @Id
@@ -47,5 +50,10 @@ public class UserLockEntity {
 
     public void setLockedBy(UserEntity lockedBy) {
         this.lockedBy = lockedBy;
+    }
+
+    @Override
+    public String toString() {
+        return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
 }

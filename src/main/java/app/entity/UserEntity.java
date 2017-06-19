@@ -16,6 +16,9 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
 @Entity(name = "users")
 public class UserEntity {
     @Id
@@ -161,5 +164,12 @@ public class UserEntity {
                         .flatMap(r -> r.getPermissions().stream())
                         .map(PermissionEntity::getName)
                         .collect(Collectors.toSet());
+    }
+
+    @Override
+    public String toString() {
+        return new ReflectionToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
+                        .setExcludeFieldNames("pass", "roles", "permissions")
+                        .toString();
     }
 }

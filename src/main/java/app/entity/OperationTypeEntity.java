@@ -4,6 +4,9 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
 @Entity(name = "operation_types")
 public class OperationTypeEntity {
     @Id
@@ -43,5 +46,12 @@ public class OperationTypeEntity {
 
     public void setSeverity(byte severity) {
         this.severity = severity;
+    }
+
+    @Override
+    public String toString() {
+        return new ReflectionToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
+                        .setExcludeFieldNames("comment")
+                        .toString();
     }
 }

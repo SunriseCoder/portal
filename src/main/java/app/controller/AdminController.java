@@ -85,19 +85,24 @@ public class AdminController extends BaseController {
     public String userList(Model model) {
         if (!userService.hasPermission(Permissions.ADMIN_USERS_VIEW)) {
             logger.warn("Attempt to enter user management without permissions");
+            auditService.log(OperationTypes.ACCESS_USER_LIST, AuditEventTypes.ACCESS_DENIED);
             return REDIRECT_ADMIN;
         }
 
         injectUser(model);
         List<UserEntity> userList = userService.findAll();
         model.addAttribute("userList", userList);
+        auditService.log(OperationTypes.ACCESS_USER_LIST, AuditEventTypes.ACCESS_ALLOWED);
         return ADMIN_USERS_LIST;
     }
 
     @GetMapping("/users/edit/{id}")
     public String editUser(Model model, @PathVariable Long id) {
+        String auditObject = "userId=" + id;
+
         if (!userService.hasPermission(Permissions.ADMIN_USERS_VIEW)) {
             logger.warn("Attempt to edit user without permissions");
+            auditService.log(OperationTypes.ACCESS_USER_EDIT, AuditEventTypes.ACCESS_DENIED, auditObject);
             return REDIRECT_ADMIN;
         }
 
@@ -105,6 +110,7 @@ public class AdminController extends BaseController {
         UserEntity userEntity = injectUserEntity(model, id);
 
         if (userEntity == null) {
+            auditService.log(OperationTypes.ACCESS_USER_EDIT, AuditEventTypes.ENTITY_NOT_EXISTS, auditObject);
             return REDIRECT_USERS;
         }
 
@@ -114,6 +120,7 @@ public class AdminController extends BaseController {
         injectChangeEmailDTO(model, userEntity);
         injectChangeRolesDTO(model, userEntity);
         injectChangeRolesData(model, userEntity);
+        auditService.log(OperationTypes.ACCESS_USER_EDIT, AuditEventTypes.ACCESS_ALLOWED, auditObject);
         return ADMIN_USERS_EDIT;
     }
 
@@ -122,17 +129,32 @@ public class AdminController extends BaseController {
                     HttpServletRequest request, BindingResult bindingResult) {
 
         LogUtils.logRequest(logger, request);
+
         if (!userService.hasPermission(Permissions.ADMIN_USERS_VIEW)) {
             logger.warn("Attempt to change user's login without permissions");
+            auditService.log(OperationTypes.CHANGE_USER_LOGIN, AuditEventTypes.ACCESS_DENIED, changeLogin.toString());
             return REDIRECT_ADMIN;
         }
 
         validatePermission(Permissions.ADMIN_USERS_EDIT, bindingResult, "login");
         userValidator.validateLogin(changeLogin.getLogin(), bindingResult);
         if (!bindingResult.hasErrors()) {
-            UserEntity user = userService.findById(changeLogin.getId());
-            user.setLogin(changeLogin.getLogin());
-            userService.save(user);
+            UserEntity userEntity = userService.findById(changeLogin.getId());
+            String auditObjectBefore = userEntity.toString();
+            userEntity.setLogin(changeLogin.getLogin());
+            String auditObjectBeforeSave = userEntity.toString();
+            try {
+                userEntity = userService.save(userEntity);
+                String auditObjectAfter = userEntity.toString();
+                auditService.log(OperationTypes.CHANGE_USER_LOGIN, AuditEventTypes.SUCCESSFUL, auditObjectBefore, auditObjectAfter);
+            } catch (Exception e) {
+                logger.error("Error due to save user by changing user login", e);
+                auditService.log(OperationTypes.CHANGE_USER_LOGIN, AuditEventTypes.SAVING_ERROR,
+                                auditObjectBefore, auditObjectBeforeSave, e.getMessage());
+            }
+        } else {
+            String error = bindingErrorsToString(bindingResult);
+            auditService.log(OperationTypes.CHANGE_USER_LOGIN, AuditEventTypes.VALIDATION_ERROR, changeLogin.toString(), null, error);
         }
 
         injectUser(model);
@@ -150,8 +172,10 @@ public class AdminController extends BaseController {
                     HttpServletRequest request, BindingResult bindingResult) {
 
         LogUtils.logRequest(logger, request);
+
         if (!userService.hasPermission(Permissions.ADMIN_USERS_VIEW)) {
             logger.warn("Attempt to change user's password without permissions");
+            auditService.log(OperationTypes.CHANGE_USER_PASSWORD, AuditEventTypes.ACCESS_DENIED, changePassword.toString());
             return REDIRECT_ADMIN;
         }
 
@@ -159,9 +183,19 @@ public class AdminController extends BaseController {
         userValidator.validatePassword(changePassword.getPass(), bindingResult);
         if (!bindingResult.hasErrors() && !DEFAULT_PASSWORD_STUB.equals(changePassword.getPass())) {
             UserEntity userEntity = userService.findById(changePassword.getId());
+            String auditObjectBefore = userEntity.toString();
             userEntity.setPass(changePassword.getPass());
             userService.encryptPass(userEntity);
-            userService.save(userEntity);
+            String auditObjectBeforeSave = userEntity.toString();
+            try {
+                userEntity = userService.save(userEntity);
+                String auditObjectAfter = userEntity.toString();
+                auditService.log(OperationTypes.CHANGE_USER_PASSWORD, AuditEventTypes.SUCCESSFUL, auditObjectBefore, auditObjectAfter);
+            } catch (Exception e) {
+                logger.error("Error due to save user by changing user password", e);
+                auditService.log(OperationTypes.CHANGE_USER_PASSWORD, AuditEventTypes.SAVING_ERROR,
+                                auditObjectBefore, auditObjectBeforeSave, e.getMessage());
+            }
         }
 
         injectUser(model);

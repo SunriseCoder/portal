@@ -7,6 +7,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
 @Entity(name = "audit_events")
 public class AuditEventEntity {
     @Id
@@ -27,6 +30,7 @@ public class AuditEventEntity {
 
     private String objectBefore;
     private String objectAfter;
+    private String error;
 
     public Long getId() {
         return id;
@@ -90,5 +94,18 @@ public class AuditEventEntity {
 
     public void setObjectAfter(String objectAfter) {
         this.objectAfter = objectAfter;
+    }
+
+    public String getError() {
+        return error;
+    }
+
+    public void setError(String error) {
+        this.error = error;
+    }
+    
+    @Override
+    public String toString() {
+        return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
 }

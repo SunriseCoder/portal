@@ -17,7 +17,7 @@ public interface UserService {
     Boolean isAuthenticated();
     UserEntity getLoggedInUser();
     boolean hasPermission(Permissions permission);
-    void save(UserEntity user);
+    UserEntity save(UserEntity user);
     void encryptPass(UserEntity user);
     void confirmUser(Long id, String comment);
     void unconfirmUser(Long id);

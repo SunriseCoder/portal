@@ -5,8 +5,6 @@ import java.util.List;
 
 import javax.transaction.Transactional;
 
-import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,26 +37,43 @@ public class AuditServiceImpl implements AuditService {
     private AuditEventTypeRepository auditEventTypeRepository;
 
     @Override
-    @Transactional
     public void log(OperationTypes operation, AuditEventTypes eventType) {
+        log(operation, eventType, null);
+    }
+
+    @Override
+    public void log(OperationTypes operation, AuditEventTypes eventType, String object) {
+        log(operation, eventType, object, null);
+    }
+
+    @Override
+    public void log(OperationTypes operation, AuditEventTypes eventType, String objectBefore, String objectAfter) {
+        log(operation, eventType, objectBefore, objectAfter, null);
+    }
+
+    @Override
+    public void log(OperationTypes operation, AuditEventTypes eventType, String objectBefore, String objectAfter, String error) {
         List<String> ips = securityService.getIps();
         for (String ip : ips) {
             AuditEventEntity event = new AuditEventEntity();
             event.setUser(userService.getLoggedInUser());
             event.setDate(new Date());
             event.setIp(ip);
-            event.setOperation(getOperation(operation));
-            event.setType(getAuditEventType(eventType));
+            event.setOperation(getOperationTypeEntity(operation));
+            event.setType(getAuditEventTypeEntity(eventType));
+            event.setObjectBefore(objectBefore);
+            event.setObjectAfter(objectAfter);
+            event.setError(error);
             save(event);
         }
     }
 
+    @Transactional
     private void save(AuditEventEntity event) {
         try {
             auditRepository.save(event);
         } catch (Exception e) {
-            String object = ReflectionToStringBuilder.toString(event, ToStringStyle.SHORT_PREFIX_STYLE);
-            logger.error("Error due to save " + object, e);
+            logger.error("Error due to save " + event, e);
             saveFailureEvent(event);
         }
     }
@@ -69,20 +84,28 @@ public class AuditServiceImpl implements AuditService {
             failureEvent.setUser(event.getUser());
             failureEvent.setDate(event.getDate());
             failureEvent.setIp(event.getIp());
-            failureEvent.setOperation(getOperation(OperationTypes.SAVE_AUDIT_EVENT));
-            failureEvent.setType(getAuditEventType(AuditEventTypes.AUDIT_FAILURE));
-            failureEvent.setObjectBefore("See log file for details");
+            failureEvent.setOperation(getOperationTypeEntity(OperationTypes.SAVE_AUDIT_EVENT));
+            failureEvent.setType(getAuditEventTypeEntity(AuditEventTypes.AUDIT_FAILURE));
+            failureEvent.setError("See log file for details");
             auditRepository.save(failureEvent);
         } catch (Exception e) {
             logger.error("Error due to save audit failure event", e);
         }
     }
 
-    private OperationTypeEntity getOperation(OperationTypes operation) {
-        return operationRepository.findByName(operation.name());
+    private OperationTypeEntity getOperationTypeEntity(OperationTypes operationType) {
+        OperationTypeEntity entity = operationRepository.findByName(operationType.name());
+        if (entity == null) {
+            log(OperationTypes.SAVE_AUDIT_EVENT, AuditEventTypes.AUDIT_FAILURE, null, null, "OperationType '" + operationType + "' was not found");
+        }
+        return entity;
     }
 
-    private AuditEventTypeEntity getAuditEventType(AuditEventTypes eventType) {
-        return auditEventTypeRepository.findByName(eventType.name());
+    private AuditEventTypeEntity getAuditEventTypeEntity(AuditEventTypes eventType) {
+        AuditEventTypeEntity entity = auditEventTypeRepository.findByName(eventType.name());
+        if (entity == null) {
+            log(OperationTypes.SAVE_AUDIT_EVENT, AuditEventTypes.AUDIT_FAILURE, null, null, "AuditEventType '" + eventType + "' was not found");
+        }
+        return entity;
     }
 }

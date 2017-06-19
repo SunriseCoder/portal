@@ -11,6 +11,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
 @Entity(name = "roles")
 public class RoleEntity {
     @Id
@@ -55,5 +58,12 @@ public class RoleEntity {
 
     public void setPermissions(List<PermissionEntity> permissions) {
         this.permissions = permissions;
+    }
+
+    @Override
+    public String toString() {
+        return new ReflectionToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
+                        .setExcludeFieldNames("comment", "permissions")
+                        .toString();
     }
 }
