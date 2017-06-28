@@ -26,6 +26,9 @@ import app.dto.ChangeEmailDTO;
 import app.dto.ChangeLoginDTO;
 import app.dto.ChangePasswordDTO;
 import app.dto.ChangeRolesDTO;
+import app.entity.AuditEventEntity;
+import app.entity.AuditEventTypeEntity;
+import app.entity.OperationTypeEntity;
 import app.entity.PermissionEntity;
 import app.entity.RoleEntity;
 import app.entity.UserEntity;
@@ -49,6 +52,7 @@ public class AdminController extends BaseController {
     private static final String ADMIN_USERS_EDIT = "admin/users/edit";
     private static final String ADMIN_ROLES_LIST = "admin/roles/list";
     private static final String ADMIN_ROLES_EDIT = "admin/roles/edit";
+    private static final String ADMIN_AUDIT_LIST = "admin/audit/list";
 
     private static final String REDIRECT_ADMIN = "redirect:/admin";
     private static final String REDIRECT_USERS = "redirect:/admin/users";
@@ -462,6 +466,25 @@ public class AdminController extends BaseController {
 
         redirectAttributes.addFlashAttribute("message", "Role has been deleted successfully");
         return REDIRECT_ROLES;
+    }
+
+    @GetMapping("/audit")
+    public String auditList(Model model, HttpServletRequest request) {
+        if (!userService.hasPermission(Permissions.ADMIN_AUDIT_VIEW)) {
+            logger.warn("Attempt to enter audit page without permissions");
+            return REDIRECT_ADMIN;
+        }
+
+        injectUser(model);
+
+        List<AuditEventEntity> auditEventList = auditService.findEvents(request);
+        model.addAttribute("auditEventList", auditEventList);
+        List<OperationTypeEntity> operationList = auditService.findAllOperationTypes();
+        model.addAttribute("operationList", operationList);
+        List<AuditEventTypeEntity> typeList = auditService.findAllEventTypes();
+        model.addAttribute("typeList", typeList);
+
+        return ADMIN_AUDIT_LIST;
     }
 
     private UserEntity injectUserEntity(Model model, Long id) {

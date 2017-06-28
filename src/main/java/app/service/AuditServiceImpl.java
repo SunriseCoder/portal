@@ -3,11 +3,14 @@ package app.service;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.criteria.Predicate;
+import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
 import app.dao.AuditEventRepository;
@@ -34,7 +37,48 @@ public class AuditServiceImpl implements AuditService {
     @Autowired
     private OperationTypeRepository operationRepository;
     @Autowired
-    private AuditEventTypeRepository auditEventTypeRepository;
+    private AuditEventTypeRepository eventTypeRepository;
+
+    @Override
+    public List<AuditEventEntity> findEvents(HttpServletRequest request) {
+        String user = request.getParameter("user");
+        String ip = request.getParameter("ip");
+        String operation = request.getParameter("operation");
+        String type = request.getParameter("type");
+
+        Specification<AuditEventEntity> spec = (root, query, cb) -> {
+            Predicate p = cb.conjunction();
+            if (user != null && !user.isEmpty()) {
+                if ("<null>".equals(user)) { // User is null, i.e. anonymous user
+                    p = cb.and(p, cb.isNull(root.get("user")));
+                } else {
+                    p = cb.and(p, cb.like(root.get("user").get("login"), user));
+                }
+            }
+            if (ip != null && !ip.isEmpty()) {
+                p = cb.and(p, cb.like(root.get("ip"), ip));
+            }
+            if (operation != null && !operation.isEmpty() && !"0".equals(operation)) {
+                p = cb.and(p, cb.equal(root.get("operation").get("id"), operation));
+            }
+            if (type != null && !type.isEmpty() && !"0".equals(type)) {
+                p = cb.and(p, cb.equal(root.get("type").get("id"), type));
+            }
+            return p;
+        };
+
+        return auditRepository.findAll(spec);
+    }
+
+    @Override
+    public List<OperationTypeEntity> findAllOperationTypes() {
+        return operationRepository.findAll();
+    }
+
+    @Override
+    public List<AuditEventTypeEntity> findAllEventTypes() {
+        return eventTypeRepository.findAll();
+    }
 
     @Override
     public void log(OperationTypes operation, AuditEventTypes eventType) {
@@ -102,7 +146,7 @@ public class AuditServiceImpl implements AuditService {
     }
 
     private AuditEventTypeEntity getAuditEventTypeEntity(AuditEventTypes eventType) {
-        AuditEventTypeEntity entity = auditEventTypeRepository.findByName(eventType.name());
+        AuditEventTypeEntity entity = eventTypeRepository.findByName(eventType.name());
         if (entity == null) {
             log(OperationTypes.SAVE_AUDIT_EVENT, AuditEventTypes.AUDIT_FAILURE, null, null, "AuditEventType '" + eventType + "' was not found");
         }

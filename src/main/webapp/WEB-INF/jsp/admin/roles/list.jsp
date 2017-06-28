@@ -18,7 +18,7 @@
     <script>
         $(function() {
             Locales.appRoot = '${appRoot}';
-            Locales.writeTitle("admin.caption");
+            Locales.writeTitle("roles.caption");
         });
 
         function deleteRole(id, name) {

@@ -19,7 +19,7 @@
     <script>
         $(function() {
             Locales.appRoot = '${appRoot}';
-            Locales.writeTitle("admin.caption");
+            Locales.writeTitle("roles.caption");
         });
     </script>
 </head>

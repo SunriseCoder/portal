@@ -2,6 +2,8 @@
     "app" : "Portal",
 
     "admin.caption" : "Administration",
+    "roles.caption" : "Roles Management",
+    "audit.caption" : "Audit",
 
     "index.caption" : "Main",
     "index.greeting" : "Welcome to the Portal",
