@@ -1,3 +1,6 @@
+<%@ page import="java.time.format.DateTimeFormatter" %>
+<%@ page import="java.time.LocalDate" %>
+
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
@@ -35,6 +38,17 @@
             <h3>Audit</h3>
 
             <form action="" method="get">
+                <%
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                    String today = LocalDate.now().format(formatter);
+                    String from = request.getParameter("from");
+                    pageContext.setAttribute("from", from == null || from.isEmpty() ? today : from);
+                    String to = request.getParameter("to");
+                    pageContext.setAttribute("to", to == null || to.isEmpty() ? today : to);
+                %>
+                From: <input type="date" name="from" value="${from}" />
+                To: <input type="date" name="to" value="${to}" />
+                <br />
                 User: <input type="text" name="user" value="${param.user}" />
                 IP: <input type="text" name="ip" value="${param.ip}" />
                 <br />

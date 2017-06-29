@@ -1,5 +1,7 @@
 package app.service;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -22,6 +24,7 @@ import app.entity.OperationTypeEntity;
 import app.enums.AuditEventTypes;
 import app.enums.OperationTypes;
 import app.security.SecurityService;
+import app.util.DateUtils;
 
 @Component
 public class AuditServiceImpl implements AuditService {
@@ -46,8 +49,31 @@ public class AuditServiceImpl implements AuditService {
         String operation = request.getParameter("operation");
         String type = request.getParameter("type");
 
+        // TODO Rewrite this logic to using java.time.LocalDateTime after JPA 2.2
+        SimpleDateFormat dateFormat= new SimpleDateFormat("yyyy-MM-dd");
+        Date today = DateUtils.parseDateSilent(dateFormat, dateFormat.format(new Date()));
+
+        Date rawFrom = DateUtils.parseDateSilent(dateFormat, request.getParameter("from"));
+        rawFrom = rawFrom == null ? today : rawFrom;
+
+        Date rawTo = DateUtils.parseDateSilent(dateFormat, request.getParameter("to"));
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(rawTo == null ? today : rawTo);
+        // Increasing filter parameter "to" by 1 day to get strict interval condition
+        calendar.add(Calendar.DAY_OF_MONTH, 1);
+        rawTo = calendar.getTime();
+
+        Date from = rawFrom;
+        Date to = rawTo;
+
         Specification<AuditEventEntity> spec = (root, query, cb) -> {
             Predicate p = cb.conjunction();
+            if (from != null) {
+                p = cb.and(p, cb.greaterThanOrEqualTo(root.get("date"), from));
+            }
+            if (to != null) {
+                p = cb.and(p, cb.lessThan(root.get("date"), to));
+            }
             if (user != null && !user.isEmpty()) {
                 if ("<null>".equals(user)) { // User is null, i.e. anonymous user
                     p = cb.and(p, cb.isNull(root.get("user")));
