@@ -40,6 +40,10 @@
         <div class="starter-template">
             <h3>Role Management</h3>
 
+            <c:if test="${not empty error}">
+                <p class="error">${error}</p>
+            </c:if>
+
             <c:if test="${not empty message}">
                 <p class="success">${message}</p>
             </c:if>

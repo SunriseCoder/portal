@@ -32,8 +32,8 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     @Transactional
-    public void save(RoleEntity roleEntity) {
-        repository.save(roleEntity);
+    public RoleEntity save(RoleEntity roleEntity) {
+        return repository.save(roleEntity);
     }
 
     @Override

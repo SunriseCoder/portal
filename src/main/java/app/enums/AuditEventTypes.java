@@ -6,7 +6,9 @@ public enum AuditEventTypes {
 
     AUDIT_FAILURE,
 
+    DELETE_ERROR,
     ENTITY_NOT_EXISTS,
+    INVALID_STATE,
     SAVING_ERROR,
     VALIDATION_ERROR,
 

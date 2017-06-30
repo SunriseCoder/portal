@@ -49,7 +49,7 @@ public class AuditServiceImpl implements AuditService {
         String operation = request.getParameter("operation");
         String type = request.getParameter("type");
 
-        // TODO Rewrite this logic to using java.time.LocalDateTime after JPA 2.2
+        // TODO Rewrite it and test to use ZonedDateTime if JPA 2.2 will support it
         SimpleDateFormat dateFormat= new SimpleDateFormat("yyyy-MM-dd");
         Date today = DateUtils.parseDateSilent(dateFormat, dateFormat.format(new Date()));
 

@@ -3,6 +3,7 @@ package app.controller;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.NotDirectoryException;
+import java.text.MessageFormat;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -20,7 +21,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import app.entity.FolderEntity;
 import app.entity.UserEntity;
+import app.enums.AuditEventTypes;
+import app.enums.OperationTypes;
 import app.enums.Permissions;
+import app.service.AuditService;
 import app.service.FileService;
 import app.service.UserService;
 import app.util.HttpUtils;
@@ -32,6 +36,8 @@ import app.util.StringUtils;
 public class FileRestController {
     private static final Logger logger = LogManager.getLogger(FileRestController.class.getName());
 
+    @Autowired
+    private AuditService auditService;
     @Autowired
     private FileService fileService;
     @Autowired
@@ -72,6 +78,7 @@ public class FileRestController {
 
         if (user == null) {
             logger.error("Unauthorized user tries to upload file");
+            auditService.log(OperationTypes.CHANGE_FILE_UPLOAD, AuditEventTypes.ACCESS_DENIED);
             HttpUtils.sendResponseError(response, HttpServletResponse.SC_FORBIDDEN, "You are not authorized.");
             return;
         }
@@ -79,15 +86,19 @@ public class FileRestController {
         Permissions permssion = Permissions.UPLOAD_FILES;
         if (!userService.hasPermission(permssion)) {
             logger.error("User {} tries to upload file, but don't have permission {}", user.getLogin(), permssion);
+            auditService.log(OperationTypes.CHANGE_FILE_UPLOAD, AuditEventTypes.ACCESS_DENIED, user.getLogin());
             HttpUtils.sendResponseError(response, HttpServletResponse.SC_FORBIDDEN,
                             "You don't have sufficient permissions to upload files.");
             return;
         }
 
+        String auditObject = MessageFormat.format("File[name={},size={}]", file.getName(), file.getSize());
         try {
             fileService.uploadFile(name, file);
+            auditService.log(OperationTypes.CHANGE_FILE_UPLOAD, AuditEventTypes.SUCCESSFUL, null, auditObject);
         } catch (IOException e) {
             logger.error(e);
+            auditService.log(OperationTypes.CHANGE_FILE_UPLOAD, AuditEventTypes.SAVING_ERROR, null, auditObject, e.getMessage());
             HttpUtils.sendResponseError(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
     }

@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import app.dto.LoginDTO;
 import app.entity.RoleEntity;
 import app.entity.UserEntity;
+import app.enums.AuditEventTypes;
+import app.enums.OperationTypes;
 import app.security.SecurityService;
 import app.service.RoleService;
 import app.service.UserService;
@@ -44,6 +46,8 @@ public class RegisterController extends BaseController {
         userValidator.validate(user, bindingResult);
         if (bindingResult.hasErrors()) {
             model.addAttribute("login", new LoginDTO());
+            String error = bindingErrorsToString(bindingResult);
+            auditService.log(OperationTypes.CHANGE_USER_REGISTER, AuditEventTypes.VALIDATION_ERROR, null, user.toString(), error);
             return "register";
         }
 
@@ -56,9 +60,14 @@ public class RegisterController extends BaseController {
         roles.add(roleUser);
         user.setRoles(roles);
 
-        userService.save(user);
-
-        securityService.autologin(user.getLogin(), pass);
+        try {
+            user = userService.save(user);
+            auditService.log(OperationTypes.CHANGE_USER_REGISTER, AuditEventTypes.SUCCESSFUL, null, user.toString());
+            securityService.autologin(user.getLogin(), pass);
+        } catch (Exception e) {
+            logger.error("Failed to register new user", e);
+            auditService.log(OperationTypes.CHANGE_USER_REGISTER, AuditEventTypes.SAVING_ERROR, null, user.toString(), e.getMessage());
+        }
 
         return REDIRECT_MAIN;
     }

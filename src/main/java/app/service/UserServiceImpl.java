@@ -4,6 +4,8 @@ import java.util.List;
 
 import javax.transaction.Transactional;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -15,14 +17,21 @@ import app.dao.UserRepository;
 import app.entity.UserConfirmEntity;
 import app.entity.UserEntity;
 import app.entity.UserLockEntity;
+import app.enums.AuditEventTypes;
+import app.enums.OperationTypes;
 import app.enums.Permissions;
 import app.enums.Users;
 import app.util.StringUtils;
 
 @Component
 public class UserServiceImpl implements UserService {
+    private static final Logger logger = LogManager.getLogger(UserServiceImpl.class.getName());
+
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    @Autowired
+    private AuditService auditService;
 
     @Autowired
     private UserRepository repository;
@@ -99,9 +108,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void confirmUser(Long id, String comment) {
         UserConfirmEntity confirmation = userConfirmRepository.findByUserId(id);
         if (confirmation != null) {
+            auditService.log(OperationTypes.CHANGE_USER_CONFIRM, AuditEventTypes.INVALID_STATE,
+                    null, confirmation.toString(), "User is already confirmed");
             return;
         }
 
@@ -115,17 +127,33 @@ public class UserServiceImpl implements UserService {
         }
         confirmation.setConfirmedBy(currentUser);
 
-        userConfirmRepository.save(confirmation);
+        try {
+            confirmation = userConfirmRepository.save(confirmation);
+            auditService.log(OperationTypes.CHANGE_USER_CONFIRM, AuditEventTypes.SUCCESSFUL, null, confirmation.toString());
+        } catch (Exception e) {
+            logger.error("Error due to save user confirmation", e);
+            auditService.log(OperationTypes.CHANGE_USER_CONFIRM, AuditEventTypes.SAVING_ERROR,
+                    null, confirmation.toString(), e.getMessage());
+        }
     }
 
     @Override
+    @Transactional
     public void unconfirmUser(Long id) {
         UserConfirmEntity confirmation = userConfirmRepository.findByUserId(id);
         if (confirmation == null) {
+            auditService.log(OperationTypes.CHANGE_USER_UNCONFIRM, AuditEventTypes.INVALID_STATE, null, null, "User is not confirmed");
             return;
         }
 
-        userConfirmRepository.delete(confirmation);
+        try {
+            userConfirmRepository.delete(confirmation);
+            auditService.log(OperationTypes.CHANGE_USER_UNCONFIRM, AuditEventTypes.SUCCESSFUL, null, confirmation.toString());
+        } catch (Exception e) {
+            logger.error("Error due to delete user confirmation", e);
+            auditService.log(OperationTypes.CHANGE_USER_UNCONFIRM, AuditEventTypes.SAVING_ERROR,
+                    null, confirmation.toString(), e.getMessage());
+        }
     }
 
     @Override
@@ -133,6 +161,7 @@ public class UserServiceImpl implements UserService {
     public void lockUser(Long id, String reason) {
         UserLockEntity lock = userLockRepository.findByUserId(id);
         if (lock != null) {
+            auditService.log(OperationTypes.CHANGE_USER_LOCK, AuditEventTypes.INVALID_STATE, null, lock.toString(), "User is already locked");
             return;
         }
 
@@ -144,7 +173,13 @@ public class UserServiceImpl implements UserService {
         lock.setReason(reason);
         lock.setLockedBy(currentUser);
 
-        userLockRepository.save(lock);
+        try {
+            lock = userLockRepository.save(lock);
+            auditService.log(OperationTypes.CHANGE_USER_LOCK, AuditEventTypes.SUCCESSFUL, null, lock.toString());
+        } catch (Exception e) {
+            logger.error("Error due to save user locking", e);
+            auditService.log(OperationTypes.CHANGE_USER_LOCK, AuditEventTypes.SAVING_ERROR, null, lock.toString(), e.getMessage());
+        }
     }
 
     @Override
@@ -152,9 +187,16 @@ public class UserServiceImpl implements UserService {
     public void unlockUser(Long id) {
         UserLockEntity lock = userLockRepository.findByUserId(id);
         if (lock == null) {
+            auditService.log(OperationTypes.CHANGE_USER_UNLOCK, AuditEventTypes.INVALID_STATE, null, null, "User is not locked");
             return;
         }
 
-        userLockRepository.delete(lock);
+        try {
+            userLockRepository.delete(lock);
+            auditService.log(OperationTypes.CHANGE_USER_UNLOCK, AuditEventTypes.SUCCESSFUL, null, lock.toString());
+        } catch (Exception e) {
+            logger.error("Error due to delete user lock", e);
+            auditService.log(OperationTypes.CHANGE_USER_UNCONFIRM, AuditEventTypes.SAVING_ERROR, null, lock.toString(), e.getMessage());
+        }
     }
 }

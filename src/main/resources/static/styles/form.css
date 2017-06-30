@@ -71,6 +71,10 @@ span.warning {
     color: #0;
 }
 
+p.error {
+    color: red;
+}
+
 p.success {
     color: green;
 }

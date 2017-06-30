@@ -12,12 +12,15 @@ import org.springframework.validation.BindingResult;
 import app.dto.LoginDTO;
 import app.entity.UserEntity;
 import app.enums.Permissions;
+import app.service.AuditService;
 import app.service.UserService;
 
 public class BaseController {
     protected static final String REDIRECT_MAIN = "redirect:/";
     protected static final String REDIRECT_LOGOUT = "redirect:/logout";
 
+    @Autowired
+    protected AuditService auditService;
     @Autowired
     protected UserService userService;
 
