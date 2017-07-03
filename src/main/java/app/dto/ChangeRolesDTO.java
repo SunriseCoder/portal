@@ -1,6 +1,6 @@
 package app.dto;
 
-import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -9,13 +9,13 @@ import app.entity.RoleEntity;
 
 public class ChangeRolesDTO {
     private Long id;
-    private List<RoleEntity> roles;
+    private Set<RoleEntity> roles;
 
     public ChangeRolesDTO() {
         // Default constructor
     }
 
-    public ChangeRolesDTO(Long id, List<RoleEntity> roles) {
+    public ChangeRolesDTO(Long id, Set<RoleEntity> roles) {
         this.id = id;
         this.roles = roles;
     }
@@ -28,11 +28,11 @@ public class ChangeRolesDTO {
         this.id = id;
     }
 
-    public List<RoleEntity> getRoles() {
+    public Set<RoleEntity> getRoles() {
         return roles;
     }
 
-    public void setRoles(List<RoleEntity> roles) {
+    public void setRoles(Set<RoleEntity> roles) {
         this.roles = roles;
     }
 

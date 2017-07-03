@@ -1,8 +1,7 @@
 package app.service;
 
 import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
@@ -14,7 +13,7 @@ import app.enums.OperationTypes;
 
 @Service
 public interface AuditService {
-    List<AuditEventEntity> findEvents(HttpServletRequest request);
+    List<AuditEventEntity> findEvents(Map<String, String> parameters);
 
     List<OperationTypeEntity> findAllOperationTypes();
     List<AuditEventTypeEntity> findAllEventTypes();

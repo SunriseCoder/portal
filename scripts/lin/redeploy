@@ -1,3 +1,8 @@
-mvn clean package -Pdev
+mvn clean package -Denv=dev
 rm -rf /d/tools/apache-tomcat-8.5.14/webapps/portal-*
-cp target/portal-*.war /d/tools/apache-tomcat-8.5.14/webapps/
+rm -rf /d/tools/apache-tomcat-8.5.14/webapps/portal
+cp target/portal-*.war /d/tools/apache-tomcat-8.5.14/webapps/portal.war
+rm -rf /d/tools/apache-tomcat-8.5.14/logs
+rm -rf /d/tools/apache-tomcat-8.5.14/bin/logs
+
+mvn clean

@@ -1,8 +1,10 @@
 package app.controller;
 
 import java.text.MessageFormat;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -422,9 +424,6 @@ public class AdminController extends BaseController {
         List<RoleEntity> roleList = roleService.findAll();
         roleList.sort(
                         (r1, r2) -> r1.getName().compareTo(r2.getName()));
-        roleList.forEach(
-                        r -> r.getPermissions().sort(
-                                        (r1, r2) -> r1.getName().compareTo(r2.getName())));
         model.addAttribute("roleList", roleList);
 
         List<PermissionEntity> permissionList = permissionService.findAll();
@@ -563,8 +562,8 @@ public class AdminController extends BaseController {
         }
 
         injectUser(model);
-
-        List<AuditEventEntity> auditEventList = auditService.findEvents(request);
+        Map<String, String> parameters = convertParameterMap(request.getParameterMap());
+        List<AuditEventEntity> auditEventList = auditService.findEvents(parameters);
         model.addAttribute("auditEventList", auditEventList);
         List<OperationTypeEntity> operationList = auditService.findAllOperationTypes();
         model.addAttribute("operationList", operationList);
@@ -635,7 +634,7 @@ public class AdminController extends BaseController {
     }
 
     private void validateRolePermissions(RoleEntity roleEntity, BindingResult bindingResult) {
-        List<PermissionEntity> permissions = roleEntity.getPermissions();
+        Set<PermissionEntity> permissions = roleEntity.getPermissions();
         if (permissions == null) {
             return;
         }
@@ -644,5 +643,22 @@ public class AdminController extends BaseController {
         if (!allIds.containsAll(selectedIds)) {
             bindingResult.rejectValue("permissions", "Non-existing permission");
         }
+    }
+
+    private Map<String, String> convertParameterMap(Map<String, String[]> parameterMap) {
+        Map<String, String> resultMap = new HashMap<>();
+        for (Map.Entry<String, String[]> entry : parameterMap.entrySet()) {
+            String value = convertParameter(parameterMap, entry.getKey());
+            resultMap.put(entry.getKey(), value);
+        }
+        return resultMap;
+    }
+
+    private String convertParameter(Map<String, String[]> params, String name) {
+        String[] value = params.get(name);
+        if (value.length == 0) {
+            return null;
+        }
+        return value[0];
     }
 }

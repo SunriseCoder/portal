@@ -1,7 +1,7 @@
 package app.controller;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -55,7 +55,7 @@ public class RegisterController extends BaseController {
         String pass = user.getPass();
 
         // Assigning default role for new user
-        List<RoleEntity> roles = new ArrayList<>();
+        Set<RoleEntity> roles = new HashSet<>();
         RoleEntity roleUser = rolesService.findByName("User");
         roles.add(roleUser);
         user.setRoles(roles);

@@ -4,9 +4,9 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.criteria.Predicate;
-import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 
 import org.apache.logging.log4j.LogManager;
@@ -43,20 +43,20 @@ public class AuditServiceImpl implements AuditService {
     private AuditEventTypeRepository eventTypeRepository;
 
     @Override
-    public List<AuditEventEntity> findEvents(HttpServletRequest request) {
-        String user = request.getParameter("user");
-        String ip = request.getParameter("ip");
-        String operation = request.getParameter("operation");
-        String type = request.getParameter("type");
+    public List<AuditEventEntity> findEvents(Map<String, String> parameters) {
+        String user = parameters.get("user");
+        String ip = parameters.get("ip");
+        String operation = parameters.get("operation");
+        String type = parameters.get("type");
 
         // TODO Rewrite it and test to use ZonedDateTime if JPA 2.2 will support it
         SimpleDateFormat dateFormat= new SimpleDateFormat("yyyy-MM-dd");
         Date today = DateUtils.parseDateSilent(dateFormat, dateFormat.format(new Date()));
 
-        Date rawFrom = DateUtils.parseDateSilent(dateFormat, request.getParameter("from"));
+        Date rawFrom = DateUtils.parseDateSilent(dateFormat, parameters.get("from"));
         rawFrom = rawFrom == null ? today : rawFrom;
 
-        Date rawTo = DateUtils.parseDateSilent(dateFormat, request.getParameter("to"));
+        Date rawTo = DateUtils.parseDateSilent(dateFormat, parameters.get("to"));
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(rawTo == null ? today : rawTo);
         // Increasing filter parameter "to" by 1 day to get strict interval condition

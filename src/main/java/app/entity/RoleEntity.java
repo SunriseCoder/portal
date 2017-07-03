@@ -1,6 +1,6 @@
 package app.entity;
 
-import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -26,7 +26,7 @@ public class RoleEntity {
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "zz_roles_permissions", joinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "permission_id", referencedColumnName = "id"))
-    private List<PermissionEntity> permissions;
+    private Set<PermissionEntity> permissions;
 
     public Long getId() {
         return id;
@@ -52,11 +52,11 @@ public class RoleEntity {
         this.comment = comment;
     }
 
-    public List<PermissionEntity> getPermissions() {
+    public Set<PermissionEntity> getPermissions() {
         return permissions;
     }
 
-    public void setPermissions(List<PermissionEntity> permissions) {
+    public void setPermissions(Set<PermissionEntity> permissions) {
         this.permissions = permissions;
     }
 
