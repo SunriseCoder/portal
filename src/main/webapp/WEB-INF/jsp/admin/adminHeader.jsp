@@ -25,6 +25,10 @@
                     <li><a href="${adminRoot}/audit">Audit</a></li>
                 </c:if>
 
+                <c:if test="${not empty user && user.hasPermission('ADMIN_LOGS_VIEW')}">
+                    <li><a href="${adminRoot}/logs">Logs</a></li>
+                </c:if>
+
             </ul>
         </div>
     </div>

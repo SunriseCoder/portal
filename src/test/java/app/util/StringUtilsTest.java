@@ -65,37 +65,61 @@ public class StringUtilsTest {
     }
 
     @Test
-    public void testSafeUtilsOk() {
+    public void testSafeEqualsOk() {
         String s1 = "123";
         String s2 = "123";
         assertTrue(StringUtils.safeEquals(s1, s2));
     }
 
     @Test
-    public void testSafeUtilsDifferent() {
+    public void testSafeEqualsDifferent() {
         String s1 = "12";
         String s2 = "123";
         assertFalse(StringUtils.safeEquals(s1, s2));
     }
 
     @Test
-    public void testSafeUtilsDiffS1IsNull() {
+    public void testSafeEqualsDiffS1IsNull() {
         String s1 = null;
         String s2 = "123";
         assertFalse(StringUtils.safeEquals(s1, s2));
     }
 
     @Test
-    public void testSafeUtilsOkBothNull() {
+    public void testSafeEqualsOkBothNull() {
         String s1 = null;
         String s2 = null;
         assertTrue(StringUtils.safeEquals(s1, s2));
     }
 
     @Test
-    public void testSafeUtilsDiffS2IsNull() {
+    public void testSafeEqualsDiffS2IsNull() {
         String s1 = "123";
         String s2 = null;
         assertFalse(StringUtils.safeEquals(s1, s2));
     }
-}
+
+    @Test
+    public void testFormatMessageNoArguments() {
+        String result = StringUtils.format("text");
+        assertEquals("text", result);
+    }
+
+    @Test
+    public void testFormatMessageStringArguments() {
+        String result = StringUtils.format("text {0} {1}", "test", "param");
+        assertEquals("text test param", result);
+    }
+
+
+    @Test
+    public void testFormatMessageDecimalArguments() {
+        String result = StringUtils.format("text {0} {1}", "5", "2.5");
+        assertEquals("text 5 2.5", result);
+    }
+
+    @Test
+    public void testFormatMessageBraces() {
+        String result = StringUtils.format("text [name={0}, {1}]", "test", "param");
+        assertEquals("text [name=test, param]", result);
+    }}

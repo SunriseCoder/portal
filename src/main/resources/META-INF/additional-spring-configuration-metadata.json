@@ -1,6 +1,11 @@
 {
     "properties": [
         {
+            "name": "environment",
+            "type": "java.lang.String",
+            "description": "Name of the development/test environment to show on UI"
+        },
+        {
             "name": "files.storage",
             "type": "java.lang.String",
             "description": "Relative path to root of indexed file storage"
@@ -29,6 +34,16 @@
             "name": "deploy.tomcat.password",
             "type": "java.lang.String",
             "description": "Deployer password"
+        },
+        {
+            "name": "deploy.tomcat.path",
+            "type": "java.lang.String",
+            "description": "Application path, where the application will be deployed"
+        },
+        {
+            "name": "logs.path",
+            "type": "java.lang.String",
+            "description": "Relative path where application logs are stored"
         }
     ]
 }

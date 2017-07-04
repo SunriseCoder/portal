@@ -91,3 +91,7 @@ a.noHref {
 span.permission {
     padding-left: 20px;
 }
+
+div.wide-page {
+    width: 100%;
+}

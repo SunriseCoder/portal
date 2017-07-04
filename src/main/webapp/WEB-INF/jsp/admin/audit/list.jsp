@@ -23,7 +23,7 @@
     <script>
         $(function() {
             Locales.appRoot = '${appRoot}';
-            Locales.writeTitle("admin.caption");
+            Locales.writeTitle("audit.caption");
         });
     </script>
 </head>
@@ -33,7 +33,7 @@
 
     <jsp:include page="../adminHeader.jsp" />
 
-    <div class="container">
+    <div class="container wide-page">
         <div class="starter-template">
             <h3>Audit</h3>
 

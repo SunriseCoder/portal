@@ -1,7 +1,6 @@
 package app.controller;
 
 import java.text.MessageFormat;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -45,7 +44,7 @@ import app.validator.RoleEntityValidator;
 import app.validator.UserEntityValidator;
 
 @Controller
-@RequestMapping("/admin")
+@RequestMapping(BaseController.PATH_ADMIN)
 public class AdminController extends BaseController {
     private static final Logger logger = LogManager.getLogger(AdminController.class.getName());
 
@@ -56,7 +55,6 @@ public class AdminController extends BaseController {
     private static final String ADMIN_ROLES_EDIT = "admin/roles/edit";
     private static final String ADMIN_AUDIT_LIST = "admin/audit/list";
 
-    private static final String REDIRECT_ADMIN = "redirect:/admin";
     private static final String REDIRECT_USERS = "redirect:/admin/users";
     private static final String REDIRECT_ROLES = "redirect:/admin/roles";
 
@@ -160,6 +158,7 @@ public class AdminController extends BaseController {
             }
         } else {
             String error = bindingErrorsToString(bindingResult);
+            logger.warn("Validation error due to save user by changing user login: {}", error);
             auditService.log(OperationTypes.CHANGE_USER_LOGIN, AuditEventTypes.VALIDATION_ERROR, changeLogin.toString(), null, error);
         }
 
@@ -643,22 +642,5 @@ public class AdminController extends BaseController {
         if (!allIds.containsAll(selectedIds)) {
             bindingResult.rejectValue("permissions", "Non-existing permission");
         }
-    }
-
-    private Map<String, String> convertParameterMap(Map<String, String[]> parameterMap) {
-        Map<String, String> resultMap = new HashMap<>();
-        for (Map.Entry<String, String[]> entry : parameterMap.entrySet()) {
-            String value = convertParameter(parameterMap, entry.getKey());
-            resultMap.put(entry.getKey(), value);
-        }
-        return resultMap;
-    }
-
-    private String convertParameter(Map<String, String[]> params, String name) {
-        String[] value = params.get(name);
-        if (value.length == 0) {
-            return null;
-        }
-        return value[0];
     }
 }

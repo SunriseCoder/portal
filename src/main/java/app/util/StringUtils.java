@@ -2,6 +2,7 @@ package app.util;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.text.MessageFormat;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -36,5 +37,16 @@ public class StringUtils {
 
     public static boolean safeEquals(String s1, String s2) {
         return s1 == null ? s1 == s2 : s1.equals(s2);
+    }
+
+    /**
+     * Format message by passing arguments in placeholders
+     *
+     * @param pattern Like "At {1,time} on {1,date}, there was {2} on planet {0,number,integer}"
+     * @param arguments objects to be injected
+     * @return formatted string
+     */
+    public static String format(String pattern, Object... arguments) {
+        return MessageFormat.format(pattern, arguments);
     }
 }

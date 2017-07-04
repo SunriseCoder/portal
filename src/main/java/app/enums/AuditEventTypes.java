@@ -3,6 +3,7 @@ package app.enums;
 public enum AuditEventTypes {
     ACCESS_ALLOWED,
     ACCESS_DENIED,
+    SUSPICIOUS_ACTIVITY,
 
     AUDIT_FAILURE,
 
@@ -11,6 +12,7 @@ public enum AuditEventTypes {
     INVALID_STATE,
     SAVING_ERROR,
     VALIDATION_ERROR,
+    IO_ERROR,
 
-    SUCCESSFUL
+    SUCCESSFUL,
 }

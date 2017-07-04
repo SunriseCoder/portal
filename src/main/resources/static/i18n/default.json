@@ -4,6 +4,7 @@
     "admin.caption" : "Administration",
     "roles.caption" : "Roles Management",
     "audit.caption" : "Audit",
+    "logs.caption" : "Server Logs",
 
     "index.caption" : "Main",
     "index.greeting" : "Welcome to the Portal",

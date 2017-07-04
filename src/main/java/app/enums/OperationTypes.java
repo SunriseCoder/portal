@@ -3,6 +3,7 @@ package app.enums;
 public enum OperationTypes {
     ACCESS_ADMIN_AUDIT,
     ACCESS_ADMIN_DASHBOARD,
+    ACCESS_ADMIN_LOGS,
 
     ACCESS_PAGE_FILES,
     ACCESS_PAGE_MAIN,
