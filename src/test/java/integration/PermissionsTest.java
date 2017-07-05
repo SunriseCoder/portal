@@ -8,11 +8,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import app.dao.PermissionRepository;
 import app.dao.RoleRepository;
@@ -20,10 +16,7 @@ import app.entity.PermissionEntity;
 import app.entity.RoleEntity;
 import app.enums.Permissions;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
-@ContextConfiguration(classes = TestConfiguration.class)
-public class PermissionsTest {
+public class PermissionsTest extends BaseTest {
     @Autowired
     private PermissionRepository permissionRepository;
     @Autowired

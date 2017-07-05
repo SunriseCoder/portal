@@ -4,16 +4,10 @@ import static org.junit.Assert.assertEquals;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import app.dao.AuditEventRepository;
 import app.dao.AuditEventTypeRepository;
@@ -27,10 +21,7 @@ import app.enums.AuditEventTypes;
 import app.enums.OperationTypes;
 import app.service.AuditService;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
-@ContextConfiguration(classes = TestConfiguration.class)
-public class AuditFiltersTest {
+public class AuditFiltersTest extends BaseTest {
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 
     @Autowired
@@ -101,14 +92,6 @@ public class AuditFiltersTest {
         event.setOperation(operationTypeRepository.findByName(operationType.name()));
         event.setType(auditEventTypeRepository.findByName(eventType.name()));
         return event;
-    }
-
-    private Map<String, String> createParameters(String... args) {
-        Map<String, String> parameters = new HashMap<>();
-        for (int i = 0; i < args.length; i += 2) {
-            parameters.put(args[i], args[i + 1]);
-        }
-        return parameters;
     }
 
     private String getOperationTypeId(OperationTypes operationType) {

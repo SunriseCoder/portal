@@ -1,6 +1,5 @@
 package app.controller;
 
-import java.text.MessageFormat;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -40,6 +39,7 @@ import app.enums.Permissions;
 import app.service.PermissionService;
 import app.service.RoleService;
 import app.util.LogUtils;
+import app.util.StringUtils;
 import app.validator.RoleEntityValidator;
 import app.validator.UserEntityValidator;
 
@@ -337,7 +337,7 @@ public class AdminController extends BaseController {
         LogUtils.logRequest(logger, request);
         if (!userService.hasPermission(Permissions.ADMIN_USERS_CONFIRM)) {
             logger.warn("Attempt to confirm user's identity without permissions");
-            String object = MessageFormat.format("ConfirmUser[id={},comment={}]", id, comment);
+            String object = StringUtils.format("ConfirmUser[id={0},comment={1}]", id, comment);
             auditService.log(OperationTypes.CHANGE_USER_CONFIRM, AuditEventTypes.ACCESS_DENIED, object);
             return REDIRECT_ADMIN;
         }
@@ -357,7 +357,7 @@ public class AdminController extends BaseController {
         LogUtils.logRequest(logger, request);
         if (!userService.hasPermission(Permissions.ADMIN_USERS_UNCONFIRM)) {
             logger.warn("Attempt to reject user's identity without permissions");
-            String object = MessageFormat.format("UnconfirmUser[id={}]", id);
+            String object = StringUtils.format("UnconfirmUser[id={0}]", id);
             auditService.log(OperationTypes.CHANGE_USER_UNCONFIRM, AuditEventTypes.ACCESS_DENIED, object);
             return REDIRECT_ADMIN;
         }
@@ -377,7 +377,7 @@ public class AdminController extends BaseController {
         LogUtils.logRequest(logger, request);
         if (!userService.hasPermission(Permissions.ADMIN_USERS_LOCK)) {
             logger.warn("Attempt to lock user without permissions");
-            String object = MessageFormat.format("LockUser[id={},reason={}]", id, reason);
+            String object = StringUtils.format("LockUser[id={0},reason={1}]", id, reason);
             auditService.log(OperationTypes.CHANGE_USER_LOCK, AuditEventTypes.ACCESS_DENIED, object);
             return REDIRECT_ADMIN;
         }
@@ -397,7 +397,7 @@ public class AdminController extends BaseController {
         LogUtils.logRequest(logger, request);
         if (!userService.hasPermission(Permissions.ADMIN_USERS_UNLOCK)) {
             logger.warn("Attempt to unlock user without permissions");
-            String object = MessageFormat.format("UnlockUser[id={}]", id);
+            String object = StringUtils.format("UnlockUser[id={0}]", id);
             auditService.log(OperationTypes.CHANGE_USER_UNLOCK, AuditEventTypes.ACCESS_DENIED, object);
             return REDIRECT_ADMIN;
         }

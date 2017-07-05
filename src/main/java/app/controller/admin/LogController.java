@@ -1,7 +1,6 @@
 package app.controller.admin;
 
 import java.io.IOException;
-import java.text.MessageFormat;
 import java.util.List;
 import java.util.Map;
 
@@ -19,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import app.controller.BaseController;
 import app.dto.LogLineDTO;
 import app.enums.AuditEventTypes;
+import app.enums.LogLevels;
 import app.enums.OperationTypes;
 import app.enums.Permissions;
 import app.service.admin.LogService;
@@ -51,7 +51,7 @@ public class LogController extends BaseController {
             model.addAttribute("fileList", fileList);
         } catch (IOException e) {
             logger.error("Error due to get list of log files", e);
-            String error = MessageFormat.format("{}[{}]", e.getClass().getSimpleName(), e.getMessage());
+            String error = StringUtils.format("{0}[{1}]", e.getClass().getSimpleName(), e.getMessage());
             auditService.log(OperationTypes.ACCESS_ADMIN_LOGS, AuditEventTypes.IO_ERROR, null, null, error);
             model.addAttribute("error", error);
         }
@@ -79,18 +79,19 @@ public class LogController extends BaseController {
 
         injectUser(model);
 
-        model.addAttribute("fileName", name);
-        List<LogLineDTO> lines;
         try {
             Map<String, String> parameters = convertParameterMap(request.getParameterMap());
-            lines = logService.readFile(parameters);
+            List<LogLineDTO> lines = logService.readFile(parameters);
             model.addAttribute("lines", lines);
-        } catch (IOException e) {
+        } catch (Exception e) {
             logger.error("Error due to read log file", e);
-            String error = MessageFormat.format("{}[{}]", e.getClass().getSimpleName(), e.getMessage());
+            String error = StringUtils.format("{0}[{1}]", e.getClass().getSimpleName(), e.getMessage());
             auditService.log(OperationTypes.ACCESS_ADMIN_LOGS, AuditEventTypes.IO_ERROR, null, null, error);
             model.addAttribute("error", error);
         }
+
+        model.addAttribute("fileName", name);
+        model.addAttribute("logLevels", LogLevels.values());
 
         auditService.log(OperationTypes.ACCESS_ADMIN_LOGS, AuditEventTypes.SUCCESSFUL, auditObject);
 

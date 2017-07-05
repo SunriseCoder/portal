@@ -8,20 +8,13 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import app.dao.AuditEventTypeRepository;
 import app.entity.AuditEventTypeEntity;
 import app.enums.AuditEventTypes;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
-@ContextConfiguration(classes = TestConfiguration.class)
-public class AuditEventTypesTest {
+public class AuditEventTypesTest extends BaseTest {
     @Autowired
     private AuditEventTypeRepository auditEventTypeRepository;
 

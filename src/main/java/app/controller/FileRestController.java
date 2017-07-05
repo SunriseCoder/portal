@@ -3,7 +3,6 @@ package app.controller;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.NotDirectoryException;
-import java.text.MessageFormat;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -92,7 +91,7 @@ public class FileRestController {
             return;
         }
 
-        String auditObject = MessageFormat.format("File[name={},size={}]", file.getName(), file.getSize());
+        String auditObject = StringUtils.format("File[name={0},size={1}]", file.getName(), file.getSize());
         try {
             fileService.uploadFile(name, file);
             auditService.log(OperationTypes.CHANGE_FILE_UPLOAD, AuditEventTypes.SUCCESSFUL, null, auditObject);

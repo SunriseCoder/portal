@@ -8,20 +8,13 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import app.dao.OperationTypeRepository;
 import app.entity.OperationTypeEntity;
 import app.enums.OperationTypes;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
-@ContextConfiguration(classes = TestConfiguration.class)
-public class OperationTypesTest {
+public class OperationTypesTest extends BaseTest {
     @Autowired
     private OperationTypeRepository operationTypeRepository;
 
