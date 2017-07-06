@@ -103,7 +103,7 @@ public class AuditEventEntity {
     public void setError(String error) {
         this.error = error;
     }
-    
+
     @Override
     public String toString() {
         return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);

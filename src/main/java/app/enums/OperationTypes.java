@@ -32,5 +32,6 @@ public enum OperationTypes {
     CHANGE_USER_LOCK,
     CHANGE_USER_UNLOCK,
 
-    SAVE_AUDIT_EVENT
+    SAVE_AUDIT_EVENT,
+    SAVE_STATISTIC_LOG
 }

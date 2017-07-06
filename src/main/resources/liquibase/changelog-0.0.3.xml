@@ -730,6 +730,13 @@
             <column name="severity" valueNumeric="2" />
         </insert>
 
+        <insert tableName="operation_types">
+            <column name="id" value="26" />
+            <column name="name" value="SAVE_STATISTIC_LOG" />
+            <column name="comment" value="Saving statistic log record" />
+            <column name="severity" valueNumeric="1" />
+        </insert>
+
     </changeSet>
 
     <changeSet id="0.0.3-11" author="SunriseCoder">
@@ -759,6 +766,29 @@
             <column name="object_before" type="varchar(255)" />
             <column name="object_after" type="varchar(255)" />
             <column name="error" type="varchar(255)" />
+        </createTable>
+
+    </changeSet>
+
+    <changeSet id="0.0.3-12" author="SunriseCoder">
+
+        <createTable tableName="statistic_logs">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" primaryKeyName="pk_statistic_logs" nullable="false" />
+            </column>
+            <column name="user_id" type="BIGINT">
+                <constraints foreignKeyName="fk_statistic_logs_user"
+                             referencedTableName="users" referencedColumnNames="id" />
+            </column>
+            <column name="date_time" type="datetime">
+                <constraints nullable="false" />
+            </column>
+            <column name="ip" type="varchar(64)">
+                <constraints nullable="false" />
+            </column>
+            <column name="url" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
         </createTable>
 
     </changeSet>
