@@ -9,6 +9,7 @@ drop table databasechangelog;
 drop table databasechangeloglock;
 
 drop table audit_events;
+drop table statistic_logs;
 drop table audit_event_types;
 drop table operation_types;
 drop table permissions;

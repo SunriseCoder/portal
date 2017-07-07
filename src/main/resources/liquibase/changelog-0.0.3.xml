@@ -41,9 +41,17 @@
             <column name="email" value="ch1@ange.it" />
         </insert>
 
-        <!-- TODO Delete it before merge to develop branch -->
         <insert tableName="users">
             <column name="id" value="3" />
+            <column name="login" value="anonymousUser" />
+            <column name="pass" value="" /><!-- no way to login as anonymousUser -->
+            <column name="display_name" value="Anonymous" />
+            <column name="email" value="" />
+        </insert>
+
+        <!-- TODO Delete it before merge to develop branch -->
+        <insert tableName="users">
+            <column name="id" value="4" />
             <column name="login" value="user" />
             <column name="pass" value="$2a$10$hHBkdPDV.oI6pXhmbLYdJucXyMl3FPWL3cHzSwm/0ieSwamSQ7fT6" /><!-- "password" -->
             <column name="display_name" value="User" />
@@ -235,14 +243,20 @@
 
         <insert tableName="roles">
             <column name="id" value="2" />
-            <column name="name" value="User" />
-            <column name="comment" value="Just an ordinary registered user" />
+            <column name="name" value="Moder" />
+            <column name="comment" value="Moderator with partial administration permissions" />
         </insert>
 
         <insert tableName="roles">
             <column name="id" value="3" />
-            <column name="name" value="Moder" />
-            <column name="comment" value="Moderator with partial administration permissions" />
+            <column name="name" value="Anonymous" />
+            <column name="comment" value="Role to use when user did not log in" />
+        </insert>
+
+        <insert tableName="roles">
+            <column name="id" value="4" />
+            <column name="name" value="User" />
+            <column name="comment" value="Just an ordinary registered user" />
         </insert>
 
     </changeSet>
@@ -344,70 +358,76 @@
             <column name="permission_id" value="15" />
         </insert>
 
-        <!-- Grant Permission UPLOAD_FILES to Role User -->
-        <insert tableName="zz_roles_permissions">
-            <column name="role_id" value="2" />
-            <column name="permission_id" value="2" />
-        </insert>
-
-        <!-- Grant Permission PAGES_VIEW to Role User -->
-        <insert tableName="zz_roles_permissions">
-            <column name="role_id" value="2" />
-            <column name="permission_id" value="9" />
-        </insert>
-
         <!-- Grant Permission ADMIN_PAGE to Role Moder -->
         <insert tableName="zz_roles_permissions">
-            <column name="role_id" value="3" />
+            <column name="role_id" value="2" />
             <column name="permission_id" value="1" />
         </insert>
 
         <!-- Grant Permission ADMIN_DASHBOARD to Role Moder -->
         <insert tableName="zz_roles_permissions">
-            <column name="role_id" value="3" />
+            <column name="role_id" value="2" />
             <column name="permission_id" value="3" />
         </insert>
 
         <!-- Grant Permission ADMIN_USERS_VIEW to Role Moder -->
         <insert tableName="zz_roles_permissions">
-            <column name="role_id" value="3" />
+            <column name="role_id" value="2" />
             <column name="permission_id" value="4" />
         </insert>
 
         <!-- Grant Permission ADMIN_USERS_EDIT to Role Moder -->
         <insert tableName="zz_roles_permissions">
-            <column name="role_id" value="3" />
+            <column name="role_id" value="2" />
             <column name="permission_id" value="5" />
         </insert>
 
         <!-- Grant Permission ADMIN_USERS_LOCK to Role Moder -->
         <insert tableName="zz_roles_permissions">
-            <column name="role_id" value="3" />
+            <column name="role_id" value="2" />
             <column name="permission_id" value="7" />
         </insert>
 
         <!-- Grant Permission ADMIN_USERS_UNLOCK to Role Moder -->
         <insert tableName="zz_roles_permissions">
-            <column name="role_id" value="3" />
+            <column name="role_id" value="2" />
             <column name="permission_id" value="8" />
         </insert>
 
         <!-- Grant Permission PAGES_VIEW to Role Moder -->
         <insert tableName="zz_roles_permissions">
-            <column name="role_id" value="3" />
+            <column name="role_id" value="2" />
             <column name="permission_id" value="9" />
         </insert>
 
         <!-- Grant Permission ADMIN_USERS_CONFIRM to Role Moder -->
         <insert tableName="zz_roles_permissions">
-            <column name="role_id" value="3" />
+            <column name="role_id" value="2" />
             <column name="permission_id" value="10" />
         </insert>
 
         <!-- Grant Permission ADMIN_ROLES_VIEW to Role Moder -->
         <insert tableName="zz_roles_permissions">
-            <column name="role_id" value="3" />
+            <column name="role_id" value="2" />
             <column name="permission_id" value="12" />
+        </insert>
+
+        <!-- Grant Permission PAGES_VIEW to Anonymous -->
+        <insert tableName="zz_roles_permissions">
+            <column name="role_id" value="3" />
+            <column name="permission_id" value="9" />
+        </insert>
+
+        <!-- Grant Permission UPLOAD_FILES to Role User -->
+        <insert tableName="zz_roles_permissions">
+            <column name="role_id" value="4" />
+            <column name="permission_id" value="2" />
+        </insert>
+
+        <!-- Grant Permission PAGES_VIEW to Role User -->
+        <insert tableName="zz_roles_permissions">
+            <column name="role_id" value="4" />
+            <column name="permission_id" value="9" />
         </insert>
 
     </changeSet>
@@ -434,14 +454,20 @@
         <!-- Grant Role Moder to User Moder -->
         <insert tableName="zz_users_roles">
             <column name="user_id" value="2" />
+            <column name="role_id" value="2" />
+        </insert>
+
+        <!-- Grant Role Anonymous to User Anonymous -->
+        <insert tableName="zz_users_roles">
+            <column name="user_id" value="3" />
             <column name="role_id" value="3" />
         </insert>
 
         <!-- TODO Delete it before merge to develop branch -->
         <!-- Grant Role User to User User -->
         <insert tableName="zz_users_roles">
-            <column name="user_id" value="3" />
-            <column name="role_id" value="2" />
+            <column name="user_id" value="4" />
+            <column name="role_id" value="4" />
         </insert>
 
     </changeSet>

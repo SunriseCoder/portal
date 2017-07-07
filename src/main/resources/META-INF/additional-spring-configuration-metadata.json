@@ -44,6 +44,11 @@
             "name": "logs.path",
             "type": "java.lang.String",
             "description": "Relative path where application logs are stored"
+        },
+        {
+            "name": "statistic.non-loggable-paths",
+            "type": "java.lang.String",
+            "description": "List of url paths, which call should not be logged"
         }
     ]
 }
