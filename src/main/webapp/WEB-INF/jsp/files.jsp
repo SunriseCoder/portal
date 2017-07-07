@@ -20,7 +20,7 @@
             FileTree.appRoot = "${appRoot}";
             FileTree.setHtmlNode("fileTree");
             FileTree.listUrl = "${appRoot}/rest/files/list";
-            FileTree.downloadUrl = "${appRoot}/rest/files/get/";
+            FileTree.downloadUrl = "${appRoot}/rest/files/get";
             FileTree.build();
         });
     </script>

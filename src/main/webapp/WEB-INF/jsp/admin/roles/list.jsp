@@ -66,7 +66,7 @@
                             ${item.comment}
                         </td>
                         <td>
-                            <a href="${rolesRoot}/edit/${item.id}">Edit</a> /
+                            <a href="${rolesRoot}/edit?id=${item.id}">Edit</a> /
                             <a class="noHref" onclick="deleteRole(${item.id}, '${item.name}');">Delete</a>
                         </td>
                     </tr>

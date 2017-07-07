@@ -96,7 +96,7 @@ var FileTree = {
         url = encodeURIComponent(url);
         var encoded = btoa(url);
         encoded = encoded.replace("/", "_");
-        url = this.downloadUrl + encoded; 
+        url = this.downloadUrl + "?id=" + encoded; 
         return url;
     },
 

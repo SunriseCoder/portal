@@ -20,6 +20,8 @@ import org.springframework.web.util.ContentCachingRequestWrapper;
 import org.springframework.web.util.ContentCachingResponseWrapper;
 import org.springframework.web.util.WebUtils;
 
+import app.security.AccessCheckResult;
+import app.security.SecurityChecker;
 import app.service.StatisticService;
 import app.util.RequestUtils;
 import app.util.StringUtils;
@@ -27,6 +29,9 @@ import app.util.StringUtils;
 public class RequestDispatcher extends DispatcherServlet {
     private static final long serialVersionUID = 1002903203998146268L;
     private static final Logger logger = LogManager.getLogger(RequestDispatcher.class.getName());
+
+    @Autowired
+    private SecurityChecker securityChecker;
 
     private List<String> nonLoggablePaths;
     private Set<String> nonLoggableResources;
@@ -45,6 +50,19 @@ public class RequestDispatcher extends DispatcherServlet {
 
     @Override
     protected void doDispatch(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        // TODO Insert audit logs for different event types here in every clause
+        AccessCheckResult result = securityChecker.check(request);
+        if (AccessCheckResult.Action.DENY.equals(result.getAction())) {
+            response.sendError(HttpServletResponse.SC_FORBIDDEN, result.getMessage());
+            return;
+        } else if (AccessCheckResult.Action.REDIRECT.equals(result.getAction())) {
+            response.sendRedirect(result.getMessage());
+            return;
+        } else if (AccessCheckResult.Action.NOT_FOUND.equals(result.getAction())) {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
+            return;
+        }
+
         if (!(request instanceof ContentCachingRequestWrapper)) {
             request = new ContentCachingRequestWrapper(request);
         }

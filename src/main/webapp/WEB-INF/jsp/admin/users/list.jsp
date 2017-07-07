@@ -100,7 +100,7 @@
                         </td>
 
                         <td>
-                            <a href="${usersRoot}/edit/${item.id}">Edit</a> /
+                            <a href="${usersRoot}/edit?id=${item.id}">Edit</a> /
                             <c:choose>
                                 <c:when test="${item.locked}"><a class="noHref" onclick="unlockUser(${item.id}, '${item.displayName}');">Unlock</a></c:when>
                                 <c:otherwise><a class="noHref" onclick="lockUser(${item.id}, '${item.displayName}');">Lock</a></c:otherwise>
