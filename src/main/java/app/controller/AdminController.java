@@ -34,16 +34,13 @@ import app.entity.RoleEntity;
 import app.entity.UserEntity;
 import app.enums.AuditEventTypes;
 import app.enums.OperationTypes;
-import app.enums.Permissions;
 import app.service.PermissionService;
 import app.service.RoleService;
-import app.util.LogUtils;
-import app.util.StringUtils;
 import app.validator.RoleEntityValidator;
 import app.validator.UserEntityValidator;
 
 @Controller
-@RequestMapping(BaseController.PATH_ADMIN)
+@RequestMapping("/admin")
 public class AdminController extends BaseController {
     private static final Logger logger = LogManager.getLogger(AdminController.class.getName());
 
@@ -71,12 +68,6 @@ public class AdminController extends BaseController {
 
     @GetMapping({"", "/"})
     public String index(Model model) {
-        if (!userService.hasPermission(Permissions.ADMIN_PAGE)) {
-            logger.warn("Attempt to enter admin section without permissions");
-            auditService.log(OperationTypes.ACCESS_ADMIN_DASHBOARD, AuditEventTypes.ACCESS_DENIED);
-            return REDIRECT_MAIN;
-        }
-
         injectUser(model);
         auditService.log(OperationTypes.ACCESS_ADMIN_DASHBOARD, AuditEventTypes.ACCESS_ALLOWED);
         return ADMIN_DASHBOARD;
@@ -84,12 +75,6 @@ public class AdminController extends BaseController {
 
     @GetMapping("/users")
     public String userList(Model model) {
-        if (!userService.hasPermission(Permissions.ADMIN_USERS_VIEW)) {
-            logger.warn("Attempt to enter user management without permissions");
-            auditService.log(OperationTypes.ACCESS_USER_LIST, AuditEventTypes.ACCESS_DENIED);
-            return REDIRECT_ADMIN;
-        }
-
         injectUser(model);
         List<UserEntity> userList = userService.findAll();
         model.addAttribute("userList", userList);
@@ -100,14 +85,8 @@ public class AdminController extends BaseController {
     }
 
     @GetMapping("/users/edit")
-    public String editUser(Model model, @RequestParam("id") Long id) {
-        String auditObject = "userId=" + id;
-
-        if (!userService.hasPermission(Permissions.ADMIN_USERS_VIEW)) {
-            logger.warn("Attempt to edit user without permissions");
-            auditService.log(OperationTypes.ACCESS_USER_EDIT, AuditEventTypes.ACCESS_DENIED, auditObject);
-            return REDIRECT_ADMIN;
-        }
+    public String editUser(HttpServletRequest request, Model model, @RequestParam("id") Long id) {
+        String auditObject = request.getQueryString();
 
         injectUser(model);
         UserEntity userEntity = injectUserEntity(model, id);
@@ -133,15 +112,6 @@ public class AdminController extends BaseController {
     public String changeLogin(@ModelAttribute("changeLogin") ChangeLoginDTO changeLogin, Model model,
                     HttpServletRequest request, BindingResult bindingResult) {
 
-        LogUtils.logRequest(logger, request);
-
-        if (!userService.hasPermission(Permissions.ADMIN_USERS_VIEW)) {
-            logger.warn("Attempt to change user's login without permissions");
-            auditService.log(OperationTypes.CHANGE_USER_LOGIN, AuditEventTypes.ACCESS_DENIED, changeLogin.toString());
-            return REDIRECT_ADMIN;
-        }
-
-        validatePermission(Permissions.ADMIN_USERS_EDIT, bindingResult, "login");
         userValidator.validateLogin(changeLogin.getLogin(), bindingResult);
         if (!bindingResult.hasErrors()) {
             UserEntity userEntity = userService.findById(changeLogin.getId());
@@ -177,15 +147,6 @@ public class AdminController extends BaseController {
     public String changePassword(@ModelAttribute("changePassword") ChangePasswordDTO changePassword, Model model,
                     HttpServletRequest request, BindingResult bindingResult) {
 
-        LogUtils.logRequest(logger, request);
-
-        if (!userService.hasPermission(Permissions.ADMIN_USERS_VIEW)) {
-            logger.warn("Attempt to change user's password without permissions");
-            auditService.log(OperationTypes.CHANGE_USER_PASSWORD, AuditEventTypes.ACCESS_DENIED, changePassword.toString());
-            return REDIRECT_ADMIN;
-        }
-
-        validatePermission(Permissions.ADMIN_USERS_EDIT, bindingResult, "pass");
         userValidator.validatePassword(changePassword.getPass(), bindingResult);
         if (!bindingResult.hasErrors() && !DEFAULT_PASSWORD_STUB.equals(changePassword.getPass())) {
             UserEntity userEntity = userService.findById(changePassword.getId());
@@ -202,6 +163,10 @@ public class AdminController extends BaseController {
                 auditService.log(OperationTypes.CHANGE_USER_PASSWORD, AuditEventTypes.SAVING_ERROR,
                                 auditObjectBefore, auditObjectBeforeSave, e.getMessage());
             }
+        } else {
+            String error = bindingErrorsToString(bindingResult);
+            logger.warn("Validation error due to save user by changing user password: {}", error);
+            auditService.log(OperationTypes.CHANGE_USER_PASSWORD, AuditEventTypes.VALIDATION_ERROR, changePassword.toString(), null, error);
         }
 
         injectUser(model);
@@ -218,14 +183,6 @@ public class AdminController extends BaseController {
     public String changeDisplayName(@ModelAttribute("changeDisplayName") ChangeDisplayNameDTO changeDisplayName, Model model,
                     HttpServletRequest request, BindingResult bindingResult) {
 
-        LogUtils.logRequest(logger, request);
-        if (!userService.hasPermission(Permissions.ADMIN_USERS_VIEW)) {
-            logger.warn("Attempt to change user's display name without permissions");
-            auditService.log(OperationTypes.CHANGE_USER_DISPLAY_NAME, AuditEventTypes.ACCESS_DENIED, changeDisplayName.toString());
-            return REDIRECT_ADMIN;
-        }
-
-        validatePermission(Permissions.ADMIN_USERS_EDIT, bindingResult, "displayName");
         userValidator.validateDisplayName(changeDisplayName.getDisplayName(), bindingResult);
         if (!bindingResult.hasErrors()) {
             UserEntity userEntity = userService.findById(changeDisplayName.getId());
@@ -241,6 +198,10 @@ public class AdminController extends BaseController {
                 auditService.log(OperationTypes.CHANGE_USER_DISPLAY_NAME, AuditEventTypes.SAVING_ERROR,
                                 auditObjectBefore, auditObjectBeforeSave, e.getMessage());
             }
+        } else {
+            String error = bindingErrorsToString(bindingResult);
+            logger.warn("Validation error due to save user by changing user display name: {}", error);
+            auditService.log(OperationTypes.CHANGE_USER_DISPLAY_NAME, AuditEventTypes.VALIDATION_ERROR, changeDisplayName.toString(), null, error);
         }
 
         injectUser(model);
@@ -257,14 +218,6 @@ public class AdminController extends BaseController {
     public String changeEmail(@ModelAttribute("changeEmail") ChangeEmailDTO changeEmail, Model model,
                     HttpServletRequest request, BindingResult bindingResult) {
 
-        LogUtils.logRequest(logger, request);
-        if (!userService.hasPermission(Permissions.ADMIN_USERS_VIEW)) {
-            logger.warn("Attempt to change user's email without permissions");
-            auditService.log(OperationTypes.CHANGE_USER_EMAIL, AuditEventTypes.ACCESS_DENIED, changeEmail.toString());
-            return REDIRECT_ADMIN;
-        }
-
-        validatePermission(Permissions.ADMIN_USERS_EDIT, bindingResult, "email");
         userValidator.validateEmail(changeEmail.getEmail(), bindingResult);
         if (!bindingResult.hasErrors()) {
             UserEntity userEntity = userService.findById(changeEmail.getId());
@@ -280,6 +233,10 @@ public class AdminController extends BaseController {
                 auditService.log(OperationTypes.CHANGE_USER_EMAIL, AuditEventTypes.SAVING_ERROR,
                             auditObjectBefore, auditObjectBeforeSave, e.getMessage());
             }
+        } else {
+            String error = bindingErrorsToString(bindingResult);
+            logger.warn("Validation error due to save user by changing user email: {}", error);
+            auditService.log(OperationTypes.CHANGE_USER_EMAIL, AuditEventTypes.VALIDATION_ERROR, changeEmail.toString(), null, error);
         }
 
         injectUser(model);
@@ -296,14 +253,6 @@ public class AdminController extends BaseController {
     public String changeRoles(@ModelAttribute("changeRoles") ChangeRolesDTO changeRoles, Model model,
                     HttpServletRequest request, BindingResult bindingResult) {
 
-        LogUtils.logRequest(logger, request);
-        if (!userService.hasPermission(Permissions.ADMIN_USERS_VIEW)) {
-            logger.warn("Attempt to change user's roles without permissions");
-            auditService.log(OperationTypes.CHANGE_USER_ROLES, AuditEventTypes.ACCESS_DENIED, changeRoles.toString());
-            return REDIRECT_ADMIN;
-        }
-
-        validatePermission(Permissions.ADMIN_USERS_ROLES, bindingResult, "roles");
         validateSelectedRoles(changeRoles, bindingResult);
         if (!bindingResult.hasErrors()) {
             UserEntity userEntity = userService.findById(changeRoles.getId());
@@ -319,6 +268,10 @@ public class AdminController extends BaseController {
                 auditService.log(OperationTypes.CHANGE_USER_ROLES, AuditEventTypes.SAVING_ERROR,
                             auditObjectBefore, auditObjectBeforeSave, e.getMessage());
             }
+        } else {
+            String error = bindingErrorsToString(bindingResult);
+            logger.warn("Validation error due to save user by changing user roles: {}", error);
+            auditService.log(OperationTypes.CHANGE_USER_ROLES, AuditEventTypes.VALIDATION_ERROR, changeRoles.toString(), null, error);
         }
 
         injectUser(model);
@@ -335,14 +288,6 @@ public class AdminController extends BaseController {
     public String confirmUser(@RequestParam("id") Long id, @RequestParam("comment") String comment, Model model,
                     HttpServletRequest request, RedirectAttributes redirectAttributes) {
 
-        LogUtils.logRequest(logger, request);
-        if (!userService.hasPermission(Permissions.ADMIN_USERS_CONFIRM)) {
-            logger.warn("Attempt to confirm user's identity without permissions");
-            String object = StringUtils.format("ConfirmUser[id={0},comment={1}]", id, comment);
-            auditService.log(OperationTypes.CHANGE_USER_CONFIRM, AuditEventTypes.ACCESS_DENIED, object);
-            return REDIRECT_ADMIN;
-        }
-
         if (id != null) {
             userService.confirmUser(id, comment);
             redirectAttributes.addFlashAttribute("message", "User confirmed successfully");
@@ -354,14 +299,6 @@ public class AdminController extends BaseController {
     @PostMapping("/users/unconfirm")
     public String unconfirmUser(@RequestParam("id") Long id, Model model,
                     HttpServletRequest request, RedirectAttributes redirectAttributes) {
-
-        LogUtils.logRequest(logger, request);
-        if (!userService.hasPermission(Permissions.ADMIN_USERS_UNCONFIRM)) {
-            logger.warn("Attempt to reject user's identity without permissions");
-            String object = StringUtils.format("UnconfirmUser[id={0}]", id);
-            auditService.log(OperationTypes.CHANGE_USER_UNCONFIRM, AuditEventTypes.ACCESS_DENIED, object);
-            return REDIRECT_ADMIN;
-        }
 
         if (id != null) {
             userService.unconfirmUser(id);
@@ -375,14 +312,6 @@ public class AdminController extends BaseController {
     public String lockUser(@RequestParam("id") Long id, @RequestParam("reason") String reason, Model model,
                     HttpServletRequest request, RedirectAttributes redirectAttributes) {
 
-        LogUtils.logRequest(logger, request);
-        if (!userService.hasPermission(Permissions.ADMIN_USERS_LOCK)) {
-            logger.warn("Attempt to lock user without permissions");
-            String object = StringUtils.format("LockUser[id={0},reason={1}]", id, reason);
-            auditService.log(OperationTypes.CHANGE_USER_LOCK, AuditEventTypes.ACCESS_DENIED, object);
-            return REDIRECT_ADMIN;
-        }
-
         if (id != null && reason != null && !reason.trim().isEmpty()) {
             userService.lockUser(id, reason);
             redirectAttributes.addFlashAttribute("message", "User locked successfully");
@@ -395,14 +324,6 @@ public class AdminController extends BaseController {
     public String unlockUser(@RequestParam("id") Long id, Model model,
                     HttpServletRequest request, RedirectAttributes redirectAttributes) {
 
-        LogUtils.logRequest(logger, request);
-        if (!userService.hasPermission(Permissions.ADMIN_USERS_UNLOCK)) {
-            logger.warn("Attempt to unlock user without permissions");
-            String object = StringUtils.format("UnlockUser[id={0}]", id);
-            auditService.log(OperationTypes.CHANGE_USER_UNLOCK, AuditEventTypes.ACCESS_DENIED, object);
-            return REDIRECT_ADMIN;
-        }
-
         if (id != null) {
             userService.unlockUser(id);
             redirectAttributes.addFlashAttribute("message", "User unlocked successfully");
@@ -413,12 +334,6 @@ public class AdminController extends BaseController {
 
     @GetMapping("/roles")
     public String rolesList(Model model) {
-        if (!userService.hasPermission(Permissions.ADMIN_ROLES_VIEW)) {
-            logger.warn("Attempt to enter role management without permissions");
-            auditService.log(OperationTypes.ACCESS_ROLE_LIST, AuditEventTypes.ACCESS_DENIED);
-            return REDIRECT_ADMIN;
-        }
-
         injectUser(model);
 
         List<RoleEntity> roleList = roleService.findAll();
@@ -438,12 +353,6 @@ public class AdminController extends BaseController {
 
     @GetMapping("/roles/create")
     public String createRole(Model model) {
-        if (!userService.hasPermission(Permissions.ADMIN_ROLES_EDIT)) {
-            logger.warn("Attempt to create new role without permissions");
-            auditService.log(OperationTypes.ACCESS_ROLE_CREATE, AuditEventTypes.ACCESS_DENIED);
-            return REDIRECT_ADMIN;
-        }
-
         injectUser(model);
         injectRoleEntity(model, new RoleEntity());
         injectAllPermissions(model);
@@ -455,12 +364,6 @@ public class AdminController extends BaseController {
 
     @GetMapping("/roles/edit")
     public String editRole(Model model, @RequestParam("id") Long id) {
-        if (!userService.hasPermission(Permissions.ADMIN_ROLES_EDIT)) {
-            logger.warn("Attempt to edit role without permissions");
-            auditService.log(OperationTypes.ACCESS_ROLE_EDIT, AuditEventTypes.ACCESS_DENIED);
-            return REDIRECT_ADMIN;
-        }
-
         RoleEntity roleEntity = roleService.findById(id);
         if (roleEntity == null) {
             return REDIRECT_ROLES;
@@ -478,13 +381,6 @@ public class AdminController extends BaseController {
     @PostMapping("/roles/save")
     public String saveRole(@ModelAttribute("roleEntity") RoleEntity roleEntity, Model model,
                     HttpServletRequest request, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
-
-        LogUtils.logRequest(logger, request);
-        if (!userService.hasPermission(Permissions.ADMIN_ROLES_EDIT)) {
-            logger.warn("Attempt to save role without permissions");
-            auditService.log(OperationTypes.CHANGE_ROLE_SAVE, AuditEventTypes.ACCESS_DENIED);
-            return REDIRECT_ROLES;
-        }
 
         validateRolePermissions(roleEntity, bindingResult);
         roleValidator.validate(roleEntity, bindingResult);
@@ -523,14 +419,7 @@ public class AdminController extends BaseController {
 
     @PostMapping("/roles/delete")
     public String deleteRole(@RequestParam("id") Long id, Model model, HttpServletRequest request, RedirectAttributes redirectAttributes) {
-        LogUtils.logRequest(logger, request);
-        String auditObject = "roleId=" + id;
-        if (!userService.hasPermission(Permissions.ADMIN_ROLES_EDIT)) {
-            logger.warn("Attempt to delete role without permissions");
-            auditService.log(OperationTypes.CHANGE_ROLE_DELETE, AuditEventTypes.ACCESS_DENIED, auditObject);
-            return REDIRECT_ADMIN;
-        }
-
+        String auditObject = request.getQueryString();
         RoleEntity roleEntity = roleService.findById(id);
         if (roleEntity == null) {
             auditService.log(OperationTypes.CHANGE_ROLE_DELETE, AuditEventTypes.ENTITY_NOT_EXISTS, auditObject);
@@ -555,12 +444,6 @@ public class AdminController extends BaseController {
 
     @GetMapping("/audit")
     public String auditList(Model model, HttpServletRequest request) {
-        if (!userService.hasPermission(Permissions.ADMIN_AUDIT_VIEW)) {
-            logger.warn("Attempt to enter audit page without permissions");
-            auditService.log(OperationTypes.ACCESS_ADMIN_AUDIT, AuditEventTypes.ACCESS_DENIED);
-            return REDIRECT_ADMIN;
-        }
-
         injectUser(model);
         Map<String, String> parameters = convertParameterMap(request.getParameterMap());
         List<AuditEventEntity> auditEventList = auditService.findEvents(parameters);

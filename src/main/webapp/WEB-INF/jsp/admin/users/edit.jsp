@@ -33,6 +33,14 @@
         <div class="starter-template">
             <h3>User Details</h3>
 
+            <c:if test="${not empty error}">
+                <p class="error">${error}</p>
+            </c:if>
+
+            <c:if test="${not empty message}">
+                <p class="success">${message}</p>
+            </c:if>
+
             <table class="formTable">
                 <tr>
                     <td>ID:</td>
@@ -112,10 +120,10 @@
                             </c:forEach>
                         </td>
                         <td>
-                            <c:if test="${not empty user && user.hasPermission('ADMIN_USERS_ROLES')}">
+<%--                             <c:if test="${not empty user && user.hasPermission('ADMIN_USERS_ROLES')}"> --%>
                                 <input type="submit" value="Change" />
                                 <form:errors path="roles" cssClass="error-text" />
-                            </c:if>
+<%--                             </c:if> --%>
                         </td>
                     </form:form>
                 </tr>

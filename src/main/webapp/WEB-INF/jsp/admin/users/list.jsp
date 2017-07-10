@@ -66,6 +66,10 @@
         <div class="starter-template">
             <h3>User Management</h3>
 
+            <c:if test="${not empty error}">
+                <p class="error">${error}</p>
+            </c:if>
+
             <c:if test="${not empty message}">
                 <p class="success">${message}</p>
             </c:if>
@@ -100,14 +104,21 @@
                         </td>
 
                         <td>
-                            <a href="${usersRoot}/edit?id=${item.id}">Edit</a> /
                             <c:choose>
-                                <c:when test="${item.locked}"><a class="noHref" onclick="unlockUser(${item.id}, '${item.displayName}');">Unlock</a></c:when>
-                                <c:otherwise><a class="noHref" onclick="lockUser(${item.id}, '${item.displayName}');">Lock</a></c:otherwise>
-                            </c:choose> /
-                            <c:choose>
-                                <c:when test="${item.confirmed}"><a class="noHref" onclick="unconfirmUser(${item.id}, '${item.displayName}');">Reject confirm</a></c:when>
-                                <c:otherwise><a class="noHref" onclick="confirmUser(${item.id}, '${item.displayName}');">Confirm</a></c:otherwise>
+                                <c:when test="${not empty user && user.hasPermission('ADMIN_USERS_EDIT')}">
+                                <a href="${usersRoot}/edit?id=${item.id}">Edit</a> /
+                                <c:choose>
+                                    <c:when test="${item.locked}"><a class="noHref" onclick="unlockUser(${item.id}, '${item.displayName}');">Unlock</a></c:when>
+                                    <c:otherwise><a class="noHref" onclick="lockUser(${item.id}, '${item.displayName}');">Lock</a></c:otherwise>
+                                </c:choose> /
+                                <c:choose>
+                                    <c:when test="${item.confirmed}"><a class="noHref" onclick="unconfirmUser(${item.id}, '${item.displayName}');">Reject confirm</a></c:when>
+                                    <c:otherwise><a class="noHref" onclick="confirmUser(${item.id}, '${item.displayName}');">Confirm</a></c:otherwise>
+                                </c:choose>
+                                </c:when>
+                                <c:otherwise>
+                                    <a href="${usersRoot}/edit?id=${item.id}">View</a>
+                                </c:otherwise>
                             </c:choose>
                         </td>
                     </tr>

@@ -20,12 +20,11 @@ import app.dto.LogLineDTO;
 import app.enums.AuditEventTypes;
 import app.enums.LogLevels;
 import app.enums.OperationTypes;
-import app.enums.Permissions;
 import app.service.admin.LogService;
 import app.util.StringUtils;
 
 @Controller
-@RequestMapping(BaseController.PATH_ADMIN + "/logs")
+@RequestMapping("/admin/logs")
 public class LogController extends BaseController {
     private static final Logger logger = LogManager.getLogger(LogController.class.getName());
 
@@ -37,12 +36,6 @@ public class LogController extends BaseController {
 
     @GetMapping
     public String logList(HttpServletRequest request, Model model) {
-        if (!userService.hasPermission(Permissions.ADMIN_LOGS_VIEW)) {
-            logger.warn("Attempt to view server logs without permissions");
-            auditService.log(OperationTypes.ACCESS_ADMIN_LOGS, AuditEventTypes.ACCESS_DENIED);
-            return REDIRECT_ADMIN;
-        }
-
         injectUser(model);
 
         List<String> fileList;
@@ -63,18 +56,12 @@ public class LogController extends BaseController {
 
     @GetMapping("/file")
     public String logFile(HttpServletRequest request, Model model, @RequestParam("name") String name) {
-        if (!userService.hasPermission(Permissions.ADMIN_LOGS_VIEW)) {
-            logger.warn("Attempt to view server logs without permissions");
-            auditService.log(OperationTypes.ACCESS_ADMIN_LOGS, AuditEventTypes.ACCESS_DENIED);
-            return REDIRECT_ADMIN;
-        }
-
         String auditObject = StringUtils.format("LogFile[name={0}]", name);
 
         if (!isSafe(name)) {
             logger.warn("Attempt to get log file with suspicious filename: " + auditObject);
             auditService.log(OperationTypes.ACCESS_ADMIN_LOGS, AuditEventTypes.SUSPICIOUS_ACTIVITY, auditObject);
-            return REDIRECT_ADMIN;
+            return "redirect:/admin";
         }
 
         injectUser(model);

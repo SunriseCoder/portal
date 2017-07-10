@@ -5,16 +5,15 @@ import app.enums.Permissions;
 
 public class AccessRule {
     private String url;
-    private OperationTypes operationType;
     private String redirect;
-    private Permissions[] permissions;
+    private OperationTypes operationType;
+    private Permissions permission;
 
-    public AccessRule(String url, OperationTypes operationType, String redirect, Permissions... permissions) {
-        super();
+    public AccessRule(String url, String redirect, Permissions permission, OperationTypes operationType) {
         this.url = url;
-        this.operationType = operationType;
         this.redirect = redirect;
-        this.permissions = permissions;
+        this.operationType = operationType;
+        this.permission = permission;
     }
 
     public String getUrl() {
@@ -25,14 +24,6 @@ public class AccessRule {
         this.url = url;
     }
 
-    public OperationTypes getOperationType() {
-        return operationType;
-    }
-
-    public void setOperationType(OperationTypes operationType) {
-        this.operationType = operationType;
-    }
-
     public String getRedirect() {
         return redirect;
     }
@@ -41,11 +32,19 @@ public class AccessRule {
         this.redirect = redirect;
     }
 
-    public Permissions[] getPermissions() {
-        return permissions;
+    public OperationTypes getOperationType() {
+        return operationType;
     }
 
-    public void setPermissions(Permissions... permissions) {
-        this.permissions = permissions;
+    public void setOperationType(OperationTypes operationType) {
+        this.operationType = operationType;
+    }
+
+    public Permissions getPermission() {
+        return permission;
+    }
+
+    public void setPermission(Permissions permission) {
+        this.permission = permission;
     }
 }

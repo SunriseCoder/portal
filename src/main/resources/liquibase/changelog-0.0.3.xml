@@ -660,104 +660,132 @@
 
         <insert tableName="operation_types">
             <column name="id" value="12" />
+            <column name="name" value="ACCESS_USER_LOGIN" />
+            <column name="comment" value="User logs in" />
+            <column name="severity" valueNumeric="1" />
+        </insert>
+
+        <insert tableName="operation_types">
+            <column name="id" value="13" />
+            <column name="name" value="ACCESS_USER_LOGOUT" />
+            <column name="comment" value="User logs out" />
+            <column name="severity" valueNumeric="0" />
+        </insert>
+
+        <insert tableName="operation_types">
+            <column name="id" value="14" />
+            <column name="name" value="ACCESS_PAGE_ERROR" />
+            <column name="comment" value="User requests error page" />
+            <column name="severity" valueNumeric="1" />
+        </insert>
+
+        <insert tableName="operation_types">
+            <column name="id" value="15" />
+            <column name="name" value="ACCESS_PAGE_STATIC" />
+            <column name="comment" value="Access static resource like script or image" />
+            <column name="severity" valueNumeric="0" />
+        </insert>
+
+        <insert tableName="operation_types">
+            <column name="id" value="16" />
             <column name="name" value="CHANGE_FILE_UPLOAD" />
             <column name="comment" value="Attempt to upload a file" />
             <column name="severity" valueNumeric="0" />
         </insert>
 
         <insert tableName="operation_types">
-            <column name="id" value="13" />
+            <column name="id" value="17" />
             <column name="name" value="CHANGE_ROLE_SAVE" />
             <column name="comment" value="Attempt to save role changes" />
             <column name="severity" valueNumeric="2" />
         </insert>
 
         <insert tableName="operation_types">
-            <column name="id" value="14" />
+            <column name="id" value="18" />
             <column name="name" value="CHANGE_ROLE_DELETE" />
             <column name="comment" value="Attempt to delete role" />
             <column name="severity" valueNumeric="2" />
         </insert>
 
         <insert tableName="operation_types">
-            <column name="id" value="15" />
+            <column name="id" value="19" />
             <column name="name" value="CHANGE_USER_REGISTER" />
             <column name="comment" value="Attempt to register new user" />
             <column name="severity" valueNumeric="1" />
         </insert>
 
         <insert tableName="operation_types">
-            <column name="id" value="16" />
+            <column name="id" value="20" />
             <column name="name" value="CHANGE_USER_LOGIN" />
             <column name="comment" value="Changing user login" />
             <column name="severity" valueNumeric="1" />
         </insert>
 
         <insert tableName="operation_types">
-            <column name="id" value="17" />
+            <column name="id" value="21" />
             <column name="name" value="CHANGE_USER_PASSWORD" />
             <column name="comment" value="Changing user password" />
             <column name="severity" valueNumeric="1" />
         </insert>
 
         <insert tableName="operation_types">
-            <column name="id" value="18" />
+            <column name="id" value="22" />
             <column name="name" value="CHANGE_USER_DISPLAY_NAME" />
             <column name="comment" value="Changing user display name" />
             <column name="severity" valueNumeric="1" />
         </insert>
 
         <insert tableName="operation_types">
-            <column name="id" value="19" />
+            <column name="id" value="23" />
             <column name="name" value="CHANGE_USER_EMAIL" />
             <column name="comment" value="Changing user email" />
             <column name="severity" valueNumeric="1" />
         </insert>
 
         <insert tableName="operation_types">
-            <column name="id" value="20" />
+            <column name="id" value="24" />
             <column name="name" value="CHANGE_USER_ROLES" />
             <column name="comment" value="Changing user roles" />
             <column name="severity" valueNumeric="2" />
         </insert>
 
         <insert tableName="operation_types">
-            <column name="id" value="21" />
+            <column name="id" value="25" />
             <column name="name" value="CHANGE_USER_CONFIRM" />
             <column name="comment" value="Confirming identity of the user" />
             <column name="severity" valueNumeric="1" />
         </insert>
 
         <insert tableName="operation_types">
-            <column name="id" value="22" />
+            <column name="id" value="26" />
             <column name="name" value="CHANGE_USER_UNCONFIRM" />
             <column name="comment" value="Reject identity confirmation of the user" />
             <column name="severity" valueNumeric="1" />
         </insert>
 
         <insert tableName="operation_types">
-            <column name="id" value="23" />
+            <column name="id" value="27" />
             <column name="name" value="CHANGE_USER_LOCK" />
             <column name="comment" value="Restricting user access to the portal" />
             <column name="severity" valueNumeric="1" />
         </insert>
 
         <insert tableName="operation_types">
-            <column name="id" value="24" />
+            <column name="id" value="28" />
             <column name="name" value="CHANGE_USER_UNLOCK" />
             <column name="comment" value="Restoring access for the user to the portal" />
             <column name="severity" valueNumeric="1" />
         </insert>
 
         <insert tableName="operation_types">
-            <column name="id" value="25" />
+            <column name="id" value="29" />
             <column name="name" value="SAVE_AUDIT_EVENT" />
             <column name="comment" value="Saving audit event" />
             <column name="severity" valueNumeric="2" />
         </insert>
 
         <insert tableName="operation_types">
-            <column name="id" value="26" />
+            <column name="id" value="30" />
             <column name="name" value="SAVE_STATISTIC_LOG" />
             <column name="comment" value="Saving statistic log record" />
             <column name="severity" valueNumeric="1" />

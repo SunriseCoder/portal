@@ -50,13 +50,24 @@ public class RequestDispatcher extends DispatcherServlet {
 
     @Override
     protected void doDispatch(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        // TODO Insert audit logs for different event types here in every clause
+        if (needToLog(request)) {
+            HandlerExecutionChain handler = getHandler(request);
+            log(request, response, handler);
+        }
+
         AccessCheckResult result = securityChecker.check(request);
+        String message = result.getMessage();
         if (AccessCheckResult.Action.DENY.equals(result.getAction())) {
-            response.sendError(HttpServletResponse.SC_FORBIDDEN, result.getMessage());
+            response.sendError(HttpServletResponse.SC_FORBIDDEN, message);
             return;
         } else if (AccessCheckResult.Action.REDIRECT.equals(result.getAction())) {
-            response.sendRedirect(result.getMessage());
+            String redirectUrl = result.getRedirectUrl();
+            if (redirectUrl == null || redirectUrl.isEmpty()) {
+                redirectUrl = "/";
+            }
+
+            response.sendRedirect(redirectUrl);
+
             return;
         } else if (AccessCheckResult.Action.NOT_FOUND.equals(result.getAction())) {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
@@ -71,14 +82,9 @@ public class RequestDispatcher extends DispatcherServlet {
             response = new ContentCachingResponseWrapper(response);
         }
 
-        HandlerExecutionChain handler = getHandler(request);
-
         try {
             super.doDispatch(request, response);
         } finally {
-            if (needToLog(request)) {
-                log(request, response, handler);
-            }
             updateResponse(response);
         }
     }
@@ -103,7 +109,6 @@ public class RequestDispatcher extends DispatcherServlet {
         String url = RequestUtils.getUrlWithParameters(request);
         try {
             statisticService.log(url);
-            logger.info("Logging url: " + url); //TODO cut off before commit
         } catch (Exception e) {
             String message = StringUtils.format("Failed to log statistic hit for url: {0}", url);
             logger.error(message, e);

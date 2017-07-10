@@ -69,6 +69,6 @@ public class RegisterController extends BaseController {
             auditService.log(OperationTypes.CHANGE_USER_REGISTER, AuditEventTypes.SAVING_ERROR, null, user.toString(), e.getMessage());
         }
 
-        return REDIRECT_MAIN;
+        return "redirect:/";
     }
 }

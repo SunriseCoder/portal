@@ -2,10 +2,12 @@ package app.security;
 
 public class AccessCheckResult {
     private Action action;
+    private String redirectUrl;
     private String message;
 
-    public AccessCheckResult(Action action, String message) {
+    public AccessCheckResult(Action action, String redirectUrl, String message) {
         this.action = action;
+        this.redirectUrl = redirectUrl;
         this.message = message;
     }
 
@@ -15,6 +17,14 @@ public class AccessCheckResult {
 
     public void setAction(Action action) {
         this.action = action;
+    }
+
+    public String getRedirectUrl() {
+        return redirectUrl;
+    }
+
+    public void setRedirectUrl(String redirectUrl) {
+        this.redirectUrl = redirectUrl;
     }
 
     public String getMessage() {

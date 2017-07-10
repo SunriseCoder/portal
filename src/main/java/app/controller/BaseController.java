@@ -13,17 +13,10 @@ import org.springframework.validation.BindingResult;
 
 import app.dto.LoginDTO;
 import app.entity.UserEntity;
-import app.enums.Permissions;
 import app.service.AuditService;
 import app.service.UserService;
 
 public class BaseController {
-    public static final String PATH_ADMIN = "/admin";
-
-    protected static final String REDIRECT_MAIN = "redirect:/";
-    protected static final String REDIRECT_LOGOUT = "redirect:/logout";
-    protected static final String REDIRECT_ADMIN = "redirect:/admin";
-
     @Autowired
     protected AuditService auditService;
     @Autowired
@@ -45,20 +38,6 @@ public class BaseController {
         model.addAttribute("login", new LoginDTO());
     }
 
-    protected void validatePermission(Permissions permission, BindingResult bindingResult) {
-        validatePermission(permission, bindingResult, null);
-    }
-
-    protected void validatePermission(Permissions permission, BindingResult bindingResult, String field) {
-        if (!userService.hasPermission(permission)) {
-            if (field == null) {
-                bindingResult.reject("noRights");
-            } else {
-                bindingResult.rejectValue(field, "noRights");
-            }
-        }
-    }
-
     protected String bindingErrorsToString(BindingResult bindingResult) {
         Locale locale = LocaleContextHolder.getLocale();
         String errors = bindingResult.getAllErrors().stream()
@@ -66,7 +45,6 @@ public class BaseController {
                 .collect(Collectors.joining(",", "Errors[", "]"));
         return errors;
     }
-
 
     protected Map<String, String> convertParameterMap(Map<String, String[]> parameterMap) {
         Map<String, String> resultMap = new HashMap<>();

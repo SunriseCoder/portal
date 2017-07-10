@@ -66,8 +66,15 @@
                             ${item.comment}
                         </td>
                         <td>
-                            <a href="${rolesRoot}/edit?id=${item.id}">Edit</a> /
-                            <a class="noHref" onclick="deleteRole(${item.id}, '${item.name}');">Delete</a>
+                            <c:choose>
+                                <c:when test="${not empty user && user.hasPermission('ADMIN_USERS_EDIT')}">
+                                    <a href="${rolesRoot}/edit?id=${item.id}">Edit</a> /
+                                    <a class="noHref" onclick="deleteRole(${item.id}, '${item.name}');">Delete</a>
+                                </c:when>
+                                <c:otherwise>
+                                    <a href="${rolesRoot}/edit?id=${item.id}">View</a>
+                                </c:otherwise>
+                            </c:choose>
                         </td>
                     </tr>
                 </c:forEach>

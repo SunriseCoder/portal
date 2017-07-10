@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import app.entity.UserEntity;
 import app.enums.AuditEventTypes;
 import app.enums.OperationTypes;
-import app.enums.Permissions;
 
 @Controller
 public class PageController extends BaseController {
@@ -19,7 +18,7 @@ public class PageController extends BaseController {
         UserEntity user = userService.getLoggedInUser();
         if (user != null && user.isLocked()) {
             auditService.log(OperationTypes.ACCESS_PAGE_MAIN, AuditEventTypes.ACCESS_DENIED, null, null, "User is locked");
-            return REDIRECT_LOGOUT;
+            return "redirect:/logout";
         }
 
         injectUser(model);
@@ -28,11 +27,6 @@ public class PageController extends BaseController {
 
     @GetMapping("/files")
     public String files(Model model) {
-        if (!userService.hasPermission(Permissions.PAGES_VIEW)) {
-            auditService.log(OperationTypes.ACCESS_PAGE_FILES, AuditEventTypes.ACCESS_DENIED);
-            return REDIRECT_MAIN;
-        }
-
         injectUser(model);
         return "files";
     }
@@ -40,7 +34,7 @@ public class PageController extends BaseController {
     @GetMapping("/login")
     public String login(HttpServletRequest request, Model model) {
         if (userService.isAuthenticated()) {
-            return REDIRECT_MAIN;
+            return "redirect:/";
         }
 
         injectLoginDTO(model);
@@ -56,7 +50,7 @@ public class PageController extends BaseController {
     @GetMapping("/register")
     public String register(Model model) {
         if (userService.isAuthenticated()) {
-            return REDIRECT_MAIN;
+            return "redirect:/";
         }
 
         injectLoginDTO(model);
@@ -66,11 +60,6 @@ public class PageController extends BaseController {
 
     @GetMapping("/upload")
     public String upload(Model model) {
-        if (!userService.hasPermission(Permissions.UPLOAD_FILES)) {
-            auditService.log(OperationTypes.ACCESS_PAGE_UPLOAD, AuditEventTypes.ACCESS_DENIED);
-            return REDIRECT_MAIN;
-        }
-
         injectUser(model);
         return "upload";
     }
@@ -78,7 +67,7 @@ public class PageController extends BaseController {
     @GetMapping("/logout")
     public String logout(Model model) {
         if (!userService.isAuthenticated()) {
-            return REDIRECT_MAIN;
+            return "redirect:/";
         }
 
         return "logout";

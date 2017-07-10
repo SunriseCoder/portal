@@ -8,6 +8,8 @@
 <head>
     <title>Main</title>
 
+    <link rel="stylesheet" type="text/css" href="${appRoot}/styles/form.css" />
+
     <script src="${appRoot}/scripts/jquery.js"></script>
     <script src="${appRoot}/scripts/locale-utils.js"></script>
 
@@ -27,6 +29,10 @@
     <div class="container">
         <div class="starter-template">
             <h3>Dashboard</h3>
+
+            <c:if test="${not empty error}">
+                <p class="error">${error}</p>
+            </c:if>
 
             <c:if test="${not empty user && user.hasPermission('ADMIN_DASHBOARD')}">
                 <p>Secret block here</p>
