@@ -292,6 +292,12 @@
             <column name="permission_id" value="1" />
         </insert>
 
+        <!-- Grant Permission UPLOAD_FILES to Role Admin -->
+        <insert tableName="zz_roles_permissions">
+            <column name="role_id" value="1" />
+            <column name="permission_id" value="2" />
+        </insert>
+
         <!-- Grant Permission ADMIN_DASHBOARD to Role Admin -->
         <insert tableName="zz_roles_permissions">
             <column name="role_id" value="1" />
@@ -388,6 +394,12 @@
             <column name="permission_id" value="1" />
         </insert>
 
+        <!-- Grant Permission UPLOAD_FILES to Role Moder -->
+        <insert tableName="zz_roles_permissions">
+            <column name="role_id" value="2" />
+            <column name="permission_id" value="2" />
+        </insert>
+
         <!-- Grant Permission ADMIN_DASHBOARD to Role Moder -->
         <insert tableName="zz_roles_permissions">
             <column name="role_id" value="2" />
@@ -448,13 +460,13 @@
             <column name="permission_id" value="9" />
         </insert>
 
-        <!-- Grant Permission UPLOAD_FILES to Role User -->
+        <!-- TODO - cut off - Grant Permission UPLOAD_FILES to Role User -->
         <insert tableName="zz_roles_permissions">
             <column name="role_id" value="4" />
             <column name="permission_id" value="2" />
         </insert>
 
-        <!-- Grant Permission PAGES_VIEW to Role User -->
+        <!-- TODO - cut off - Grant Permission PAGES_VIEW to Role User -->
         <insert tableName="zz_roles_permissions">
             <column name="role_id" value="4" />
             <column name="permission_id" value="9" />
