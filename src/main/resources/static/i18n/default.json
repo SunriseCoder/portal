@@ -3,6 +3,7 @@
 
     "admin.caption" : "Administration",
     "roles.caption" : "Roles Management",
+    "ip-bans.caption" : "IP-Bans",
     "audit.caption" : "Audit",
     "logs.caption" : "Server Logs",
 

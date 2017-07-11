@@ -38,9 +38,8 @@ public class LogController extends BaseController {
     public String logList(HttpServletRequest request, Model model) {
         injectUser(model);
 
-        List<String> fileList;
         try {
-            fileList = logService.findAllFiles();
+            List<String> fileList = logService.findAllFiles();
             model.addAttribute("fileList", fileList);
         } catch (IOException e) {
             logger.error("Error due to get list of log files", e);

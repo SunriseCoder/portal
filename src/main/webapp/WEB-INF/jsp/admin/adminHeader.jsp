@@ -21,6 +21,10 @@
                     <li><a href="${adminRoot}/roles">Roles</a></li>
                 </c:if>
 
+                <c:if test="${not empty user && user.hasPermission('ADMIN_IPBAN_VIEW')}">
+                    <li><a href="${adminRoot}/ip-bans">IP-Bans</a></li>
+                </c:if>
+
                 <c:if test="${not empty user && user.hasPermission('ADMIN_AUDIT_VIEW')}">
                     <li><a href="${adminRoot}/audit">Audit</a></li>
                 </c:if>

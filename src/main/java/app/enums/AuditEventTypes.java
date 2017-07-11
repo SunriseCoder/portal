@@ -13,6 +13,7 @@ public enum AuditEventTypes {
     SAVING_ERROR,
     VALIDATION_ERROR,
     IO_ERROR,
+    PAGE_NOT_FOUND,
 
-    SUCCESSFUL,
+    SUCCESSFUL
 }

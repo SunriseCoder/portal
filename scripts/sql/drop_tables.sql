@@ -8,6 +8,7 @@ drop table z_user_locks;
 drop table databasechangelog;
 drop table databasechangeloglock;
 
+drop table ip_bans;
 drop table audit_events;
 drop table statistic_logs;
 drop table audit_event_types;

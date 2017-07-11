@@ -22,6 +22,7 @@ import app.enums.Permissions;
 import app.security.AccessCheckResult.Action;
 import app.service.AuditService;
 import app.service.UserService;
+import app.service.admin.IPBanService;
 
 @Component
 public class SecurityChecker {
@@ -30,6 +31,8 @@ public class SecurityChecker {
     @Autowired
     private AuditService auditService;
     @Autowired
+    private IPBanService ipBanService;
+    @Autowired
     private UserService userService;
 
     private Map<String, AccessRule> urlRules;
@@ -37,8 +40,11 @@ public class SecurityChecker {
 
     public AccessCheckResult check(HttpServletRequest request) {
         UserEntity user = userService.getLoggedInUser();
-        // TODO Insert audit logs for different event types here
-        // TODO Check if IP is banned. If yes - return DENY result with message
+        String ip = request.getRemoteAddr();
+        boolean isBanned = ipBanService.isBanned(ip);
+        if (isBanned) {
+            return new AccessCheckResult(Action.DENY, null, "Your IP is banned");
+        }
 
         // Check URL-based access rules and return "REDIRECT" if user has no permissions
         String url = request.getRequestURI();
@@ -64,7 +70,7 @@ public class SecurityChecker {
         }
 
         // If no rules has been found, return "NOT_FOUND"
-        // TODO Insert audit logs for different event types here
+        auditService.log(OperationTypes.ACCESS_PAGE_UNKNOWN, AuditEventTypes.PAGE_NOT_FOUND, url);
         return new AccessCheckResult(Action.NOT_FOUND, null, null);
     }
 
@@ -135,6 +141,10 @@ public class SecurityChecker {
         addRule(rules, "/admin/roles/edit",         "/admin/roles", Permissions.ADMIN_ROLES_VIEW,      OperationTypes.ACCESS_ROLE_EDIT);
         addRule(rules, "/admin/roles/save",         "/admin/roles", Permissions.ADMIN_ROLES_EDIT,      OperationTypes.CHANGE_ROLE_SAVE);
         addRule(rules, "/admin/roles/delete",       "/admin/roles", Permissions.ADMIN_ROLES_EDIT,      OperationTypes.CHANGE_ROLE_DELETE);
+
+        addRule(rules, "/admin/ip-bans",            "/admin",       Permissions.ADMIN_IPBAN_VIEW,      OperationTypes.ACCESS_ADMIN_IPBAN);
+        addRule(rules, "/admin/ip-bans/add",        "/admin",       Permissions.ADMIN_IPBAN_EDIT,      OperationTypes.CHANGE_IPBAN_ADD);
+        addRule(rules, "/admin/ip-bans/remove",     "/admin",       Permissions.ADMIN_IPBAN_EDIT,      OperationTypes.CHANGE_IPBAN_REMOVE);
 
         addRule(rules, "/admin/audit",              "/admin",       Permissions.ADMIN_AUDIT_VIEW,      OperationTypes.ACCESS_ADMIN_AUDIT);
         addRule(rules, "/admin/logs",               "/admin",       Permissions.ADMIN_LOGS_VIEW,       OperationTypes.ACCESS_ADMIN_LOGS);

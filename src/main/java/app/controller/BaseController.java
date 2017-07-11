@@ -10,6 +10,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 
 import app.dto.LoginDTO;
 import app.entity.UserEntity;
@@ -41,8 +42,13 @@ public class BaseController {
     protected String bindingErrorsToString(BindingResult bindingResult) {
         Locale locale = LocaleContextHolder.getLocale();
         String errors = bindingResult.getAllErrors().stream()
-                .map(error -> messageSource.getMessage(error, locale))
-                .collect(Collectors.joining(",", "Errors[", "]"));
+                .map(error -> {
+                    String message = messageSource.getMessage(error, locale);
+                    if (error instanceof FieldError) {
+                        message = ((FieldError) error).getField() + ": " + message;
+                    }
+                    return message;
+                }).collect(Collectors.joining(",", "Errors[", "]"));
         return errors;
     }
 
