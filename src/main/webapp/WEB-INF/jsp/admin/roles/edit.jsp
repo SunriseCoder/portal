@@ -33,6 +33,8 @@
         <div class="starter-template">
             <h3>Role Details</h3>
 
+            <c:set var="readOnly" value="${empty user || not user.hasPermission('ADMIN_ROLES_EDIT')}" />
+
             <form:form action="${rolesRoot}/save" method="post" modelAttribute="roleEntity">
                 <form:hidden path="id" />
 
@@ -44,14 +46,14 @@
                     <tr>
                         <td>Name:</td>
                         <td>
-                            <form:input path="name" type="text" maxlength="64" size="50" /><br />
+                            <form:input path="name" type="text" maxlength="64" size="50" readonly="${readOnly}" /><br />
                             <form:errors path="name" cssClass="error-text" />
                         </td>
                     </tr>
                     <tr>
                         <td>Comment:</td>
                         <td>
-                            <form:textarea path="comment" type="text" maxlength="255" cols="50" rows="5" /><br />
+                            <form:textarea path="comment" type="text" maxlength="255" cols="50" rows="5" readonly="${readOnly}" /><br />
                             <form:errors path="comment" cssClass="error-text" />
                         </td>
                     </tr>
@@ -59,14 +61,16 @@
                         <td>Permissions:</td>
                         <td>
                             <c:forEach items="${allPermissions}" var="permission">
-                                <form:checkbox path="permissions" value="${permission}" /><b>${permission.id}: ${permission.name}</b><br />
+                                <form:checkbox path="permissions" value="${permission}" disabled="${readOnly}" /><b>${permission.id}: ${permission.name}</b><br />
                                 <span class="permission">(${permission.comment})</span><br />
                             </c:forEach>
                         </td>
                     </tr>
                     <tr>
                         <td>
-                            <input type="submit" value="Save" />
+                            <c:if test="${not readOnly}">
+                                <input type="submit" value="Save" />
+                            </c:if>
                         </td>
                     </tr>
                 </table>

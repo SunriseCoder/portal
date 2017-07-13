@@ -1,8 +1,7 @@
 package app.entity;
 
-import java.util.HashSet;
+import java.util.EnumSet;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -17,6 +16,8 @@ import javax.persistence.Transient;
 
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+
+import app.enums.Permissions;
 
 @Entity(name = "users")
 public class UserEntity {
@@ -45,7 +46,7 @@ public class UserEntity {
     private Set<RoleEntity> roles;
 
     @Transient
-    private Set<String> permissions;
+    private EnumSet<Permissions> permissions;
 
     @OneToOne(mappedBy = "user")
     private UserConfirmEntity confirmation;
@@ -109,12 +110,12 @@ public class UserEntity {
         this.roles = roles;
     }
 
-    public Set<String> getPermissions() {
+    public EnumSet<Permissions> getPermissions() {
         checkInitPermissions();
         return permissions;
     }
 
-    public Boolean hasPermission(String permission) {
+    public Boolean hasPermission(Permissions permission) {
         if (isLocked()) {
             return Boolean.FALSE;
         }
@@ -154,15 +155,15 @@ public class UserEntity {
             return;
         }
 
+        permissions = EnumSet.noneOf(Permissions.class);
+
         if (roles == null) {
-            permissions = new HashSet<>();
             return;
         }
 
-        permissions = roles.stream()
-                        .flatMap(r -> r.getPermissions().stream())
-                        .map(PermissionEntity::getName)
-                        .collect(Collectors.toSet());
+        roles.stream().flatMap(role -> role.getPermissions().stream())
+                .map(pe -> Permissions.valueOf(pe.getName()))
+                .forEach(p -> permissions.add(p));
     }
 
     @Override

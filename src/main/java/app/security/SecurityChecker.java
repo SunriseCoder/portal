@@ -79,7 +79,7 @@ public class SecurityChecker {
             return new AccessCheckResult(Action.ALLOW, null, null);
         }
 
-        String permission = rule.getPermission().name();
+        Permissions permission = rule.getPermission();
         if (user.hasPermission(permission)) {
             return new AccessCheckResult(Action.ALLOW, null, null);
         } else {
