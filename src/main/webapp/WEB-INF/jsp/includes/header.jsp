@@ -4,6 +4,7 @@
 
 <link rel="stylesheet" type="text/css" href="${appRoot}/webjars/bootstrap/3.3.7/css/bootstrap.min.css" />
 <link rel="stylesheet" type="text/css" href="${appRoot}/styles/header.css" />
+<link rel="stylesheet" type="text/css" href="${appRoot}/styles/popup.css" />
 
 <script src="${appRoot}/scripts/form-utils.js"></script>
 <script src="${appRoot}/scripts/popup-utils.js"></script>
@@ -23,6 +24,8 @@
                     <li><a href="${appRoot}/admin">Administration</a></li>
                 </c:if>
 
+                <li class="separator">&nbsp;</li>
+
                 <c:choose>
                     <c:when test="${empty user}">
                         <li>
@@ -40,14 +43,21 @@
                             </div>
 
                         </li>
-                        <li><a href="#" onclick="PopupUtils.showPopup(document.getElementById('headerLoginForm').username)">Login</a></li>
+                        <li><a id="loginLink" href="#" onclick="PopupUtils.showPopup('loginLink', document.getElementById('headerLoginForm').username)">Login</a></li>
                         <li><a href="${appRoot}/register">Register</a></li>
                     </c:when>
                     <c:otherwise>
                         <li>
+                            <div class="popup">
+                                <span id="popup" class="popupspan">
+                                    <jsp:include page="user-menu.jsp" />
+                                </span>
+                            </div>
+                        </li>
+                        <li>
                             <div>
-                                Welcome, ${user.displayName}
-                                (<a href="#" onclick="logout.submit();">Logout</a>)
+                                Welcome,
+                                <a id="userName" href="#" onclick="PopupUtils.showPopup('userName');" onblur="PopupUtils.hidePopup();">${user.displayName}</a>
                             </div>
                         </li>
 
