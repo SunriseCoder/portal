@@ -50,12 +50,16 @@
                 <p class="success">${message}</p>
             </c:if>
 
-            <form:form id="addIPForm" action="${ipbanRoot}/add" method="post" commandName="ipBan">
-                <input id="addIpCsrf" type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-                IP: <form:input id="addIpIp" type="text" path="ip" />
-                Reason: <form:input id="addIpReason" type="text" path="reason" />
-                <input type="submit" value="Add" />
-            </form:form>
+            <c:set var="canEdit" value="${not empty user && user.hasPermission('ADMIN_IPBAN_EDIT')}" />
+
+            <c:if test="${canEdit}">
+                <form:form id="addIPForm" action="${ipbanRoot}/add" method="post" commandName="ipBan">
+                    <input id="addIpCsrf" type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+                    IP: <form:input id="addIpIp" type="text" path="ip" />
+                    Reason: <form:input id="addIpReason" type="text" path="reason" />
+                    <input type="submit" value="Add" />
+                </form:form>
+            </c:if>
 
             <table class="listTable">
                 <thead>
@@ -78,7 +82,7 @@
                         <td>${item.bannedBy.displayName} (${item.bannedBy.login})</td>
                         <td>${item.reason}</td>
                         <td>
-                            <c:if test="${not empty user && user.hasPermission('ADMIN_IPBAN_EDIT')}">
+                            <c:if test="${canEdit}">
                                 <a class="noHref" onclick="removeIP(${item.id}, '${item.ip}', '${item.reason}');">Remove</a>
                             </c:if>
                         </td>

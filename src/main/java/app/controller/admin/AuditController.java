@@ -27,7 +27,7 @@ public class AuditController extends BaseController {
 
     private static final String ADMIN_AUDIT_LIST = "admin/audit/list";
 
-    @GetMapping("/audit")
+    @GetMapping
     public String auditList(Model model, HttpServletRequest request) {
         injectUser(model);
         Map<String, String> parameters = convertParameterMap(request.getParameterMap());

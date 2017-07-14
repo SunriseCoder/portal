@@ -121,9 +121,9 @@
 
     <changeSet id="0.0.3-05" author="SunriseCoder">
 
-        <createTable tableName="permissions">
+        <createTable tableName="e_permissions">
             <column autoIncrement="true" name="id" type="BIGINT">
-                <constraints primaryKey="true" primaryKeyName="permissionsPK" />
+                <constraints primaryKey="true" primaryKeyName="pk_e_permissions" />
             </column>
             <column name="name" type="VARCHAR(64)">
                 <constraints unique="true" uniqueConstraintName="ui_permissions_name" nullable="false" />
@@ -131,103 +131,103 @@
             <column name="comment" type="VARCHAR(255)" />
         </createTable>
 
-        <insert tableName="permissions">
+        <insert tableName="e_permissions">
             <column name="id" value="1" />
             <column name="name" value="ADMIN_PAGE" />
             <column name="comment" value="Allows access to administration section" />
         </insert>
 
-        <insert tableName="permissions">
+        <insert tableName="e_permissions">
             <column name="id" value="2" />
             <column name="name" value="UPLOAD_FILES" />
             <column name="comment" value="Allows users to upload files to server" />
         </insert>
 
-        <insert tableName="permissions">
+        <insert tableName="e_permissions">
             <column name="id" value="3" />
             <column name="name" value="ADMIN_DASHBOARD" />
             <column name="comment" value="Allows access to administration dashboard" />
         </insert>
 
-        <insert tableName="permissions">
+        <insert tableName="e_permissions">
             <column name="id" value="4" />
             <column name="name" value="ADMIN_USERS_VIEW" />
             <column name="comment" value="Allows access to View user information" />
         </insert>
 
-        <insert tableName="permissions">
+        <insert tableName="e_permissions">
             <column name="id" value="5" />
             <column name="name" value="ADMIN_USERS_EDIT" />
             <column name="comment" value="Allows access to Edit user information" />
         </insert>
 
-        <insert tableName="permissions">
+        <insert tableName="e_permissions">
             <column name="id" value="6" />
             <column name="name" value="ADMIN_USERS_ROLES" />
             <column name="comment" value="Allows access to change user permissions" />
         </insert>
 
-        <insert tableName="permissions">
+        <insert tableName="e_permissions">
             <column name="id" value="7" />
             <column name="name" value="ADMIN_USERS_LOCK" />
             <column name="comment" value="Allows to lock users" />
         </insert>
 
-        <insert tableName="permissions">
+        <insert tableName="e_permissions">
             <column name="id" value="8" />
             <column name="name" value="ADMIN_USERS_UNLOCK" />
             <column name="comment" value="Allows to unlock users" />
         </insert>
 
-        <insert tableName="permissions">
+        <insert tableName="e_permissions">
             <column name="id" value="9" />
             <column name="name" value="PAGES_VIEW" />
             <column name="comment" value="Allows to view base pages" />
         </insert>
 
-        <insert tableName="permissions">
+        <insert tableName="e_permissions">
             <column name="id" value="10" />
             <column name="name" value="ADMIN_USERS_CONFIRM" />
             <column name="comment" value="Allows to confirm user identity" />
         </insert>
 
-        <insert tableName="permissions">
+        <insert tableName="e_permissions">
             <column name="id" value="11" />
             <column name="name" value="ADMIN_USERS_UNCONFIRM" />
             <column name="comment" value="Allows to reject identity confirmation" />
         </insert>
 
-        <insert tableName="permissions">
+        <insert tableName="e_permissions">
             <column name="id" value="12" />
             <column name="name" value="ADMIN_ROLES_VIEW" />
             <column name="comment" value="Allows to reject identity confirmation" />
         </insert>
 
-        <insert tableName="permissions">
+        <insert tableName="e_permissions">
             <column name="id" value="13" />
             <column name="name" value="ADMIN_ROLES_EDIT" />
             <column name="comment" value="Allows to reject identity confirmation" />
         </insert>
 
-        <insert tableName="permissions">
+        <insert tableName="e_permissions">
             <column name="id" value="14" />
             <column name="name" value="ADMIN_AUDIT_VIEW" />
             <column name="comment" value="Allows to view audit events" />
         </insert>
 
-        <insert tableName="permissions">
+        <insert tableName="e_permissions">
             <column name="id" value="15" />
             <column name="name" value="ADMIN_LOGS_VIEW" />
             <column name="comment" value="Allows to view server logs" />
         </insert>
 
-        <insert tableName="permissions">
+        <insert tableName="e_permissions">
             <column name="id" value="16" />
             <column name="name" value="ADMIN_IPBAN_VIEW" />
             <column name="comment" value="Allows to view list of banned IP-addresses" />
         </insert>
 
-        <insert tableName="permissions">
+        <insert tableName="e_permissions">
             <column name="id" value="17" />
             <column name="name" value="ADMIN_IPBAN_EDIT" />
             <column name="comment" value="Allows to add and remove IP-addresses from ban list" />
@@ -282,7 +282,7 @@
             </column>
             <column name="permission_id" type="BIGINT">
                 <constraints nullable="false" foreignKeyName="fk_zz_roles_permissions_permission"
-                    referencedTableName="permissions" referencedColumnNames="id" />
+                    referencedTableName="e_permissions" referencedColumnNames="id" />
             </column>
         </createTable>
 
@@ -516,9 +516,9 @@
 
     <changeSet id="0.0.3-09" author="SunriseCoder">
 
-        <createTable tableName="audit_event_types">
+        <createTable tableName="e_audit_event_types">
             <column name="id" type="bigint" autoIncrement="true">
-                <constraints primaryKey="true" primaryKeyName="pk_audit_event_types" nullable="false" />
+                <constraints primaryKey="true" primaryKeyName="pk_e_audit_event_types" nullable="false" />
             </column>
             <column name="name" type="varchar(64)">
                 <constraints unique="true" uniqueConstraintName="ui_audit_event_type_name" nullable="false" />
@@ -529,84 +529,84 @@
             </column>
         </createTable>
 
-        <insert tableName="audit_event_types">
+        <insert tableName="e_audit_event_types">
             <column name="id" value="1" />
             <column name="name" value="ACCESS_ALLOWED" />
             <column name="comment" value="Access to particular resource is allowed" />
             <column name="severity" valueNumeric="0" />
         </insert>
 
-        <insert tableName="audit_event_types">
+        <insert tableName="e_audit_event_types">
             <column name="id" value="2" />
             <column name="name" value="ACCESS_DENIED" />
             <column name="comment" value="Access to particular resource is denied" />
             <column name="severity" valueNumeric="1" />
         </insert>
 
-        <insert tableName="audit_event_types">
+        <insert tableName="e_audit_event_types">
             <column name="id" value="3" />
             <column name="name" value="SUSPICIOUS_ACTIVITY" />
             <column name="comment" value="Assumption that somebody breaking or hacking the system" />
             <column name="severity" valueNumeric="3" />
         </insert>
 
-        <insert tableName="audit_event_types">
+        <insert tableName="e_audit_event_types">
             <column name="id" value="4" />
             <column name="name" value="AUDIT_FAILURE" />
             <column name="comment" value="Audit failure" />
             <column name="severity" valueNumeric="2" />
         </insert>
 
-        <insert tableName="audit_event_types">
+        <insert tableName="e_audit_event_types">
             <column name="id" value="5" />
             <column name="name" value="DELETE_ERROR" />
             <column name="comment" value="Error due to delete an entity" />
             <column name="severity" valueNumeric="2" />
         </insert>
 
-        <insert tableName="audit_event_types">
+        <insert tableName="e_audit_event_types">
             <column name="id" value="6" />
             <column name="name" value="ENTITY_NOT_EXISTS" />
             <column name="comment" value="Entity was not found" />
             <column name="severity" valueNumeric="1" />
         </insert>
 
-        <insert tableName="audit_event_types">
+        <insert tableName="e_audit_event_types">
             <column name="id" value="7" />
             <column name="name" value="INVALID_STATE" />
             <column name="comment" value="Operation is not applicable to the current state" />
             <column name="severity" valueNumeric="1" />
         </insert>
 
-        <insert tableName="audit_event_types">
+        <insert tableName="e_audit_event_types">
             <column name="id" value="8" />
             <column name="name" value="SAVING_ERROR" />
             <column name="comment" value="Saving error, however validation was passed" />
             <column name="severity" valueNumeric="2" />
         </insert>
 
-        <insert tableName="audit_event_types">
+        <insert tableName="e_audit_event_types">
             <column name="id" value="9" />
             <column name="name" value="VALIDATION_ERROR" />
             <column name="comment" value="Incorrect field value" />
             <column name="severity" valueNumeric="1" />
         </insert>
 
-        <insert tableName="audit_event_types">
+        <insert tableName="e_audit_event_types">
             <column name="id" value="10" />
             <column name="name" value="IO_ERROR" />
             <column name="comment" value="Input/Output operation error" />
             <column name="severity" valueNumeric="1" />
         </insert>
 
-        <insert tableName="audit_event_types">
+        <insert tableName="e_audit_event_types">
             <column name="id" value="11" />
             <column name="name" value="PAGE_NOT_FOUND" />
             <column name="comment" value="Unknown page" />
             <column name="severity" valueNumeric="1" />
         </insert>
 
-        <insert tableName="audit_event_types">
+        <insert tableName="e_audit_event_types">
             <column name="id" value="12" />
             <column name="name" value="SUCCESSFUL" />
             <column name="comment" value="Operation completed successfully" />
@@ -617,9 +617,9 @@
 
     <changeSet id="0.0.3-10" author="SunriseCoder">
 
-        <createTable tableName="operation_types">
+        <createTable tableName="e_operation_types">
             <column name="id" type="bigint" autoIncrement="true">
-                <constraints primaryKey="true" primaryKeyName="pk_operation_types" nullable="false" />
+                <constraints primaryKey="true" primaryKeyName="pk_e_operation_types" nullable="false" />
             </column>
             <column name="name" type="varchar(64)">
                 <constraints unique="true" uniqueConstraintName="ui_operation_type_name" nullable="false" />
@@ -630,238 +630,238 @@
             </column>
         </createTable>
 
-        <insert tableName="operation_types">
+        <insert tableName="e_operation_types">
             <column name="id" value="1" />
             <column name="name" value="ACCESS_ADMIN_AUDIT" />
             <column name="comment" value="Access to admin audit page" />
             <column name="severity" valueNumeric="1" />
         </insert>
 
-        <insert tableName="operation_types">
+        <insert tableName="e_operation_types">
             <column name="id" value="2" />
             <column name="name" value="ACCESS_ADMIN_DASHBOARD" />
             <column name="comment" value="Access to admin dashboard page" />
             <column name="severity" valueNumeric="1" />
         </insert>
 
-        <insert tableName="operation_types">
+        <insert tableName="e_operation_types">
             <column name="id" value="3" />
             <column name="name" value="ACCESS_ADMIN_IPBAN" />
             <column name="comment" value="Access to banned IP-addresses page" />
             <column name="severity" valueNumeric="2" />
         </insert>
 
-        <insert tableName="operation_types">
+        <insert tableName="e_operation_types">
             <column name="id" value="4" />
             <column name="name" value="ACCESS_ADMIN_LOGS" />
             <column name="comment" value="Access to server log files" />
             <column name="severity" valueNumeric="2" />
         </insert>
 
-        <insert tableName="operation_types">
+        <insert tableName="e_operation_types">
             <column name="id" value="5" />
             <column name="name" value="ACCESS_PAGE_FILES" />
             <column name="comment" value="Access to files page" />
             <column name="severity" valueNumeric="0" />
         </insert>
 
-        <insert tableName="operation_types">
+        <insert tableName="e_operation_types">
             <column name="id" value="6" />
             <column name="name" value="ACCESS_PAGE_MAIN" />
             <column name="comment" value="Access to main page" />
             <column name="severity" valueNumeric="0" />
         </insert>
 
-        <insert tableName="operation_types">
+        <insert tableName="e_operation_types">
             <column name="id" value="7" />
             <column name="name" value="ACCESS_PAGE_UPLOAD" />
             <column name="comment" value="Access to upload file page" />
             <column name="severity" valueNumeric="0" />
         </insert>
 
-        <insert tableName="operation_types">
+        <insert tableName="e_operation_types">
             <column name="id" value="8" />
             <column name="name" value="ACCESS_ROLE_LIST" />
             <column name="comment" value="Viewing role list" />
             <column name="severity" valueNumeric="1" />
         </insert>
 
-        <insert tableName="operation_types">
+        <insert tableName="e_operation_types">
             <column name="id" value="9" />
             <column name="name" value="ACCESS_ROLE_CREATE" />
             <column name="comment" value="Access role creation form" />
             <column name="severity" valueNumeric="2" />
         </insert>
 
-        <insert tableName="operation_types">
+        <insert tableName="e_operation_types">
             <column name="id" value="10" />
             <column name="name" value="ACCESS_ROLE_EDIT" />
             <column name="comment" value="Access role editing form" />
             <column name="severity" valueNumeric="2" />
         </insert>
 
-        <insert tableName="operation_types">
+        <insert tableName="e_operation_types">
             <column name="id" value="11" />
             <column name="name" value="ACCESS_USER_LIST" />
             <column name="comment" value="Viewing user list" />
             <column name="severity" valueNumeric="1" />
         </insert>
 
-        <insert tableName="operation_types">
+        <insert tableName="e_operation_types">
             <column name="id" value="12" />
             <column name="name" value="ACCESS_USER_EDIT" />
             <column name="comment" value="Changing user data" />
             <column name="severity" valueNumeric="1" />
         </insert>
 
-        <insert tableName="operation_types">
+        <insert tableName="e_operation_types">
             <column name="id" value="13" />
             <column name="name" value="ACCESS_USER_LOGIN" />
             <column name="comment" value="User logs in" />
             <column name="severity" valueNumeric="1" />
         </insert>
 
-        <insert tableName="operation_types">
+        <insert tableName="e_operation_types">
             <column name="id" value="14" />
             <column name="name" value="ACCESS_USER_LOGOUT" />
             <column name="comment" value="User logs out" />
             <column name="severity" valueNumeric="0" />
         </insert>
 
-        <insert tableName="operation_types">
+        <insert tableName="e_operation_types">
             <column name="id" value="15" />
             <column name="name" value="ACCESS_PAGE_ERROR" />
             <column name="comment" value="User requests error page" />
             <column name="severity" valueNumeric="1" />
         </insert>
 
-        <insert tableName="operation_types">
+        <insert tableName="e_operation_types">
             <column name="id" value="16" />
             <column name="name" value="ACCESS_PAGE_STATIC" />
             <column name="comment" value="Access static resource like script or image" />
             <column name="severity" valueNumeric="0" />
         </insert>
 
-        <insert tableName="operation_types">
+        <insert tableName="e_operation_types">
             <column name="id" value="17" />
             <column name="name" value="ACCESS_PAGE_UNKNOWN" />
             <column name="comment" value="User requests unknown page" />
             <column name="severity" valueNumeric="2" />
         </insert>
 
-        <insert tableName="operation_types">
+        <insert tableName="e_operation_types">
             <column name="id" value="18" />
             <column name="name" value="CHANGE_FILE_UPLOAD" />
             <column name="comment" value="Attempt to upload a file" />
             <column name="severity" valueNumeric="0" />
         </insert>
 
-        <insert tableName="operation_types">
+        <insert tableName="e_operation_types">
             <column name="id" value="19" />
             <column name="name" value="CHANGE_IPBAN_ADD" />
             <column name="comment" value="Attempt to ban an IP-address" />
             <column name="severity" valueNumeric="0" />
         </insert>
 
-        <insert tableName="operation_types">
+        <insert tableName="e_operation_types">
             <column name="id" value="20" />
             <column name="name" value="CHANGE_IPBAN_REMOVE" />
             <column name="comment" value="Attempt to remove IP-address from the ban list" />
             <column name="severity" valueNumeric="2" />
         </insert>
 
-        <insert tableName="operation_types">
+        <insert tableName="e_operation_types">
             <column name="id" value="21" />
             <column name="name" value="CHANGE_ROLE_SAVE" />
             <column name="comment" value="Attempt to save role changes" />
             <column name="severity" valueNumeric="2" />
         </insert>
 
-        <insert tableName="operation_types">
+        <insert tableName="e_operation_types">
             <column name="id" value="22" />
             <column name="name" value="CHANGE_ROLE_DELETE" />
             <column name="comment" value="Attempt to delete role" />
             <column name="severity" valueNumeric="2" />
         </insert>
 
-        <insert tableName="operation_types">
+        <insert tableName="e_operation_types">
             <column name="id" value="23" />
             <column name="name" value="CHANGE_USER_REGISTER" />
             <column name="comment" value="Attempt to register new user" />
             <column name="severity" valueNumeric="1" />
         </insert>
 
-        <insert tableName="operation_types">
+        <insert tableName="e_operation_types">
             <column name="id" value="24" />
             <column name="name" value="CHANGE_USER_LOGIN" />
             <column name="comment" value="Changing user login" />
             <column name="severity" valueNumeric="1" />
         </insert>
 
-        <insert tableName="operation_types">
+        <insert tableName="e_operation_types">
             <column name="id" value="25" />
             <column name="name" value="CHANGE_USER_PASSWORD" />
             <column name="comment" value="Changing user password" />
             <column name="severity" valueNumeric="1" />
         </insert>
 
-        <insert tableName="operation_types">
+        <insert tableName="e_operation_types">
             <column name="id" value="26" />
             <column name="name" value="CHANGE_USER_DISPLAY_NAME" />
             <column name="comment" value="Changing user display name" />
             <column name="severity" valueNumeric="1" />
         </insert>
 
-        <insert tableName="operation_types">
+        <insert tableName="e_operation_types">
             <column name="id" value="27" />
             <column name="name" value="CHANGE_USER_EMAIL" />
             <column name="comment" value="Changing user email" />
             <column name="severity" valueNumeric="1" />
         </insert>
 
-        <insert tableName="operation_types">
+        <insert tableName="e_operation_types">
             <column name="id" value="28" />
             <column name="name" value="CHANGE_USER_ROLES" />
             <column name="comment" value="Changing user roles" />
             <column name="severity" valueNumeric="2" />
         </insert>
 
-        <insert tableName="operation_types">
+        <insert tableName="e_operation_types">
             <column name="id" value="29" />
             <column name="name" value="CHANGE_USER_CONFIRM" />
             <column name="comment" value="Confirming identity of the user" />
             <column name="severity" valueNumeric="1" />
         </insert>
 
-        <insert tableName="operation_types">
+        <insert tableName="e_operation_types">
             <column name="id" value="30" />
             <column name="name" value="CHANGE_USER_UNCONFIRM" />
             <column name="comment" value="Reject identity confirmation of the user" />
             <column name="severity" valueNumeric="1" />
         </insert>
 
-        <insert tableName="operation_types">
+        <insert tableName="e_operation_types">
             <column name="id" value="31" />
             <column name="name" value="CHANGE_USER_LOCK" />
             <column name="comment" value="Restricting user access to the portal" />
             <column name="severity" valueNumeric="1" />
         </insert>
 
-        <insert tableName="operation_types">
+        <insert tableName="e_operation_types">
             <column name="id" value="32" />
             <column name="name" value="CHANGE_USER_UNLOCK" />
             <column name="comment" value="Restoring access for the user to the portal" />
             <column name="severity" valueNumeric="1" />
         </insert>
 
-        <insert tableName="operation_types">
+        <insert tableName="e_operation_types">
             <column name="id" value="33" />
             <column name="name" value="SAVE_AUDIT_EVENT" />
             <column name="comment" value="Saving audit event" />
             <column name="severity" valueNumeric="2" />
         </insert>
 
-        <insert tableName="operation_types">
+        <insert tableName="e_operation_types">
             <column name="id" value="34" />
             <column name="name" value="SAVE_STATISTIC_LOG" />
             <column name="comment" value="Saving statistic log record" />
@@ -888,11 +888,11 @@
             </column>
             <column name="operation_id" type="BIGINT">
                 <constraints nullable="false" foreignKeyName="fk_audit_events_operation_type"
-                             referencedTableName="operation_types" referencedColumnNames="id" />
+                             referencedTableName="e_operation_types" referencedColumnNames="id" />
             </column>
             <column name="type_id" type="BIGINT">
                 <constraints nullable="false" foreignKeyName="fk_audit_events_type"
-                             referencedTableName="audit_event_types" referencedColumnNames="id" />
+                             referencedTableName="e_audit_event_types" referencedColumnNames="id" />
             </column>
             <column name="object_before" type="varchar(255)" />
             <column name="object_after" type="varchar(255)" />

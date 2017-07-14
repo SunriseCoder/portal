@@ -7,7 +7,7 @@ import javax.persistence.Id;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
-@Entity(name = "audit_event_types")
+@Entity(name = "e_audit_event_types")
 public class AuditEventTypeEntity {
     @Id
     @GeneratedValue

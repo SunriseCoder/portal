@@ -8,7 +8,7 @@ import javax.persistence.Id;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
-@Entity(name = "permissions")
+@Entity(name = "e_permissions")
 public class PermissionEntity {
     @Id
     @GeneratedValue

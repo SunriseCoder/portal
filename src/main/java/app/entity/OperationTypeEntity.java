@@ -7,7 +7,7 @@ import javax.persistence.Id;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
-@Entity(name = "operation_types")
+@Entity(name = "e_operation_types")
 public class OperationTypeEntity {
     @Id
     @GeneratedValue

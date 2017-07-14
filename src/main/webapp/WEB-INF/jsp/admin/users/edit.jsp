@@ -41,6 +41,8 @@
                 <p class="success">${message}</p>
             </c:if>
 
+            <c:set var="canChangeRoles" value="${not empty user && user.hasPermission('ADMIN_USERS_ROLES')}" />
+
             <table class="formTable">
                 <tr>
                     <td>ID:</td>
@@ -113,17 +115,17 @@
                         <td>Roles:</td>
                         <td>
                             <c:forEach items="${allRoles}" var="role">
-                                <form:checkbox path="roles" value="${role}" label="${role.name}" /><br/>
+                                <form:checkbox path="roles" value="${role}" label="${role.name}" disabled="${not canChangeRoles}" /><br/>
                                 <c:forEach items="${role.permissions}" var="permission">
                                     <span class="permission"><b>${permission.name}</b> (${permission.comment})</span><br />
                                 </c:forEach>
                             </c:forEach>
                         </td>
                         <td>
-<%--                             <c:if test="${not empty user && user.hasPermission('ADMIN_USERS_ROLES')}"> --%>
+                            <c:if test="${canChangeRoles}">
                                 <input type="submit" value="Change" />
                                 <form:errors path="roles" cssClass="error-text" />
-<%--                             </c:if> --%>
+                            </c:if>
                         </td>
                     </form:form>
                 </tr>

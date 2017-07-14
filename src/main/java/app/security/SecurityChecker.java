@@ -130,7 +130,7 @@ public class SecurityChecker {
         addRule(rules, "/admin/users/password",     "/admin/users", Permissions.ADMIN_USERS_EDIT,      OperationTypes.CHANGE_USER_PASSWORD);
         addRule(rules, "/admin/users/display-name", "/admin/users", Permissions.ADMIN_USERS_EDIT,      OperationTypes.CHANGE_USER_DISPLAY_NAME);
         addRule(rules, "/admin/users/email",        "/admin/users", Permissions.ADMIN_USERS_EDIT,      OperationTypes.CHANGE_USER_EMAIL);
-        addRule(rules, "/admin/users/roles",        "/admin/users", Permissions.ADMIN_USERS_EDIT,      OperationTypes.CHANGE_USER_ROLES);
+        addRule(rules, "/admin/users/roles",        "/admin/users", Permissions.ADMIN_USERS_ROLES,     OperationTypes.CHANGE_USER_ROLES);
         addRule(rules, "/admin/users/confirm",      "/admin/users", Permissions.ADMIN_USERS_CONFIRM,   OperationTypes.CHANGE_USER_CONFIRM);
         addRule(rules, "/admin/users/unconfirm",    "/admin/users", Permissions.ADMIN_USERS_UNCONFIRM, OperationTypes.CHANGE_USER_UNCONFIRM);
         addRule(rules, "/admin/users/lock",         "/admin/users", Permissions.ADMIN_USERS_LOCK,      OperationTypes.CHANGE_USER_LOCK);
@@ -173,5 +173,13 @@ public class SecurityChecker {
     private void addRule(List<AccessRule> rules, String url, String redirect, Permissions permission, OperationTypes operationType) {
         AccessRule rule = new AccessRule(url, redirect, permission, operationType);
         rules.add(rule);
+    }
+
+    public Map<String, AccessRule> getUrlRules() {
+        return urlRules;
+    }
+
+    public Map<Pattern, AccessRule> getPatternRules() {
+        return patternRules;
     }
 }
