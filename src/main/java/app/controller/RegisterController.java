@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
@@ -38,6 +39,13 @@ public class RegisterController extends BaseController {
     @Autowired
     private RoleService rolesService;
 
+    @GetMapping("/register")
+    public String register(Model model) {
+        injectLoginDTO(model);
+        model.addAttribute("userForm", new UserEntity());
+        return "register";
+    }
+
     @PostMapping("/register")
     public String registration(@ModelAttribute("userForm") UserEntity user, BindingResult bindingResult, Model model,
             HttpServletRequest request) {
@@ -48,6 +56,7 @@ public class RegisterController extends BaseController {
             model.addAttribute("login", new LoginDTO());
             String error = bindingErrorsToString(bindingResult);
             auditService.log(OperationTypes.CHANGE_USER_REGISTER, AuditEventTypes.VALIDATION_ERROR, null, user.toString(), error);
+            user.clearPasswords();
             return "register";
         }
 
@@ -69,6 +78,7 @@ public class RegisterController extends BaseController {
             auditService.log(OperationTypes.CHANGE_USER_REGISTER, AuditEventTypes.SAVING_ERROR, null, user.toString(), e.getMessage());
         }
 
+        user.clearPasswords();
         return "redirect:/";
     }
 }

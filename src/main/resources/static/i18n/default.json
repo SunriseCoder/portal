@@ -18,6 +18,8 @@
     "register.caption" : "Register",
 
     "upload.caption" : "Upload",
+    
+    "profile.caption" : "User Profile",
 
     "loading.error" : "Loading Error"
 }

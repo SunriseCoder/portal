@@ -75,18 +75,35 @@ public class SecurityChecker {
     }
 
     private AccessCheckResult checkRule(UserEntity user, AccessRule rule, HttpServletRequest request) {
-        if (rule.getPermission() == null) {
-            return new AccessCheckResult(Action.ALLOW, null, null);
+        Permissions permission = rule.getPermission();
+
+        if (permission == null) {
+            return createAllow();
         }
 
-        Permissions permission = rule.getPermission();
+        if (Permissions.USER_LOGGED_IN.equals(permission)) {
+            return userService.isAuthenticated() ? createAllow() : createRedirect(rule);
+        }
+
+        if (Permissions.USER_LOGGED_OUT.equals(permission)) {
+            return userService.isAuthenticated() ? createRedirect(rule) : createAllow();
+        }
+
         if (user.hasPermission(permission)) {
-            return new AccessCheckResult(Action.ALLOW, null, null);
+            return createAllow();
         } else {
             logger.warn("Attempt to enter '{}' by '{}' without permissions", request.getRequestURL(), user.getLogin());
             auditService.log(rule.getOperationType(), AuditEventTypes.ACCESS_DENIED, request.getQueryString());
-            return new AccessCheckResult(Action.REDIRECT, rule.getRedirect(), "You do not have permission for this operation");
+            return createRedirect(rule);
         }
+    }
+
+    private AccessCheckResult createAllow() {
+        return new AccessCheckResult(Action.ALLOW, null, null);
+    }
+
+    private AccessCheckResult createRedirect(AccessRule rule) {
+        return new AccessCheckResult(Action.REDIRECT, rule.getRedirect(), "You do not have permission for this operation");
     }
 
     @PostConstruct
@@ -113,9 +130,10 @@ public class SecurityChecker {
         addRule(rules, "/",                         null,           null,                              OperationTypes.ACCESS_PAGE_MAIN);
         addRule(rules, "/files",                    "/",            Permissions.PAGES_VIEW,            OperationTypes.ACCESS_PAGE_FILES);
         addRule(rules, "/upload",                   "/",            Permissions.UPLOAD_FILES,          OperationTypes.ACCESS_PAGE_UPLOAD);
-        addRule(rules, "/register",                 "/",            null,                              OperationTypes.CHANGE_USER_REGISTER);
-        addRule(rules, "/login",                    "/",            null,                              OperationTypes.ACCESS_USER_LOGIN);
-        addRule(rules, "/logout",                   "/",            null,                              OperationTypes.ACCESS_USER_LOGOUT);
+        addRule(rules, "/register",                 "/",            Permissions.USER_LOGGED_OUT,       OperationTypes.CHANGE_USER_REGISTER);
+        addRule(rules, "/login",                    "/",            Permissions.USER_LOGGED_OUT,       OperationTypes.ACCESS_USER_LOGIN);
+        addRule(rules, "/logout",                   "/",            Permissions.USER_LOGGED_IN,        OperationTypes.ACCESS_USER_LOGOUT);
+        addRule(rules, "/profile",                  "/",            Permissions.USER_LOGGED_IN,        OperationTypes.CHANGE_USER_PROFILE);
 
         addRule(rules, "/rest/files/list",          "/",            Permissions.PAGES_VIEW,            OperationTypes.ACCESS_PAGE_FILES);
         addRule(rules, "/rest/files/get",           "/",            Permissions.PAGES_VIEW,            OperationTypes.ACCESS_PAGE_FILES);

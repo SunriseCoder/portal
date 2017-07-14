@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import app.dto.UserProfileDTO;
 import app.entity.UserEntity;
 import app.enums.Permissions;
 
@@ -18,6 +19,7 @@ public interface UserService {
     UserEntity getLoggedInUser();
     boolean hasPermission(Permissions permission);
     UserEntity save(UserEntity user);
+    UserEntity updateLoggedUser(UserProfileDTO profile);
     void encryptPass(UserEntity user);
     void confirmUser(Long id, String comment);
     void unconfirmUser(Long id);

@@ -16,8 +16,14 @@ var PopupUtils = {
         }
     },
 
-    hidePopup: function() {
-        var popup = document.getElementById("popup");
-        popup.classList.remove("show");
+    hidePopup: async function() {
+        this.sleep(300).then(() => {
+            var popup = document.getElementById("popup");
+            popup.classList.remove("show");
+        });
+    },
+
+    sleep: function(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
     }
 }

@@ -1,9 +1,14 @@
 package app.validator;
 
+import java.beans.PropertyDescriptor;
 import java.util.regex.Pattern;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
@@ -13,6 +18,8 @@ import app.service.UserService;
 
 @Component
 public class UserEntityValidator implements Validator {
+    private static final Logger logger = LogManager.getLogger(UserEntityValidator.class.getName());
+
     private static final Pattern LOGIN_PATTERN = Pattern.compile("^[A-Za-z0-9]*$");
     private static final Pattern DISPLAY_NAME_PATTERN = Pattern.compile("^[A-Za-z0-9\\-\\ \\_\\(\\)]*$");
     private static final Pattern EMAIL_PATTERN = Pattern.compile("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
@@ -32,9 +39,7 @@ public class UserEntityValidator implements Validator {
         validateLogin(user.getLogin(), errors);
         validatePassword(user.getPass(), errors);
 
-        if (!user.getPass().equals(user.getConfirm())) {
-            errors.rejectValue("confirm", "user.confirm.different");
-        }
+        validatePassConfirm(user.getPass(), user.getConfirm(), errors);
 
         validateDisplayName(user.getDisplayName(), errors);
         validateEmail(user.getEmail(), errors);
@@ -57,10 +62,20 @@ public class UserEntityValidator implements Validator {
 
     public void validatePassword(String password, Errors errors) {
         if (password == null || password.trim().isEmpty()) {
+            clearValue(errors, "pass");
             errors.rejectValue("pass", "required");
         }
         if (password.length() < 8 || password.length() > 32) {
+            clearValue(errors, "pass");
             errors.rejectValue("pass", "user.pass.size");
+        }
+    }
+
+    public void validatePassConfirm(String password, String confirm, Errors errors) {
+        if (password == null || !password.equals(confirm)) {
+            clearValue(errors, "pass");
+            clearValue(errors, "confirm");
+            errors.rejectValue("confirm", "user.confirm.different");
         }
     }
 
@@ -93,6 +108,21 @@ public class UserEntityValidator implements Validator {
         }
         if (!EMAIL_PATTERN.matcher(email).matches()) {
             errors.rejectValue("email", "user.email.wrong_format");
+        }
+    }
+
+    private void clearValue(Errors errors, String property) {
+        if (!(errors instanceof BeanPropertyBindingResult)) {
+            return;
+        }
+
+        BeanPropertyBindingResult bindingResult = (BeanPropertyBindingResult) errors;
+        Object target = bindingResult.getTarget();
+        PropertyDescriptor pd = BeanUtils.getPropertyDescriptor(target.getClass(), property);
+        try {
+            pd.getWriteMethod().invoke(target, "");
+        } catch (Exception e) {
+            logger.error("Error due to clear bean value", e);
         }
     }
 }

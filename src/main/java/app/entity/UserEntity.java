@@ -166,6 +166,11 @@ public class UserEntity {
                 .forEach(p -> permissions.add(p));
     }
 
+    public void clearPasswords() {
+        setPass("");
+        setConfirm("");
+    }
+
     @Override
     public String toString() {
         return new ReflectionToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)

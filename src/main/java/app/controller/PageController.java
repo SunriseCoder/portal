@@ -33,10 +33,6 @@ public class PageController extends BaseController {
 
     @GetMapping("/login")
     public String login(HttpServletRequest request, Model model) {
-        if (userService.isAuthenticated()) {
-            return "redirect:/";
-        }
-
         injectLoginDTO(model);
 
         Exception e = (Exception) request.getSession().getAttribute("SPRING_SECURITY_LAST_EXCEPTION");
@@ -47,17 +43,6 @@ public class PageController extends BaseController {
         return "login";
     }
 
-    @GetMapping("/register")
-    public String register(Model model) {
-        if (userService.isAuthenticated()) {
-            return "redirect:/";
-        }
-
-        injectLoginDTO(model);
-        model.addAttribute("userForm", new UserEntity());
-        return "register";
-    }
-
     @GetMapping("/upload")
     public String upload(Model model) {
         injectUser(model);
@@ -66,10 +51,6 @@ public class PageController extends BaseController {
 
     @GetMapping("/logout")
     public String logout(Model model) {
-        if (!userService.isAuthenticated()) {
-            return "redirect:/";
-        }
-
         return "logout";
     }
 }

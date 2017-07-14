@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import app.dao.UserConfirmRepository;
 import app.dao.UserLockRepository;
 import app.dao.UserRepository;
+import app.dto.UserProfileDTO;
 import app.entity.UserConfirmEntity;
 import app.entity.UserEntity;
 import app.entity.UserLockEntity;
@@ -103,6 +104,29 @@ public class UserServiceImpl implements UserService {
             }
         }
         return repository.saveAndFlush(user);
+    }
+
+    @Override
+    @Transactional
+    public UserEntity updateLoggedUser(UserProfileDTO update) {
+        UserEntity user = getLoggedInUser();
+
+        if (!StringUtils.safeEquals(user.getDisplayName(), update.getDisplayName())) {
+            user.setDisplayName(update.getDisplayName());
+        }
+
+        if (!StringUtils.safeEquals(user.getEmail(), update.getEmail())) {
+            user.setEmail(update.getEmail());
+        }
+
+        if (update.getPass() != null && !update.getPass().isEmpty()) {
+            user.setPass(update.getPass());
+            encryptPass(user);
+        }
+
+        user = repository.save(user);
+
+        return user;
     }
 
     @Override

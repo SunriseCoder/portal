@@ -3,6 +3,7 @@ package integration;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -44,8 +45,12 @@ public class PermissionsTest extends BaseTest {
     public void testGhostPermissions() {
         List<PermissionEntity> permissions = permissionRepository.findAll();
         List<RoleEntity> roles = roleRepository.findAll();
+        EnumSet<Permissions> noNeedToCheck = EnumSet.of(Permissions.USER_LOGGED_IN, Permissions.USER_LOGGED_OUT);
 
         for (PermissionEntity permission : permissions) {
+            if (noNeedToCheck.contains(Permissions.valueOf(permission.getName()))) {
+                continue;
+            }
             boolean found = false;
             for (RoleEntity role : roles) {
                 if (role.getPermissions().contains(permission)) {
