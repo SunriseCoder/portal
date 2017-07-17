@@ -8,7 +8,11 @@ import java.util.Set;
 import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import app.dao.IPBanRepository;
@@ -16,7 +20,11 @@ import app.entity.IPBanEntity;
 import app.service.UserService;
 
 @Component
+@Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
 public class IPBanServiceImpl implements IPBanService {
+    @SuppressWarnings("unused")
+    private static final Logger logger = LogManager.getLogger(IPBanServiceImpl.class.getName());
+
     @Autowired
     private UserService userService;
 
@@ -24,14 +32,18 @@ public class IPBanServiceImpl implements IPBanService {
     private IPBanRepository repository;
 
     private Set<String> bannedIPs;
+    private Date lastUpdate;
 
     @PostConstruct
-    private void loadData() {
-        bannedIPs = new HashSet<>();
+    public void updateCache() {
+        Set<String> set = new HashSet<>();
+        lastUpdate = new Date();
         List<IPBanEntity> list = repository.findAll();
         for (IPBanEntity entity : list) {
-            bannedIPs.add(entity.getIp());
+            set.add(entity.getIp());
         }
+
+        bannedIPs = set;
     }
 
     @Override
@@ -57,6 +69,7 @@ public class IPBanServiceImpl implements IPBanService {
         entity.setBannedBy(userService.getLoggedInUser());
         entity = repository.save(entity);
         bannedIPs.add(entity.getIp());
+        lastUpdate = new Date();
         return entity;
     }
 
@@ -66,6 +79,15 @@ public class IPBanServiceImpl implements IPBanService {
         IPBanEntity entity = repository.findOne(id);
         repository.delete(entity);
         bannedIPs.remove(entity.getIp());
+        lastUpdate = new Date();
         return entity;
+    }
+
+    public long getSize() {
+        return bannedIPs.size();
+    }
+
+    public Date getLastUpdate() {
+        return lastUpdate;
     }
 }

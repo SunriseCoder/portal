@@ -33,6 +33,10 @@
                     <li><a href="${adminRoot}/logs">Logs</a></li>
                 </c:if>
 
+                <c:if test="${not empty user && user.hasPermission('ADMIN_CACHE_VIEW')}">
+                    <li><a href="${adminRoot}/cache">Cache</a></li>
+                </c:if>
+
             </ul>
         </div>
     </div>

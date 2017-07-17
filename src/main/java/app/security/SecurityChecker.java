@@ -165,8 +165,12 @@ public class SecurityChecker {
         addRule(rules, "/admin/ip-bans/remove",     "/admin",       Permissions.ADMIN_IPBAN_EDIT,      OperationTypes.CHANGE_IPBAN_REMOVE);
 
         addRule(rules, "/admin/audit",              "/admin",       Permissions.ADMIN_AUDIT_VIEW,      OperationTypes.ACCESS_ADMIN_AUDIT);
+
         addRule(rules, "/admin/logs",               "/admin",       Permissions.ADMIN_LOGS_VIEW,       OperationTypes.ACCESS_ADMIN_LOGS);
         addRule(rules, "/admin/logs/file",          "/admin",       Permissions.ADMIN_LOGS_VIEW,       OperationTypes.ACCESS_ADMIN_LOGS);
+
+        addRule(rules, "/admin/cache",              "/admin",       Permissions.ADMIN_CACHE_VIEW,      OperationTypes.ACCESS_ADMIN_CACHE);
+        addRule(rules, "/admin/cache/ip-ban",       "/admin",       Permissions.ADMIN_CACHE_REFRESH,   OperationTypes.REFRESH_ADMIN_CACHE);
 
         addRule(rules, "/error",                    "/",            null,                              OperationTypes.ACCESS_PAGE_ERROR);
 

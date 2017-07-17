@@ -6,6 +6,7 @@
     "ip-bans.caption" : "IP-Bans",
     "audit.caption" : "Audit",
     "logs.caption" : "Server Logs",
+    "cache.caption" : "Cache",
 
     "index.caption" : "Main",
     "index.greeting" : "Welcome to the Portal",
