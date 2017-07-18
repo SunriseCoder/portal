@@ -95,7 +95,7 @@
                         </c:forEach>
                     </tr>
                 </thead>
-                <c:forEach items="${permissionList}" var="permission">
+                <c:forEach items="${allPermissions}" var="permission">
                     <tr>
                         <td><b>${permission.name}</b></td>
                         <c:forEach items="${roleList}" var="role">

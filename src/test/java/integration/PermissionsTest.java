@@ -45,7 +45,8 @@ public class PermissionsTest extends BaseTest {
     public void testGhostPermissions() {
         List<PermissionEntity> permissions = permissionRepository.findAll();
         List<RoleEntity> roles = roleRepository.findAll();
-        EnumSet<Permissions> noNeedToCheck = EnumSet.of(Permissions.USER_LOGGED_IN, Permissions.USER_LOGGED_OUT);
+        EnumSet<Permissions> noNeedToCheck = EnumSet.noneOf(Permissions.class);
+        noNeedToCheck.addAll(Arrays.asList(Permissions.SYSTEM));
 
         for (PermissionEntity permission : permissions) {
             if (noNeedToCheck.contains(Permissions.valueOf(permission.getName()))) {

@@ -129,6 +129,7 @@ public class SecurityChecker {
         //             URL                          Redirect        Permission                         OperationType
         addRule(rules, "/",                         null,           null,                              OperationTypes.ACCESS_PAGE_MAIN);
         addRule(rules, "/files",                    "/",            Permissions.PAGES_VIEW,            OperationTypes.ACCESS_PAGE_FILES);
+        addRule(rules, "/festivals",                "/",            Permissions.PAGES_VIEW,            OperationTypes.ACCESS_PAGE_FESTIVALS);
         addRule(rules, "/upload",                   "/",            Permissions.UPLOAD_FILES,          OperationTypes.ACCESS_PAGE_UPLOAD);
         addRule(rules, "/register",                 "/",            Permissions.USER_LOGGED_OUT,       OperationTypes.CHANGE_USER_REGISTER);
         addRule(rules, "/login",                    "/",            Permissions.USER_LOGGED_OUT,       OperationTypes.ACCESS_USER_LOGIN);

@@ -66,14 +66,14 @@
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" primaryKeyName="pk_user_locks" nullable="false" />
             </column>
-            <column name="user_id" type="BIGINT">
+            <column name="user_id" type="bigint">
                 <constraints nullable="false" unique="true" uniqueConstraintName="ui_user_locks_user_id"
                              foreignKeyName="fk_z_user_locks_user" referencedTableName="users" referencedColumnNames="id" />
             </column>
             <column name="reason" type="varchar(64)">
                 <constraints nullable="false" />
             </column>
-            <column name="locked_by_id" type="BIGINT">
+            <column name="locked_by_id" type="bigint">
                 <constraints nullable="false"
                              foreignKeyName="fk_z_user_locks_by" referencedTableName="users" referencedColumnNames="id" />
             </column>
@@ -87,12 +87,12 @@
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" primaryKeyName="pk_user_confirms" nullable="false" />
             </column>
-            <column name="user_id" type="BIGINT">
+            <column name="user_id" type="bigint">
                 <constraints nullable="false" unique="true" uniqueConstraintName="ui_user_confirms_user_id"
                              foreignKeyName="fk_z_user_confirms_user" referencedTableName="users" referencedColumnNames="id" />
             </column>
             <column name="comment" type="varchar(64)" />
-            <column name="confirmed_by_id" type="BIGINT">
+            <column name="confirmed_by_id" type="bigint">
                 <constraints nullable="false"
                              foreignKeyName="fk_z_user_confirms_by" referencedTableName="users" referencedColumnNames="id" />
             </column>
@@ -122,7 +122,7 @@
     <changeSet id="0.0.3-05" author="SunriseCoder">
 
         <createTable tableName="e_permissions">
-            <column autoIncrement="true" name="id" type="BIGINT">
+            <column autoIncrement="true" name="id" type="bigint">
                 <constraints primaryKey="true" primaryKeyName="pk_e_permissions" />
             </column>
             <column name="name" type="VARCHAR(64)">
@@ -257,12 +257,30 @@
             <column name="comment" value="Server administration - refresh cache" />
         </insert>
 
+        <insert tableName="e_permissions">
+            <column name="id" value="22" />
+            <column name="name" value="ADMIN_FESTIVALS_ADD" />
+            <column name="comment" value="Festival administration - add new festivals" />
+        </insert>
+
+        <insert tableName="e_permissions">
+            <column name="id" value="23" />
+            <column name="name" value="ADMIN_FESTIVALS_EDIT" />
+            <column name="comment" value="Festival administration - edit any festival" />
+        </insert>
+
+        <insert tableName="e_permissions">
+            <column name="id" value="24" />
+            <column name="name" value="ADMIN_FESTIVALS_DELETE" />
+            <column name="comment" value="Festival administration - delete any festival" />
+        </insert>
+
     </changeSet>
 
     <changeSet id="0.0.3-06" author="SunriseCoder">
 
         <createTable tableName="roles">
-            <column autoIncrement="true" name="id" type="BIGINT">
+            <column autoIncrement="true" name="id" type="bigint">
                 <constraints primaryKey="true" primaryKeyName="rolesPK" />
             </column>
             <column name="name" type="VARCHAR(64)">
@@ -300,11 +318,11 @@
     <changeSet id="0.0.3-07" author="SunriseCoder">
 
         <createTable tableName="zz_roles_permissions">
-            <column name="role_id" type="BIGINT">
+            <column name="role_id" type="bigint">
                 <constraints nullable="false" foreignKeyName="fk_zz_roles_permissions_role"
                     referencedTableName="roles" referencedColumnNames="id" />
             </column>
-            <column name="permission_id" type="BIGINT">
+            <column name="permission_id" type="bigint">
                 <constraints nullable="false" foreignKeyName="fk_zz_roles_permissions_permission"
                     referencedTableName="e_permissions" referencedColumnNames="id" />
             </column>
@@ -424,6 +442,24 @@
             <column name="permission_id" value="21" />
         </insert>
 
+        <!-- Grant Permission ADMIN_FESTIVALS_ADD to Role Admin -->
+        <insert tableName="zz_roles_permissions">
+            <column name="role_id" value="1" />
+            <column name="permission_id" value="22" />
+        </insert>
+
+        <!-- Grant Permission ADMIN_FESTIVALS_EDIT to Role Admin -->
+        <insert tableName="zz_roles_permissions">
+            <column name="role_id" value="1" />
+            <column name="permission_id" value="23" />
+        </insert>
+
+        <!-- Grant Permission ADMIN_FESTIVALS_DELETE to Role Admin -->
+        <insert tableName="zz_roles_permissions">
+            <column name="role_id" value="1" />
+            <column name="permission_id" value="24" />
+        </insert>
+
         <!-- Grant Permission ADMIN_PAGE to Role Moder -->
         <insert tableName="zz_roles_permissions">
             <column name="role_id" value="2" />
@@ -490,6 +526,18 @@
             <column name="permission_id" value="16" />
         </insert>
 
+        <!-- Grant Permission ADMIN_FESTIVALS_ADD to Role Moder -->
+        <insert tableName="zz_roles_permissions">
+            <column name="role_id" value="2" />
+            <column name="permission_id" value="22" />
+        </insert>
+
+        <!-- Grant Permission ADMIN_FESTIVALS_EDIT to Role Moder -->
+        <insert tableName="zz_roles_permissions">
+            <column name="role_id" value="2" />
+            <column name="permission_id" value="23" />
+        </insert>
+
         <!-- Grant Permission PAGES_VIEW to Anonymous -->
         <insert tableName="zz_roles_permissions">
             <column name="role_id" value="3" />
@@ -513,11 +561,11 @@
     <changeSet id="0.0.3-08" author="SunriseCoder">
 
         <createTable tableName="zz_users_roles">
-            <column name="user_id" type="BIGINT">
+            <column name="user_id" type="bigint">
                 <constraints nullable="false" foreignKeyName="fk_zz_user_roles_user"
                     referencedTableName="users" referencedColumnNames="id" />
             </column>
-            <column name="role_id" type="BIGINT">
+            <column name="role_id" type="bigint">
                 <constraints nullable="false" foreignKeyName="fk_zz_users_roles_role"
                     referencedTableName="roles" referencedColumnNames="id" />
             </column>
@@ -925,6 +973,13 @@
             <column name="severity" valueNumeric="1" />
         </insert>
 
+        <insert tableName="e_operation_types">
+            <column name="id" value="38" />
+            <column name="name" value="ACCESS_PAGE_FESTIVALS" />
+            <column name="comment" value="Access to the festivals page" />
+            <column name="severity" valueNumeric="0" />
+        </insert>
+
     </changeSet>
 
     <changeSet id="0.0.3-11" author="SunriseCoder">
@@ -933,7 +988,7 @@
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" primaryKeyName="pk_audit_events" nullable="false" />
             </column>
-            <column name="user_id" type="BIGINT">
+            <column name="user_id" type="bigint">
                 <constraints foreignKeyName="fk_audit_events_user"
                              referencedTableName="users" referencedColumnNames="id" />
             </column>
@@ -943,11 +998,11 @@
             <column name="ip" type="varchar(64)">
                 <constraints nullable="false" />
             </column>
-            <column name="operation_id" type="BIGINT">
+            <column name="operation_id" type="bigint">
                 <constraints nullable="false" foreignKeyName="fk_audit_events_operation_type"
                              referencedTableName="e_operation_types" referencedColumnNames="id" />
             </column>
-            <column name="type_id" type="BIGINT">
+            <column name="type_id" type="bigint">
                 <constraints nullable="false" foreignKeyName="fk_audit_events_type"
                              referencedTableName="e_audit_event_types" referencedColumnNames="id" />
             </column>
@@ -964,7 +1019,7 @@
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" primaryKeyName="pk_statistic_logs" nullable="false" />
             </column>
-            <column name="user_id" type="BIGINT">
+            <column name="user_id" type="bigint">
                 <constraints foreignKeyName="fk_statistic_logs_user"
                              referencedTableName="users" referencedColumnNames="id" />
             </column>
@@ -993,12 +1048,61 @@
             <column name="date" type="datetime">
                 <constraints nullable="false" />
             </column>
-            <column name="banned_by_id" type="BIGINT">
+            <column name="banned_by_id" type="bigint">
                 <constraints foreignKeyName="fk_ip_bans_user"
                              referencedTableName="users" referencedColumnNames="id" />
             </column>
             <column name="reason" type="varchar(64)">
                 <constraints nullable="false" />
+            </column>
+        </createTable>
+
+    </changeSet>
+
+    <changeSet id="0.0.3-14" author="SunriseCoder">
+
+        <createTable tableName="places">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" primaryKeyName="pk_places" nullable="false" />
+            </column>
+            <column name="parent_id" type="bigint">
+                <constraints nullable="true" foreignKeyName="fk_places_parent"
+                             referencedTableName="places" referencedColumnNames="id" />
+            </column>
+            <column name="name" type="varchar(64)">
+                <constraints unique="true" uniqueConstraintName="ui_places_name2" nullable="false" />
+            </column>
+        </createTable>
+
+        <insert tableName="places">
+            <column name="id" value="1" />
+            <column name="name" value="Other" />
+        </insert>
+
+    </changeSet>
+
+    <changeSet id="0.0.3-15" author="SunriseCoder">
+
+        <createTable tableName="festivals">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" primaryKeyName="pk_festivals" nullable="false" />
+            </column>
+            <column name="details" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+            <column name="start" type="datetime">
+                <constraints nullable="false" />
+            </column>
+            <column name="end" type="datetime">
+                <constraints nullable="false" />
+            </column>
+            <column name="place_id" type="bigint">
+                <constraints nullable="false" foreignKeyName="fk_festivals_place"
+                             referencedTableName="places" referencedColumnNames="id" />
+            </column>
+            <column name="added_by_id" type="bigint">
+                <constraints nullable="false" foreignKeyName="fk_festivals_added_by"
+                             referencedTableName="users" referencedColumnNames="id" />
             </column>
         </createTable>
 

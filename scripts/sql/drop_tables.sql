@@ -13,6 +13,9 @@ drop table e_audit_event_types;
 drop table e_operation_types;
 drop table e_permissions;
 
+drop table festivals;
+drop table places;
+
 drop table ip_bans;
 drop table statistic_logs;
 drop table persistent_logins;

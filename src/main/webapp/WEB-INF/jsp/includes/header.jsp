@@ -13,18 +13,22 @@
     <div class="container">
         <div id="navbar" class="collapse navbar-collapse">
             <ul class="nav navbar-nav">
+
                 <li><a href="${appRoot}/">Main</a></li>
+
                 <li><a href="${appRoot}/files">Files</a></li>
 
-                <c:if test="${not empty user && user.hasPermission('UPLOAD_FILES')}">
-                    <li><a href="${appRoot}/upload">Upload</a></li>
-                </c:if>
+                <li><a href="${appRoot}/festivals">Festivals</a></li>
 
                 <c:if test="${not empty user && user.hasPermission('ADMIN_PAGE')}">
                     <li><a href="${appRoot}/admin">Administration</a></li>
                 </c:if>
 
                 <li class="separator">&nbsp;</li>
+
+                <c:if test="${not empty user && user.hasPermission('UPLOAD_FILES')}">
+                    <li><a href="${appRoot}/upload">Upload</a></li>
+                </c:if>
 
                 <c:choose>
                     <c:when test="${empty user}">

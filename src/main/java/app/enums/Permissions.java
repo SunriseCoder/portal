@@ -30,5 +30,11 @@ public enum Permissions {
     ADMIN_LOGS_VIEW,
 
     ADMIN_CACHE_VIEW,
-    ADMIN_CACHE_REFRESH
+    ADMIN_CACHE_REFRESH,
+
+    ADMIN_FESTIVALS_ADD,
+    ADMIN_FESTIVALS_EDIT,
+    ADMIN_FESTIVALS_DELETE;
+
+    public static Permissions[] SYSTEM = new Permissions[] {USER_LOGGED_IN, USER_LOGGED_OUT};
 }

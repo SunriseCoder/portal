@@ -1,5 +1,6 @@
 package app.controller.admin;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -24,6 +25,7 @@ import app.entity.PermissionEntity;
 import app.entity.RoleEntity;
 import app.enums.AuditEventTypes;
 import app.enums.OperationTypes;
+import app.enums.Permissions;
 import app.service.PermissionService;
 import app.service.RoleService;
 import app.validator.RoleEntityValidator;
@@ -53,9 +55,7 @@ public class RoleController extends BaseController {
         roleList.sort((r1, r2) -> r1.getName().compareTo(r2.getName()));
         model.addAttribute("roleList", roleList);
 
-        List<PermissionEntity> permissionList = permissionService.findAll();
-        permissionList.sort((r1, r2) -> r1.getName().compareTo(r2.getName()));
-        model.addAttribute("permissionList", permissionList);
+        injectAllPermissions(model);
 
         auditService.log(OperationTypes.ACCESS_ROLE_LIST, AuditEventTypes.ACCESS_ALLOWED);
 
@@ -158,7 +158,16 @@ public class RoleController extends BaseController {
     }
 
     private void injectAllPermissions(Model model) {
+        Set<String> systemPermissions = Arrays.stream(Permissions.SYSTEM)
+                        .map(p -> p.name())
+                        .collect(Collectors.toSet());
+
         List<PermissionEntity> permissions = permissionService.findAll();
+
+        permissions = permissions.stream()
+                        .filter(p -> !systemPermissions.contains(p.getName()))
+                        .collect(Collectors.toList());
+
         permissions.sort((p1, p2) -> p1.getName().compareTo(p2.getName()));
         model.addAttribute("allPermissions", permissions);
     }
