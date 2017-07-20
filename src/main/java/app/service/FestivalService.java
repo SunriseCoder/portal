@@ -11,4 +11,5 @@ import app.entity.FestivalEntity;
 public interface FestivalService {
     List<FestivalEntity> findAll();
     List<FestivalDTO> entityToDTO(List<FestivalEntity> entityList);
+    FestivalEntity save(FestivalEntity entity);
 }

@@ -1,6 +1,5 @@
 package app.entity;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -13,7 +12,6 @@ public class PlaceEntity {
     private Long id;
     @ManyToOne
     private PlaceEntity parent;
-    @Column(unique = true)
     private String name;
 
     public Long getId() {

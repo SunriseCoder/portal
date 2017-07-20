@@ -3,6 +3,8 @@ package app.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.transaction.Transactional;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,5 +33,11 @@ public class FestivalServiceImpl implements FestivalService {
                         .map(entity -> new FestivalDTO(entity))
                         .collect(Collectors.toList());
         return dtoList;
+    }
+
+    @Override
+    @Transactional
+    public FestivalEntity save(FestivalEntity entity) {
+        return repository.save(entity);
     }
 }

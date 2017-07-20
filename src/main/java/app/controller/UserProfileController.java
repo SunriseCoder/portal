@@ -9,6 +9,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import app.dto.UserProfileDTO;
 import app.entity.UserEntity;
@@ -19,6 +20,7 @@ import app.util.StringUtils;
 import app.validator.UserEntityValidator;
 
 @Controller
+@RequestMapping("/profile")
 public class UserProfileController extends BaseController {
     private static final Logger logger = LogManager.getLogger(UserProfileController.class.getName());
 
@@ -29,14 +31,14 @@ public class UserProfileController extends BaseController {
     @Autowired
     private UserEntityValidator userValidator;
 
-    @GetMapping("/profile")
+    @GetMapping
     public String editProfile(Model model) {
         injectUser(model);
         injectUserProfileDTO(model);
         return PROFILE_PAGE;
     }
 
-    @PostMapping("/profile")
+    @PostMapping
     public String saveProfile(@ModelAttribute("userProfile") UserProfileDTO profile, Model model, BindingResult bindingResult) {
         validateProfile(profile, bindingResult);
         UserEntity userBeforeSave = userService.getLoggedInUser();

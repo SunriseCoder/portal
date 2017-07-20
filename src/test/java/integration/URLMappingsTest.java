@@ -2,6 +2,7 @@ package integration;
 
 import static org.junit.Assert.assertTrue;
 
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -22,7 +23,7 @@ public class URLMappingsTest extends BaseTest {
     private SecurityChecker securityChecker;
 
     @Test
-    public void testURLMappings() {
+    public void testChecksForAllMappings() {
         Map<String, AccessRule> urlRules = securityChecker.getUrlRules();
 
         Map<RequestMappingInfo, HandlerMethod> methods = mapping.getHandlerMethods();
@@ -35,6 +36,25 @@ public class URLMappingsTest extends BaseTest {
                 assertTrue("Pattern '" + pattern + "' has no security rules in '" + SecurityChecker.class.getName()
                                 + "' (URL Mapping is in '" + handler + "')", urlRules.containsKey(pattern));
             }
+        }
+    }
+
+
+    @Test
+    public void testFindGhostChecks() {
+        Map<String, AccessRule> urlRules = securityChecker.getUrlRules();
+
+        Set<String> patternSet = new HashSet<>();
+        Map<RequestMappingInfo, HandlerMethod> methods = mapping.getHandlerMethods();
+        for (Entry<RequestMappingInfo, HandlerMethod> method : methods.entrySet()) {
+            Set<String> patterns = method.getKey().getPatternsCondition().getPatterns();
+            for (String pattern : patterns) {
+                patternSet.add(pattern);
+            }
+        }
+
+        for (String pattern : urlRules.keySet()) {
+            assertTrue("Security Check is redundant: " + pattern, patternSet.contains(pattern));
         }
     }
 }

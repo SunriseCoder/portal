@@ -9,6 +9,7 @@ import javax.persistence.ManyToOne;
 
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity(name = "festivals")
 public class FestivalEntity {
@@ -16,7 +17,9 @@ public class FestivalEntity {
     @GeneratedValue
     private Long id;
     private String details;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date start;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date end;
     @ManyToOne
     private PlaceEntity place;

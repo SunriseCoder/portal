@@ -20,14 +20,14 @@
 
                 <li><a href="${appRoot}/festivals">Festivals</a></li>
 
-                <c:if test="${not empty user && user.hasPermission('ADMIN_PAGE')}">
-                    <li><a href="${appRoot}/admin">Administration</a></li>
-                </c:if>
-
                 <li class="separator">&nbsp;</li>
 
                 <c:if test="${not empty user && user.hasPermission('UPLOAD_FILES')}">
                     <li><a href="${appRoot}/upload">Upload</a></li>
+                </c:if>
+
+                <c:if test="${not empty user && user.hasPermission('ADMIN_PAGE')}">
+                    <li><a href="${appRoot}/admin">Administration</a></li>
                 </c:if>
 
                 <c:choose>

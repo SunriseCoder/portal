@@ -42,7 +42,7 @@
             <c:set var="canDelete" value="${not empty user && user.hasPermission('ADMIN_FESTIVALS_DELETE')}" />
 
             <c:if test="${canAdd}">
-                <a href="${festsRoot}/add">Add new festival</a>
+                <a href="${festsRoot}/create">Add new festival</a>
             </c:if>
 
             <table class="listTable">
