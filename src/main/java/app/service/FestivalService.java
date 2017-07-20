@@ -10,6 +10,10 @@ import app.entity.FestivalEntity;
 @Service
 public interface FestivalService {
     List<FestivalEntity> findAll();
-    List<FestivalDTO> entityToDTO(List<FestivalEntity> entityList);
+    FestivalEntity findById(Long id);
+
     FestivalEntity save(FestivalEntity entity);
+    FestivalEntity delete(Long id);
+
+    List<FestivalDTO> entityToDTO(List<FestivalEntity> entityList);
 }

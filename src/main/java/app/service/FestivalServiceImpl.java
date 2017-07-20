@@ -28,16 +28,31 @@ public class FestivalServiceImpl implements FestivalService {
     }
 
     @Override
-    public List<FestivalDTO> entityToDTO(List<FestivalEntity> entityList) {
-        List<FestivalDTO> dtoList = entityList.stream()
-                        .map(entity -> new FestivalDTO(entity))
-                        .collect(Collectors.toList());
-        return dtoList;
+    public FestivalEntity findById(Long id) {
+        return repository.findOne(id);
     }
 
     @Override
     @Transactional
     public FestivalEntity save(FestivalEntity entity) {
         return repository.save(entity);
+    }
+
+    @Override
+    @Transactional
+    public FestivalEntity delete(Long id) {
+        FestivalEntity entity = repository.findOne(id);
+        if (entity != null) {
+            repository.delete(entity);
+        }
+        return entity;
+    }
+
+    @Override
+    public List<FestivalDTO> entityToDTO(List<FestivalEntity> entityList) {
+        List<FestivalDTO> dtoList = entityList.stream()
+                        .map(entity -> new FestivalDTO(entity))
+                        .collect(Collectors.toList());
+        return dtoList;
     }
 }

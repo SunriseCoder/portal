@@ -19,6 +19,14 @@
             Locales.appRoot = '${appRoot}';
             Locales.writeTitle("festivals.caption");
         });
+
+        function deleteFestival(id, name) {
+            var confirmed = confirm("Are You sure to delete festival " + name);
+            if (confirmed) {
+                $('#deleteFestivalId')[0].value = id;
+                $('#deleteFestivalForm')[0].submit();
+            }
+        }
     </script>
 </head>
 <body>
@@ -57,10 +65,10 @@
                         <c:if test="${canEdit || canDelete || isOwner}">
                             <td>
                                 <c:if test="${canEdit || isOwner}">
-                                    <a href="${festsRoot}/edit">Edit</a>
+                                    <a href="${festsRoot}/edit?id=${item.id}">Edit</a>
                                 </c:if>
                                 <c:if test="${canDelete}">
-                                    <a href="${festsRoot}/delete">Delete</a>
+                                    <a class="noHref" onclick="deleteFestival(${item.id}, '${item.start} - ${item.end} - ${item.place}');">Delete</a>
                                 </c:if>
                             </td>
                         </c:if>
@@ -71,9 +79,9 @@
         </div>
     </div>
 
-    <form id="deleteRoleForm" action="${rolesRoot}/delete" method="post">
-        <input id="deleteRoleCsrf" type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-        <input id="deleteRoleId" type="hidden" name="id" />
+    <form id="deleteFestivalForm" action="${festsRoot}/delete" method="post">
+        <input id="deleteFestivalCsrf" type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+        <input id="deleteFestivalId" type="hidden" name="id" />
     </form>
 
 </body>

@@ -57,7 +57,7 @@
             <form:form action="${festRoot}/${saveUrl}" method="post" modelAttribute="festEntity">
                 <form:hidden path="id" />
 
-                <table class="formTable" border="1">
+                <table class="formTable">
                     <tr>
                         <td>Start:</td>
                         <td>
@@ -77,7 +77,7 @@
                         <td>
                             <form:select path="place.id" onchange="onPlaceChanged(this);">
                                 <form:option value="0" label="<-- Please select -->" />
-                                <form:options items="${allPlaces}" itemLabel="path" />
+                                <form:options items="${allPlaces}" itemValue="id" itemLabel="path" />
                             </form:select>
                             <form:errors path="place" cssClass="error-text" />
                         </td>

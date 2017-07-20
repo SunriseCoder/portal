@@ -54,7 +54,7 @@ public class URLMappingsTest extends BaseTest {
         }
 
         for (String pattern : urlRules.keySet()) {
-            assertTrue("Security Check is redundant: " + pattern, patternSet.contains(pattern));
+            assertTrue("Security Check is redundant or endpoint is not implemented yet: " + pattern, patternSet.contains(pattern));
         }
     }
 }

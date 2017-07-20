@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import app.dto.FestivalDTO;
 import app.entity.FestivalEntity;
@@ -55,7 +57,8 @@ public class FestivalController extends BaseController {
     }
 
     @PostMapping("/create")
-    public String saveNewFestival(@ModelAttribute("festEntity") FestivalEntity festEntity, Model model, BindingResult bindingResult) {
+    public String saveNewFestival(@ModelAttribute("festEntity") FestivalEntity festEntity, Model model,
+                    BindingResult bindingResult, RedirectAttributes redirectAttributes) {
         String saveUrl = "create";
 
         validator.validate(festEntity, bindingResult);
@@ -65,23 +68,12 @@ public class FestivalController extends BaseController {
         }
 
         PlaceEntity place = null;
-        if (festEntity.getPlace().getId().longValue() == PlaceService.PLACE_ELEMENT_OTHER) {
-            place = new PlaceEntity();
-            PlaceEntity other = placeService.findById(PlaceService.PLACE_ELEMENT_OTHER);
-            place.setParent(other);
-            place.setName(festEntity.getPlace().getName());
-            try {
-                place = placeService.save(place);
-            } catch (Exception e) {
-                String message = "System error due to add festival place";
-                logger.error(message , e);
-                auditService.log(OperationTypes.CHANGE_PLACE_ADD, AuditEventTypes.SAVING_ERROR, null, place.toString(), e.getMessage());
-                model.addAttribute("error", message);
-                injectFormData(model, festEntity, saveUrl);
-                return FESTIVAL_EDIT;
-            }
-        } else {
-            place = placeService.findById(festEntity.getPlace().getId());
+        try {
+            place = getOrCreatePlaceEntity(festEntity);
+        } catch (Exception e) {
+            model.addAttribute("error", "System error due to add festival place");
+            injectFormData(model, festEntity, saveUrl);
+            return FESTIVAL_EDIT;
         }
 
         festEntity.setPlace(place);
@@ -91,7 +83,7 @@ public class FestivalController extends BaseController {
         try {
             festEntity = festivalService.save(festEntity);
             auditService.log(OperationTypes.CHANGE_FESTIVAL_ADD, AuditEventTypes.SUCCESSFUL, null, festEntity.toString());
-            model.addAttribute("message", "Festival has been saved successfully");
+            redirectAttributes.addFlashAttribute("message", "Festival has been saved successfully");
         } catch (Exception e) {
             String error = "System error due to add festival";
             logger.error(error, e);
@@ -99,6 +91,88 @@ public class FestivalController extends BaseController {
             auditService.log(OperationTypes.CHANGE_FESTIVAL_ADD, AuditEventTypes.SAVING_ERROR, null, festEntity.toString(), e.getMessage());
             injectFormData(model, festEntity, saveUrl);
             return FESTIVAL_EDIT;
+        }
+
+        injectUser(model);
+        return REDIRECT_FESTIVALS;
+    }
+
+    @GetMapping("/edit")
+    public String editFestival(@RequestParam("id") Long id, Model model) {
+        FestivalEntity entity = festivalService.findById(id);
+        injectFormData(model, entity, "edit");
+        return FESTIVAL_EDIT;
+    }
+
+    @PostMapping("/edit")
+    public String saveExistingFestival(@ModelAttribute("festEntity") FestivalEntity festEntity, Model model,
+                    BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+        String saveUrl = "edit";
+
+        if (festEntity.getId() == null) {
+            logger.warn("Trying to save existing entity with empty ID: {}", festEntity.toString());
+            auditService.log(OperationTypes.CHANGE_FESTIVAL_EDIT, AuditEventTypes.SUSPICIOUS_ACTIVITY,
+                            festEntity.toString(), null, "Saving existing festival with empty ID");
+            return REDIRECT_FESTIVALS;
+        }
+
+        FestivalEntity storedFestEntity = festivalService.findById(festEntity.getId());
+        if (storedFestEntity == null) {
+            logger.warn("Trying to save non-existing entity with ID: {}", festEntity.getId());
+            auditService.log(OperationTypes.CHANGE_FESTIVAL_EDIT, AuditEventTypes.SUSPICIOUS_ACTIVITY,
+                            festEntity.getId().toString(), null, "Saving non-existing festival");
+            return REDIRECT_FESTIVALS;
+        }
+
+        validator.validate(festEntity, bindingResult);
+        if (bindingResult.hasErrors()) {
+            injectFormData(model, festEntity, saveUrl);
+            return FESTIVAL_EDIT;
+        }
+
+        PlaceEntity place = null;
+        try {
+            place = getOrCreatePlaceEntity(festEntity);
+        } catch (Exception e) {
+            model.addAttribute("error", "System error due to add festival place");
+            injectFormData(model, festEntity, saveUrl);
+            return FESTIVAL_EDIT;
+        }
+
+        String objectBefore = storedFestEntity.toString();
+        storedFestEntity.setStart(festEntity.getStart());
+        storedFestEntity.setEnd(festEntity.getEnd());
+        storedFestEntity.setDetails(festEntity.getDetails());
+        storedFestEntity.setPlace(place);
+
+        try {
+            storedFestEntity = festivalService.save(storedFestEntity);
+            auditService.log(OperationTypes.CHANGE_FESTIVAL_EDIT, AuditEventTypes.SUCCESSFUL, objectBefore, storedFestEntity.toString());
+            redirectAttributes.addFlashAttribute("message", "Festival has been saved successfully");
+        } catch (Exception e) {
+            String error = "System error due to save festival";
+            logger.error(error, e);
+            model.addAttribute("error", error);
+            auditService.log(OperationTypes.CHANGE_FESTIVAL_EDIT, AuditEventTypes.SAVING_ERROR, objectBefore, storedFestEntity.toString(), e.getMessage());
+            injectFormData(model, festEntity, saveUrl);
+            return FESTIVAL_EDIT;
+        }
+
+        injectUser(model);
+        return REDIRECT_FESTIVALS;
+    }
+
+    @PostMapping("/delete")
+    public String deleteFestival(@RequestParam("id") Long id, Model model, RedirectAttributes redirectAttributes) {
+        try {
+            FestivalEntity entity = festivalService.delete(id);
+            auditService.log(OperationTypes.CHANGE_FESTIVAL_DELETE, AuditEventTypes.SUCCESSFUL, entity.toString(), null);
+            redirectAttributes.addFlashAttribute("message", "Festival has been deleted successfully");
+        } catch (Exception e) {
+            String error = "System error due to delete festival";
+            logger.error(error, e);
+            auditService.log(OperationTypes.CHANGE_FESTIVAL_DELETE, AuditEventTypes.DELETE_ERROR, null, id.toString(), e.getMessage());
+            redirectAttributes.addFlashAttribute("error", error);
         }
 
         injectUser(model);
@@ -117,5 +191,25 @@ public class FestivalController extends BaseController {
         List<PlaceEntity> places = placeService.findAll();
         model.addAttribute("allPlaces", places);
         model.addAttribute("saveUrl", saveUrl);
+    }
+
+    private PlaceEntity getOrCreatePlaceEntity(FestivalEntity festEntity) {
+        PlaceEntity place = null;
+        if (festEntity.getPlace().getId().longValue() == PlaceService.PLACE_ELEMENT_OTHER) {
+            place = new PlaceEntity();
+            PlaceEntity other = placeService.findById(PlaceService.PLACE_ELEMENT_OTHER);
+            place.setParent(other);
+            place.setName(festEntity.getPlace().getName());
+            try {
+                place = placeService.save(place);
+            } catch (Exception e) {
+                logger.error("System error due to add festival place" , e);
+                auditService.log(OperationTypes.CHANGE_PLACE_ADD, AuditEventTypes.SAVING_ERROR, null, place.toString(), e.getMessage());
+                throw e;
+            }
+        } else {
+            place = placeService.findById(festEntity.getPlace().getId());
+        }
+        return place;
     }
 }

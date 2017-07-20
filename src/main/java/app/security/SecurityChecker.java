@@ -126,55 +126,57 @@ public class SecurityChecker {
 
         // XXX URL-based access rules
 
-        //             URL                          Redirect        Permission                         OperationType
-        addRule(rules, "/",                         null,           null,                              OperationTypes.ACCESS_PAGE_MAIN);
-        addRule(rules, "/files",                    "/",            Permissions.PAGES_VIEW,            OperationTypes.ACCESS_PAGE_FILES);
-        addRule(rules, "/festivals",                "/",            Permissions.PAGES_VIEW,            OperationTypes.ACCESS_PAGE_FESTIVALS);
-        addRule(rules, "/festivals/create",         "/festivals",   Permissions.ADMIN_FESTIVALS_ADD,   OperationTypes.CHANGE_FESTIVAL_ADD);
-        addRule(rules, "/upload",                   "/",            Permissions.UPLOAD_FILES,          OperationTypes.ACCESS_PAGE_UPLOAD);
-        addRule(rules, "/register",                 "/",            Permissions.USER_LOGGED_OUT,       OperationTypes.CHANGE_USER_REGISTER);
-        addRule(rules, "/login",                    "/",            Permissions.USER_LOGGED_OUT,       OperationTypes.ACCESS_USER_LOGIN);
-        addRule(rules, "/logout",                   "/",            Permissions.USER_LOGGED_IN,        OperationTypes.ACCESS_USER_LOGOUT);
-        addRule(rules, "/profile",                  "/",            Permissions.USER_LOGGED_IN,        OperationTypes.CHANGE_USER_PROFILE);
+        //             URL                          Redirect        Permission                          OperationType
+        addRule(rules, "/",                         null,           null,                               OperationTypes.ACCESS_PAGE_MAIN);
+        addRule(rules, "/files",                    "/",            Permissions.PAGES_VIEW,             OperationTypes.ACCESS_PAGE_FILES);
+        addRule(rules, "/festivals",                "/",            Permissions.PAGES_VIEW,             OperationTypes.ACCESS_PAGE_FESTIVALS);
+        addRule(rules, "/festivals/create",         "/festivals",   Permissions.ADMIN_FESTIVALS_ADD,    OperationTypes.CHANGE_FESTIVAL_ADD);
+        addRule(rules, "/festivals/edit",           "/festivals",   Permissions.ADMIN_FESTIVALS_EDIT,   OperationTypes.CHANGE_FESTIVAL_EDIT);
+        addRule(rules, "/festivals/delete",         "/festivals",   Permissions.ADMIN_FESTIVALS_DELETE, OperationTypes.CHANGE_FESTIVAL_DELETE);
+        addRule(rules, "/upload",                   "/",            Permissions.UPLOAD_FILES,           OperationTypes.ACCESS_PAGE_UPLOAD);
+        addRule(rules, "/register",                 "/",            Permissions.USER_LOGGED_OUT,        OperationTypes.CHANGE_USER_REGISTER);
+        addRule(rules, "/login",                    "/",            Permissions.USER_LOGGED_OUT,        OperationTypes.ACCESS_USER_LOGIN);
+        addRule(rules, "/logout",                   "/",            Permissions.USER_LOGGED_IN,         OperationTypes.ACCESS_USER_LOGOUT);
+        addRule(rules, "/profile",                  "/",            Permissions.USER_LOGGED_IN,         OperationTypes.CHANGE_USER_PROFILE);
 
-        addRule(rules, "/rest/files/list",          "/",            Permissions.PAGES_VIEW,            OperationTypes.ACCESS_PAGE_FILES);
-        addRule(rules, "/rest/files/get",           "/",            Permissions.PAGES_VIEW,            OperationTypes.ACCESS_PAGE_FILES);
-        addRule(rules, "/rest/files/upload",        "/",            Permissions.UPLOAD_FILES,          OperationTypes.CHANGE_FILE_UPLOAD);
+        addRule(rules, "/rest/files/list",          "/",            Permissions.PAGES_VIEW,             OperationTypes.ACCESS_PAGE_FILES);
+        addRule(rules, "/rest/files/get",           "/",            Permissions.PAGES_VIEW,             OperationTypes.ACCESS_PAGE_FILES);
+        addRule(rules, "/rest/files/upload",        "/",            Permissions.UPLOAD_FILES,           OperationTypes.CHANGE_FILE_UPLOAD);
 
-        addRule(rules, "/admin",                    "/",            Permissions.ADMIN_PAGE,            OperationTypes.ACCESS_ADMIN_DASHBOARD);
-        addRule(rules, "/admin/",                   "/",            Permissions.ADMIN_PAGE,            OperationTypes.ACCESS_ADMIN_DASHBOARD);
+        addRule(rules, "/admin",                    "/",            Permissions.ADMIN_PAGE,             OperationTypes.ACCESS_ADMIN_DASHBOARD);
+        addRule(rules, "/admin/",                   "/",            Permissions.ADMIN_PAGE,             OperationTypes.ACCESS_ADMIN_DASHBOARD);
 
-        addRule(rules, "/admin/users",              "/admin",       Permissions.ADMIN_USERS_VIEW,      OperationTypes.ACCESS_USER_LIST);
-        addRule(rules, "/admin/users/edit",         "/admin/users", Permissions.ADMIN_USERS_VIEW,      OperationTypes.ACCESS_USER_EDIT);
-        addRule(rules, "/admin/users/login",        "/admin/users", Permissions.ADMIN_USERS_EDIT,      OperationTypes.CHANGE_USER_LOGIN);
-        addRule(rules, "/admin/users/password",     "/admin/users", Permissions.ADMIN_USERS_EDIT,      OperationTypes.CHANGE_USER_PASSWORD);
-        addRule(rules, "/admin/users/display-name", "/admin/users", Permissions.ADMIN_USERS_EDIT,      OperationTypes.CHANGE_USER_DISPLAY_NAME);
-        addRule(rules, "/admin/users/email",        "/admin/users", Permissions.ADMIN_USERS_EDIT,      OperationTypes.CHANGE_USER_EMAIL);
-        addRule(rules, "/admin/users/roles",        "/admin/users", Permissions.ADMIN_USERS_ROLES,     OperationTypes.CHANGE_USER_ROLES);
-        addRule(rules, "/admin/users/confirm",      "/admin/users", Permissions.ADMIN_USERS_CONFIRM,   OperationTypes.CHANGE_USER_CONFIRM);
-        addRule(rules, "/admin/users/unconfirm",    "/admin/users", Permissions.ADMIN_USERS_UNCONFIRM, OperationTypes.CHANGE_USER_UNCONFIRM);
-        addRule(rules, "/admin/users/lock",         "/admin/users", Permissions.ADMIN_USERS_LOCK,      OperationTypes.CHANGE_USER_LOCK);
-        addRule(rules, "/admin/users/unlock",       "/admin/users", Permissions.ADMIN_USERS_UNLOCK,    OperationTypes.CHANGE_USER_UNLOCK);
+        addRule(rules, "/admin/users",              "/admin",       Permissions.ADMIN_USERS_VIEW,       OperationTypes.ACCESS_USER_LIST);
+        addRule(rules, "/admin/users/edit",         "/admin/users", Permissions.ADMIN_USERS_VIEW,       OperationTypes.ACCESS_USER_EDIT);
+        addRule(rules, "/admin/users/login",        "/admin/users", Permissions.ADMIN_USERS_EDIT,       OperationTypes.CHANGE_USER_LOGIN);
+        addRule(rules, "/admin/users/password",     "/admin/users", Permissions.ADMIN_USERS_EDIT,       OperationTypes.CHANGE_USER_PASSWORD);
+        addRule(rules, "/admin/users/display-name", "/admin/users", Permissions.ADMIN_USERS_EDIT,       OperationTypes.CHANGE_USER_DISPLAY_NAME);
+        addRule(rules, "/admin/users/email",        "/admin/users", Permissions.ADMIN_USERS_EDIT,       OperationTypes.CHANGE_USER_EMAIL);
+        addRule(rules, "/admin/users/roles",        "/admin/users", Permissions.ADMIN_USERS_ROLES,      OperationTypes.CHANGE_USER_ROLES);
+        addRule(rules, "/admin/users/confirm",      "/admin/users", Permissions.ADMIN_USERS_CONFIRM,    OperationTypes.CHANGE_USER_CONFIRM);
+        addRule(rules, "/admin/users/unconfirm",    "/admin/users", Permissions.ADMIN_USERS_UNCONFIRM,  OperationTypes.CHANGE_USER_UNCONFIRM);
+        addRule(rules, "/admin/users/lock",         "/admin/users", Permissions.ADMIN_USERS_LOCK,       OperationTypes.CHANGE_USER_LOCK);
+        addRule(rules, "/admin/users/unlock",       "/admin/users", Permissions.ADMIN_USERS_UNLOCK,     OperationTypes.CHANGE_USER_UNLOCK);
 
-        addRule(rules, "/admin/roles",              "/admin",       Permissions.ADMIN_ROLES_VIEW,      OperationTypes.ACCESS_ROLE_LIST);
-        addRule(rules, "/admin/roles/create",       "/admin/roles", Permissions.ADMIN_ROLES_EDIT,      OperationTypes.ACCESS_ROLE_CREATE);
-        addRule(rules, "/admin/roles/edit",         "/admin/roles", Permissions.ADMIN_ROLES_VIEW,      OperationTypes.ACCESS_ROLE_EDIT);
-        addRule(rules, "/admin/roles/save",         "/admin/roles", Permissions.ADMIN_ROLES_EDIT,      OperationTypes.CHANGE_ROLE_SAVE);
-        addRule(rules, "/admin/roles/delete",       "/admin/roles", Permissions.ADMIN_ROLES_EDIT,      OperationTypes.CHANGE_ROLE_DELETE);
+        addRule(rules, "/admin/roles",              "/admin",       Permissions.ADMIN_ROLES_VIEW,       OperationTypes.ACCESS_ROLE_LIST);
+        addRule(rules, "/admin/roles/create",       "/admin/roles", Permissions.ADMIN_ROLES_EDIT,       OperationTypes.ACCESS_ROLE_CREATE);
+        addRule(rules, "/admin/roles/edit",         "/admin/roles", Permissions.ADMIN_ROLES_VIEW,       OperationTypes.ACCESS_ROLE_EDIT);
+        addRule(rules, "/admin/roles/save",         "/admin/roles", Permissions.ADMIN_ROLES_EDIT,       OperationTypes.CHANGE_ROLE_SAVE);
+        addRule(rules, "/admin/roles/delete",       "/admin/roles", Permissions.ADMIN_ROLES_EDIT,       OperationTypes.CHANGE_ROLE_DELETE);
 
-        addRule(rules, "/admin/ip-bans",            "/admin",       Permissions.ADMIN_IPBAN_VIEW,      OperationTypes.ACCESS_ADMIN_IPBAN);
-        addRule(rules, "/admin/ip-bans/add",        "/admin",       Permissions.ADMIN_IPBAN_EDIT,      OperationTypes.CHANGE_IPBAN_ADD);
-        addRule(rules, "/admin/ip-bans/remove",     "/admin",       Permissions.ADMIN_IPBAN_EDIT,      OperationTypes.CHANGE_IPBAN_REMOVE);
+        addRule(rules, "/admin/ip-bans",            "/admin",       Permissions.ADMIN_IPBAN_VIEW,       OperationTypes.ACCESS_ADMIN_IPBAN);
+        addRule(rules, "/admin/ip-bans/add",        "/admin",       Permissions.ADMIN_IPBAN_EDIT,       OperationTypes.CHANGE_IPBAN_ADD);
+        addRule(rules, "/admin/ip-bans/remove",     "/admin",       Permissions.ADMIN_IPBAN_EDIT,       OperationTypes.CHANGE_IPBAN_REMOVE);
 
-        addRule(rules, "/admin/audit",              "/admin",       Permissions.ADMIN_AUDIT_VIEW,      OperationTypes.ACCESS_ADMIN_AUDIT);
+        addRule(rules, "/admin/audit",              "/admin",       Permissions.ADMIN_AUDIT_VIEW,       OperationTypes.ACCESS_ADMIN_AUDIT);
 
-        addRule(rules, "/admin/logs",               "/admin",       Permissions.ADMIN_LOGS_VIEW,       OperationTypes.ACCESS_ADMIN_LOGS);
-        addRule(rules, "/admin/logs/file",          "/admin",       Permissions.ADMIN_LOGS_VIEW,       OperationTypes.ACCESS_ADMIN_LOGS);
+        addRule(rules, "/admin/logs",               "/admin",       Permissions.ADMIN_LOGS_VIEW,        OperationTypes.ACCESS_ADMIN_LOGS);
+        addRule(rules, "/admin/logs/file",          "/admin",       Permissions.ADMIN_LOGS_VIEW,        OperationTypes.ACCESS_ADMIN_LOGS);
 
-        addRule(rules, "/admin/cache",              "/admin",       Permissions.ADMIN_CACHE_VIEW,      OperationTypes.ACCESS_ADMIN_CACHE);
-        addRule(rules, "/admin/cache/ip-ban",       "/admin",       Permissions.ADMIN_CACHE_REFRESH,   OperationTypes.REFRESH_ADMIN_CACHE);
+        addRule(rules, "/admin/cache",              "/admin",       Permissions.ADMIN_CACHE_VIEW,       OperationTypes.ACCESS_ADMIN_CACHE);
+        addRule(rules, "/admin/cache/ip-ban",       "/admin",       Permissions.ADMIN_CACHE_REFRESH,    OperationTypes.REFRESH_ADMIN_CACHE);
 
-        addRule(rules, "/error",                    "/",            null,                              OperationTypes.ACCESS_PAGE_ERROR);
+        addRule(rules, "/error",                    "/",            null,                               OperationTypes.ACCESS_PAGE_ERROR);
 
         return rules;
     }
