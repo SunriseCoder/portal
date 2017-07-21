@@ -31,7 +31,7 @@
 </head>
 <body>
 
-    <jsp:include page="../includes/header.jsp" />
+    <jsp:include page="../../includes/header.jsp" />
 
     <div class="container">
         <div class="starter-template">

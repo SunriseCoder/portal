@@ -26,7 +26,7 @@
     </script>
 </head>
 <body>
-    <jsp:include page="includes/header.jsp" />
+    <jsp:include page="../../includes/header.jsp" />
 
     <span>&nbsp;</span>
 
@@ -39,8 +39,8 @@
             Display:
             <select id="limit" onchange="FileTree.applyLimit();">
                 <option value="10">10</option>
-                <option value="100" selected="selected">100</option>
-                <option value="1000">1000</option>
+                <option value="100">100</option>
+                <option value="1000" selected="selected">1000</option>
                 <option value="0">All</option>
             </select>
 

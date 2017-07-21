@@ -4,5 +4,5 @@
 
 <ul class="nav navbar-nav">
     <li><a href="${appRoot}/profile">Profile</a></li>
-    <li><a href="#" onclick="logout.submit();">Logout</a></li>
+    <li><a href="${appRoot}/logout">Logout</a></li>
 </ul>

@@ -26,7 +26,7 @@
     </script>
 </head>
 <body>
-    <jsp:include page="includes/header.jsp" />
+    <jsp:include page="../../includes/header.jsp" />
 
     <span>&nbsp;</span>
 

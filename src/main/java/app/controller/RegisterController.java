@@ -30,6 +30,8 @@ import app.validator.UserEntityValidator;
 public class RegisterController extends BaseController {
     private static final Logger logger = LogManager.getLogger(RegisterController.class.getName());
 
+    private static final String REGISTER_FORM_PAGE = "pages/register/form";
+
     @Autowired
     private UserService userService;
     @Autowired
@@ -43,7 +45,7 @@ public class RegisterController extends BaseController {
     public String register(Model model) {
         injectLoginDTO(model);
         model.addAttribute("userForm", new UserEntity());
-        return "register";
+        return REGISTER_FORM_PAGE;
     }
 
     @PostMapping("/register")
@@ -57,7 +59,7 @@ public class RegisterController extends BaseController {
             String error = bindingErrorsToString(bindingResult);
             auditService.log(OperationTypes.CHANGE_USER_REGISTER, AuditEventTypes.VALIDATION_ERROR, null, user.toString(), error);
             user.clearPasswords();
-            return "register";
+            return REGISTER_FORM_PAGE;
         }
 
         // Getting password before it becomes encrypted

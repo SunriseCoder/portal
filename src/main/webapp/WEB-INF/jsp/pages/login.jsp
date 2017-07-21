@@ -21,7 +21,7 @@
     </script>
 </head>
 <body onload="document.forms.loginForm.username.focus()">
-    <jsp:include page="includes/header.jsp" />
+    <jsp:include page="../includes/header.jsp" />
 
     <div class="container">
         <div class="starter-template">
@@ -31,7 +31,7 @@
                 <h5 class="error-text">${error}</h5>
             </c:if>
 
-            <jsp:include page="includes/loginForm.jsp">
+            <jsp:include page="../includes/loginForm.jsp">
                 <jsp:param name="formId" value="loginForm" />
             </jsp:include>
             <input type="submit" value="Login" onclick="document.getElementById('loginForm').submit();" />
