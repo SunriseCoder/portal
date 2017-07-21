@@ -20,6 +20,10 @@
 
                 <li><a href="${appRoot}/festivals">Festivals</a></li>
 
+                <c:if test="${not empty user && user.hasPermission('ADMIN_PLACES_VIEW')}">
+                    <li><a href="${appRoot}/places">Places</a></li>
+                </c:if>
+
                 <li class="separator">&nbsp;</li>
 
                 <c:if test="${not empty user && user.hasPermission('UPLOAD_FILES')}">

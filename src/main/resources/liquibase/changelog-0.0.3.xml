@@ -275,6 +275,18 @@
             <column name="comment" value="Festival administration - delete any festival" />
         </insert>
 
+        <insert tableName="e_permissions">
+            <column name="id" value="25" />
+            <column name="name" value="ADMIN_PLACES_VIEW" />
+            <column name="comment" value="Read-only access to place page" />
+        </insert>
+
+        <insert tableName="e_permissions">
+            <column name="id" value="26" />
+            <column name="name" value="ADMIN_PLACES_EDIT" />
+            <column name="comment" value="Places administration - add/edit/delete" />
+        </insert>
+
     </changeSet>
 
     <changeSet id="0.0.3-06" author="SunriseCoder">
@@ -460,6 +472,18 @@
             <column name="permission_id" value="24" />
         </insert>
 
+        <!-- Grant Permission ADMIN_PLACES_VIEW to Role Admin -->
+        <insert tableName="zz_roles_permissions">
+            <column name="role_id" value="1" />
+            <column name="permission_id" value="25" />
+        </insert>
+
+        <!-- Grant Permission ADMIN_PLACES_EDIT to Role Admin -->
+        <insert tableName="zz_roles_permissions">
+            <column name="role_id" value="1" />
+            <column name="permission_id" value="26" />
+        </insert>
+
         <!-- Grant Permission ADMIN_PAGE to Role Moder -->
         <insert tableName="zz_roles_permissions">
             <column name="role_id" value="2" />
@@ -536,6 +560,18 @@
         <insert tableName="zz_roles_permissions">
             <column name="role_id" value="2" />
             <column name="permission_id" value="23" />
+        </insert>
+
+        <!-- Grant Permission ADMIN_PLACES_VIEW to Role Moder -->
+        <insert tableName="zz_roles_permissions">
+            <column name="role_id" value="2" />
+            <column name="permission_id" value="25" />
+        </insert>
+
+        <!-- Grant Permission ADMIN_PLACES_EDIT to Role Moder -->
+        <insert tableName="zz_roles_permissions">
+            <column name="role_id" value="2" />
+            <column name="permission_id" value="26" />
         </insert>
 
         <!-- Grant Permission PAGES_VIEW to Anonymous -->
@@ -1020,6 +1056,13 @@
             <column name="name" value="CHANGE_PLACE_DELETE" />
             <column name="comment" value="Delete festival place" />
             <column name="severity" valueNumeric="2" />
+        </insert>
+
+        <insert tableName="e_operation_types">
+            <column name="id" value="45" />
+            <column name="name" value="ACCESS_PAGE_PLACES" />
+            <column name="comment" value="Access places page" />
+            <column name="severity" valueNumeric="0" />
         </insert>
 
     </changeSet>

@@ -1,18 +1,25 @@
 package app.entity;
 
+import java.util.List;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 @Entity(name = "places")
 public class PlaceEntity {
     @Id
     @GeneratedValue
     private Long id;
+    private String name;
+
     @ManyToOne
     private PlaceEntity parent;
-    private String name;
+
+    @OneToMany(mappedBy = "parent")
+    private List<PlaceEntity> children;
 
     public Long getId() {
         return id;
@@ -36,6 +43,14 @@ public class PlaceEntity {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public List<PlaceEntity> getChildren() {
+        return children;
+    }
+
+    public void setChildren(List<PlaceEntity> children) {
+        this.children = children;
     }
 
     public String getPath() {

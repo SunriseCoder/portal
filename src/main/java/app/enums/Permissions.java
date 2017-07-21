@@ -34,7 +34,10 @@ public enum Permissions {
 
     ADMIN_FESTIVALS_ADD,
     ADMIN_FESTIVALS_EDIT,
-    ADMIN_FESTIVALS_DELETE;
+    ADMIN_FESTIVALS_DELETE,
+
+    ADMIN_PLACES_VIEW,
+    ADMIN_PLACES_EDIT;
 
     public static Permissions[] SYSTEM = new Permissions[] {USER_LOGGED_IN, USER_LOGGED_OUT};
 }
