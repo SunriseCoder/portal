@@ -15,9 +15,13 @@
             <tr>
                 <td>${place.name}</td>
                 <c:if test="${canEdit}">
-                    <td><a href="${placesRoot}/add?id=${place.id}">Add</a></td>
+                    <td><a href="${placesRoot}/add?parent=${place.id}">Add</a></td>
                     <td><a href="${placesRoot}/edit?id=${place.id}">Edit</a></td>
-                    <td><a class="noHref" onclick="deletePlace(${place.id}, '${place.path}');">Delete</a></td>
+                    <td>
+                        <c:if test="${place.children.size() == 0}">
+                            <a class="noHref" onclick="deletePlace(${place.id}, '${place.path}');">Delete</a>
+                        </c:if>
+                    </td>
                 </c:if>
             </tr>
         </table>

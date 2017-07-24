@@ -8,6 +8,8 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+import app.dto.PlaceDTO;
+
 @Entity(name = "places")
 public class PlaceEntity {
     @Id
@@ -20,6 +22,15 @@ public class PlaceEntity {
 
     @OneToMany(mappedBy = "parent")
     private List<PlaceEntity> children;
+
+    public PlaceEntity() {
+        // default constructor
+    }
+
+    public PlaceEntity(PlaceDTO placeDto) {
+        this.id = placeDto.getId();
+        this.name = placeDto.getName();
+    }
 
     public Long getId() {
         return id;

@@ -133,7 +133,11 @@ public class SecurityChecker {
         addRule(rules, "/festivals/create",         "/festivals",   Permissions.ADMIN_FESTIVALS_ADD,    OperationTypes.CHANGE_FESTIVAL_ADD);
         addRule(rules, "/festivals/edit",           "/festivals",   Permissions.ADMIN_FESTIVALS_EDIT,   OperationTypes.CHANGE_FESTIVAL_EDIT);
         addRule(rules, "/festivals/delete",         "/festivals",   Permissions.ADMIN_FESTIVALS_DELETE, OperationTypes.CHANGE_FESTIVAL_DELETE);
-        addRule(rules, "/places",                   "/",            Permissions.ADMIN_PLACES_VIEW,      OperationTypes.ACCESS_PAGE_PLACES);
+        addRule(rules, "/places",                   "/",            Permissions.ADMIN_PLACES_VIEW,      OperationTypes.ACCESS_PLACE_LIST);
+        addRule(rules, "/places/add",               "/places",      Permissions.ADMIN_PLACES_EDIT,      OperationTypes.ACCESS_PLACE_ADD);
+        addRule(rules, "/places/edit",              "/places",      Permissions.ADMIN_PLACES_EDIT,      OperationTypes.ACCESS_PLACE_EDIT);
+        addRule(rules, "/places/save",              "/places",      Permissions.ADMIN_PLACES_EDIT,      OperationTypes.CHANGE_PLACE_EDIT);
+        addRule(rules, "/places/delete",            "/places",      Permissions.ADMIN_PLACES_EDIT,      OperationTypes.CHANGE_PLACE_DELETE);
         addRule(rules, "/upload",                   "/",            Permissions.UPLOAD_FILES,           OperationTypes.ACCESS_PAGE_UPLOAD);
         addRule(rules, "/register",                 "/",            Permissions.USER_LOGGED_OUT,        OperationTypes.CHANGE_USER_REGISTER);
         addRule(rules, "/login",                    "/",            Permissions.USER_LOGGED_OUT,        OperationTypes.ACCESS_USER_LOGIN);

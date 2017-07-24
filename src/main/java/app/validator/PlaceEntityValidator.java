@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
+import app.dto.PlaceDTO;
 import app.entity.PlaceEntity;
 import app.service.PlaceService;
 
@@ -15,12 +16,12 @@ public class PlaceEntityValidator implements Validator {
 
     @Override
     public boolean supports(Class<?> cl) {
-        return PlaceEntity.class.equals(cl);
+        return PlaceDTO.class.equals(cl);
     }
 
     @Override
     public void validate(Object o, Errors errors) {
-        PlaceEntity entity = (PlaceEntity) o;
+        PlaceDTO entity = (PlaceDTO) o;
 
         validateId(entity.getId(), errors);
         validateParent(entity, entity.getParent(), errors);
@@ -28,30 +29,20 @@ public class PlaceEntityValidator implements Validator {
     }
 
     public void validateId(Long id, Errors errors) {
-        if (placeService.findById(id) == null) {
+        if (id != null && placeService.findById(id) == null) {
             errors.rejectValue("id", "place.notExists");
         }
     }
 
-    public void validateParent(PlaceEntity entity, PlaceEntity parent, Errors errors) {
-        if (parent == null) {
+    public void validateParent(PlaceDTO dto, PlaceDTO parent, Errors errors) {
+        if (parent == null || parent.getId().longValue() == 0) {
             return;
         }
 
-        validateParentRecursively(parent, entity, errors);
-    }
-
-    private void validateParentRecursively(PlaceEntity parent, PlaceEntity entity, Errors errors) {
-        if (parent.getId().equals(entity.getId())) {
+        PlaceEntity parentEntity = placeService.findById(parent.getId());
+        if(isInBranch(parentEntity, dto.getId())) {
             errors.rejectValue("parent", "place.parent.loop");
         }
-
-        PlaceEntity nextParent = parent.getParent();
-        if (nextParent == null) {
-            return;
-        }
-
-        validateParentRecursively(nextParent, entity, errors);
     }
 
     public void validateName(String field, String name, Errors errors) {
@@ -61,5 +52,13 @@ public class PlaceEntityValidator implements Validator {
         if (name.length() > 64) {
             errors.rejectValue(field, "place.name.size");
         }
+    }
+
+    public boolean isInBranch(PlaceEntity entity, Long branchIdToExclude) {
+        boolean exclude = entity.getId().equals(branchIdToExclude);
+        if (exclude || entity.getParent() == null) {
+            return exclude;
+        }
+        return isInBranch(entity.getParent(), branchIdToExclude);
     }
 }

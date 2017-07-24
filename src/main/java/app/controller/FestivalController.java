@@ -63,6 +63,8 @@ public class FestivalController extends BaseController {
 
         validator.validate(festEntity, bindingResult);
         if (bindingResult.hasErrors()) {
+            auditService.log(OperationTypes.CHANGE_FESTIVAL_ADD, AuditEventTypes.VALIDATION_ERROR,
+                            null, festEntity.toString(), bindingErrorsToString(bindingResult));
             injectFormData(model, festEntity, saveUrl);
             return FESTIVAL_EDIT;
         }
@@ -126,6 +128,8 @@ public class FestivalController extends BaseController {
 
         validator.validate(festEntity, bindingResult);
         if (bindingResult.hasErrors()) {
+            auditService.log(OperationTypes.CHANGE_FESTIVAL_EDIT, AuditEventTypes.VALIDATION_ERROR,
+                            storedFestEntity.toString(), festEntity.toString(), bindingErrorsToString(bindingResult));
             injectFormData(model, festEntity, saveUrl);
             return FESTIVAL_EDIT;
         }

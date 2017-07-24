@@ -16,6 +16,11 @@ public interface PlaceService {
     PlaceEntity findById(Long id);
 
     PlaceEntity save(PlaceEntity entity);
+    PlaceEntity save(PlaceDTO place);
+    PlaceEntity delete(Long id);
+
+    boolean hasChildren(Long id);
 
     List<PlaceDTO> entityToDTO(List<PlaceEntity> entityList);
+    PlaceDTO entityToDTO(PlaceEntity parentEntity);
 }

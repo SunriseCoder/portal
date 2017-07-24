@@ -13,6 +13,7 @@ public class PlaceDTO {
     private String name;
     private PlaceDTO parent;
     private List<PlaceDTO> children;
+    private String path;
 
     public PlaceDTO() {
         // Default constructor
@@ -23,6 +24,13 @@ public class PlaceDTO {
         this.name = entity.getName();
         if (entity.getChildren() == null) {
             return;
+        }
+
+        PlaceEntity parentEntity = entity.getParent();
+        if (parentEntity != null) {
+            parent = new PlaceDTO();
+            parent.setId(parentEntity.getId());
+            parent.setName(parentEntity.getName());
         }
 
         children = new ArrayList<>();
@@ -66,11 +74,19 @@ public class PlaceDTO {
     }
 
     public String getPath() {
+        if (path != null) {
+            return path;
+        }
+
         String path = name;
         if (parent != null) {
             path = parent.getPath() + " > " + path;
         }
         return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
     }
 
     public String getFirstAndLast() {

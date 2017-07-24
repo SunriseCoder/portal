@@ -1060,9 +1060,23 @@
 
         <insert tableName="e_operation_types">
             <column name="id" value="45" />
-            <column name="name" value="ACCESS_PAGE_PLACES" />
-            <column name="comment" value="Access places page" />
+            <column name="name" value="ACCESS_PLACE_LIST" />
+            <column name="comment" value="Access places list page" />
             <column name="severity" valueNumeric="0" />
+        </insert>
+
+        <insert tableName="e_operation_types">
+            <column name="id" value="46" />
+            <column name="name" value="ACCESS_PLACE_ADD" />
+            <column name="comment" value="Access page - add place" />
+            <column name="severity" valueNumeric="1" />
+        </insert>
+
+        <insert tableName="e_operation_types">
+            <column name="id" value="47" />
+            <column name="name" value="ACCESS_PLACE_EDIT" />
+            <column name="comment" value="Access page - edit place" />
+            <column name="severity" valueNumeric="1" />
         </insert>
 
     </changeSet>

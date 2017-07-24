@@ -9,4 +9,5 @@ import app.entity.PlaceEntity;
 
 public interface PlaceRepository extends JpaRepository<PlaceEntity, Long>, JpaSpecificationExecutor<PlaceEntity> {
     List<PlaceEntity> findAllByParentIsNull();
+    long countByParentId(Long id);
 }

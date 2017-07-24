@@ -23,7 +23,7 @@
         });
 
         function deletePlace(id, name) {
-            var confirmed = confirm("Are You sure to delete place " + name);
+            var confirmed = confirm("Are You sure to delete place '" + name + "'?");
             if (confirmed) {
                 $('#deletePlaceId')[0].value = id;
                 $('#deletePlaceForm')[0].submit();
@@ -51,7 +51,7 @@
             <c:set var="canEdit" value="${not empty user && user.hasPermission('ADMIN_PLACES_EDIT')}" />
 
             <c:if test="${canEdit}">
-                <a href="${placesRoot}/create">Add new place</a>
+                <a href="${placesRoot}/add">Add new place</a>
             </c:if>
 
             <t:places indent="0" items="${placeList}" canEdit="${canEdit}" placesRoot="${placesRoot}" />
