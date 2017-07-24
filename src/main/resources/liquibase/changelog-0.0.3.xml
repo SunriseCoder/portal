@@ -58,6 +58,15 @@
             <column name="email" value="ch2@ange.it" />
         </insert>
 
+        <!-- TODO Delete it before merge to develop branch -->
+        <insert tableName="users">
+            <column name="id" value="5" />
+            <column name="login" value="editor" />
+            <column name="pass" value="$2a$10$hHBkdPDV.oI6pXhmbLYdJucXyMl3FPWL3cHzSwm/0ieSwamSQ7fT6" /><!-- "password" -->
+            <column name="display_name" value="Editor" />
+            <column name="email" value="ch3@ange.it" />
+        </insert>
+
     </changeSet>
 
     <changeSet id="0.0.3-02" author="SunriseCoder">
@@ -325,6 +334,12 @@
             <column name="comment" value="Just an ordinary registered user" />
         </insert>
 
+        <insert tableName="roles">
+            <column name="id" value="5" />
+            <column name="name" value="Editor" />
+            <column name="comment" value="Site content editor" />
+        </insert>
+
     </changeSet>
 
     <changeSet id="0.0.3-07" author="SunriseCoder">
@@ -562,6 +577,12 @@
             <column name="permission_id" value="23" />
         </insert>
 
+        <!-- Grant Permission ADMIN_FESTIVALS_DELETE to Role Moder -->
+        <insert tableName="zz_roles_permissions">
+            <column name="role_id" value="2" />
+            <column name="permission_id" value="24" />
+        </insert>
+
         <!-- Grant Permission ADMIN_PLACES_VIEW to Role Moder -->
         <insert tableName="zz_roles_permissions">
             <column name="role_id" value="2" />
@@ -590,6 +611,48 @@
         <insert tableName="zz_roles_permissions">
             <column name="role_id" value="4" />
             <column name="permission_id" value="9" />
+        </insert>
+
+        <!-- Grant Permission UPLOAD_FILES to Role Editor -->
+        <insert tableName="zz_roles_permissions">
+            <column name="role_id" value="5" />
+            <column name="permission_id" value="2" />
+        </insert>
+
+        <!-- Grant Permission PAGES_VIEW to Role Editor -->
+        <insert tableName="zz_roles_permissions">
+            <column name="role_id" value="5" />
+            <column name="permission_id" value="9" />
+        </insert>
+
+        <!-- Grant Permission ADMIN_FESTIVALS_ADD to Role Editor -->
+        <insert tableName="zz_roles_permissions">
+            <column name="role_id" value="5" />
+            <column name="permission_id" value="22" />
+        </insert>
+
+        <!-- Grant Permission ADMIN_FESTIVALS_EDIT to Role Editor -->
+        <insert tableName="zz_roles_permissions">
+            <column name="role_id" value="5" />
+            <column name="permission_id" value="23" />
+        </insert>
+
+        <!-- Grant Permission ADMIN_FESTIVALS_DELETE to Role Editor -->
+        <insert tableName="zz_roles_permissions">
+            <column name="role_id" value="5" />
+            <column name="permission_id" value="24" />
+        </insert>
+
+        <!-- Grant Permission ADMIN_PLACES_VIEW to Role Editor -->
+        <insert tableName="zz_roles_permissions">
+            <column name="role_id" value="5" />
+            <column name="permission_id" value="25" />
+        </insert>
+
+        <!-- Grant Permission ADMIN_PLACES_EDIT to Role Editor -->
+        <insert tableName="zz_roles_permissions">
+            <column name="role_id" value="5" />
+            <column name="permission_id" value="26" />
         </insert>
 
     </changeSet>
@@ -630,6 +693,13 @@
         <insert tableName="zz_users_roles">
             <column name="user_id" value="4" />
             <column name="role_id" value="4" />
+        </insert>
+
+        <!-- TODO Delete it before merge to develop branch -->
+        <!-- Grant Role Editor to User Editor -->
+        <insert tableName="zz_users_roles">
+            <column name="user_id" value="5" />
+            <column name="role_id" value="5" />
         </insert>
 
     </changeSet>
