@@ -15,7 +15,7 @@ public interface UserService {
     UserEntity findByLogin(String login);
     UserEntity findByDisplayName(String displayName);
     UserEntity findByEmail(String email);
-    Boolean isAuthenticated();
+    boolean isAuthenticated();
     UserEntity getLoggedInUser();
     boolean hasPermission(Permissions permission);
     UserEntity save(UserEntity user);

@@ -25,5 +25,7 @@
     
     "profile.caption" : "User Profile",
 
-    "loading.error" : "Loading Error"
+    "loading.error" : "Loading Error",
+
+    "error.caption" : "Error"
 }

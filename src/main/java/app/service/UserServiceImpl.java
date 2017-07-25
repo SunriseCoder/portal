@@ -2,15 +2,19 @@ package app.service;
 
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.RequestContextHolder;
 
 import app.dao.UserConfirmRepository;
 import app.dao.UserLockRepository;
@@ -68,15 +72,45 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Boolean isAuthenticated() {
-        boolean result = !Users.anonymousUser.name().equals(
-                SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+    public boolean isAuthenticated() {
+        Authentication authentication = getAuthentication();
+        if (authentication == null) {
+            return false;
+        }
+        String loggedInLogin = authentication.getName();
+        boolean result = !Users.anonymousUser.name().equals(loggedInLogin);
         return Boolean.valueOf(result);
+    }
+
+    private Authentication getAuthentication() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null) {
+            return authentication;
+        }
+        authentication = getAuthenticationFromRequest();
+        return authentication;
+    }
+
+    private Authentication getAuthenticationFromRequest() {
+        Object sessionMutex = RequestContextHolder.currentRequestAttributes().getSessionMutex();
+        if (!(sessionMutex instanceof HttpSession)) {
+            return null;
+        }
+
+        HttpSession session = (HttpSession) sessionMutex;
+        Object contextAttribute = session.getAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY);
+        if (contextAttribute == null || !(contextAttribute instanceof SecurityContext)) {
+            return null;
+        }
+
+        SecurityContext context = (SecurityContext) contextAttribute;
+        Authentication authentication = context.getAuthentication();
+        return authentication;
     }
 
     @Override
     public UserEntity getLoggedInUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Authentication authentication = getAuthentication();
         if (authentication == null) {
             return null;
         }
