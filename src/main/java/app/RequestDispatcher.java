@@ -23,6 +23,7 @@ import org.springframework.web.util.WebUtils;
 import app.security.AccessCheckResult;
 import app.security.SecurityChecker;
 import app.service.StatisticService;
+import app.service.admin.IPBanService;
 import app.util.RequestUtils;
 import app.util.StringUtils;
 
@@ -46,10 +47,19 @@ public class RequestDispatcher extends DispatcherServlet {
     }
 
     @Autowired
+    private IPBanService ipBanService;
+    @Autowired
     private StatisticService statisticService;
 
     @Override
     protected void doDispatch(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        String ip = request.getRemoteAddr();
+        boolean isBanned = ipBanService.isBanned(ip);
+        if (isBanned) {
+            response.sendError(HttpServletResponse.SC_FORBIDDEN, "Your IP is banned");
+            return;
+        }
+
         if (needToLog(request)) {
             HandlerExecutionChain handler = getHandler(request);
             log(request, response, handler);

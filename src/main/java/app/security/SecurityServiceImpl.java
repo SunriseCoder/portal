@@ -1,6 +1,7 @@
 package app.security;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -12,7 +13,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -23,8 +23,6 @@ public class SecurityServiceImpl implements SecurityService {
     private HttpServletRequest request;
     @Autowired
     private AuthenticationManager authenticationManager;
-    @Autowired
-    private UserDetailsService userDetailsService;
 
     @Override
     public List<String> getIps() {
@@ -53,9 +51,8 @@ public class SecurityServiceImpl implements SecurityService {
 
     @Override
     public void autologin(String login, String pass) {
-        UserDetails details = userDetailsService.loadUserByUsername(login);
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
-                details, pass, details.getAuthorities());
+                login, pass, Collections.emptyList());
 
         authenticationManager.authenticate(token);
 

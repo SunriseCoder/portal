@@ -9,18 +9,20 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
+import org.springframework.security.web.authentication.rememberme.RememberMeAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
-    private DataSource dataSource;
+    private AutologinHandler autologinHandler;
     @Autowired
-    private UserDetailsService userDetailsService;
+    private DatabaseAuthenticationProvider databaseAuthenticationProvider;
+    @Autowired
+    private DataSource dataSource;
 
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
@@ -38,13 +40,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
             .and().formLogin().loginPage("/login").permitAll()
-            .and().rememberMe().alwaysRemember(true).tokenRepository(persistentTokenRepository()).tokenValiditySeconds(31536000)
-            .and().logout().logoutSuccessUrl("/");
+            .and().logout().addLogoutHandler(autologinHandler).logoutSuccessUrl("/");
+
+        http.addFilterBefore(autologinHandler, RememberMeAuthenticationFilter.class);
     }
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService)
-            .passwordEncoder(bCryptPasswordEncoder());
+        auth.eraseCredentials(true);
+        auth.authenticationProvider(databaseAuthenticationProvider);
     }
 }

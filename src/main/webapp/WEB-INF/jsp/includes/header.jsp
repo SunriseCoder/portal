@@ -68,7 +68,9 @@
                                 <a id="userName" href="#" onclick="PopupUtils.showPopup('userName');" onblur="PopupUtils.hidePopup();">${user.displayName}</a>
                             </div>
                         </li>
-
+                        <form id="logout" action="${appRoot}/logout" method="post">
+                            <input id="csrf" type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+                        </form>
                     </c:otherwise>
                 </c:choose>
 

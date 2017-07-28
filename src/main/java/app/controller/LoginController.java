@@ -20,9 +20,4 @@ public class LoginController extends BaseController {
 
         return "pages/login";
     }
-
-    @GetMapping("/logout")
-    public String logout(Model model) {
-        return "pages/logout";
-    }
 }

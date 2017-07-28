@@ -22,7 +22,6 @@ import app.enums.Permissions;
 import app.security.AccessCheckResult.Action;
 import app.service.AuditService;
 import app.service.UserService;
-import app.service.admin.IPBanService;
 
 @Component
 public class SecurityChecker {
@@ -31,8 +30,6 @@ public class SecurityChecker {
     @Autowired
     private AuditService auditService;
     @Autowired
-    private IPBanService ipBanService;
-    @Autowired
     private UserService userService;
 
     private Map<String, AccessRule> urlRules;
@@ -40,11 +37,6 @@ public class SecurityChecker {
 
     public AccessCheckResult check(HttpServletRequest request) {
         UserEntity user = userService.getLoggedInUser();
-        String ip = request.getRemoteAddr();
-        boolean isBanned = ipBanService.isBanned(ip);
-        if (isBanned) {
-            return new AccessCheckResult(Action.DENY, null, "Your IP is banned");
-        }
 
         // Check URL-based access rules and return "REDIRECT" if user has no permissions
         String url = request.getRequestURI();
@@ -141,7 +133,6 @@ public class SecurityChecker {
         addRule(rules, "/upload",                   "/",            Permissions.UPLOAD_FILES,           OperationTypes.ACCESS_PAGE_UPLOAD);
         addRule(rules, "/register",                 "/",            Permissions.USER_LOGGED_OUT,        OperationTypes.CHANGE_USER_REGISTER);
         addRule(rules, "/login",                    "/",            Permissions.USER_LOGGED_OUT,        OperationTypes.ACCESS_USER_LOGIN);
-        addRule(rules, "/logout",                   "/",            Permissions.USER_LOGGED_IN,         OperationTypes.ACCESS_USER_LOGOUT);
         addRule(rules, "/profile",                  "/",            Permissions.USER_LOGGED_IN,         OperationTypes.CHANGE_USER_PROFILE);
 
         addRule(rules, "/rest/files/list",          "/",            Permissions.PAGES_VIEW,             OperationTypes.ACCESS_PAGE_FILES);
