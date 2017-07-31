@@ -72,15 +72,15 @@ public class AutologinHandler implements Filter, LogoutHandler {
     }
 
     @Override
-    public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
-                    throws IOException, ServletException {
+    public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) req;
         HttpServletResponse response = (HttpServletResponse) res;
 
         if (SecurityContextHolder.getContext().getAuthentication() == null) {
             Authentication authentication = authenticateFromCookies(request, response);
             if (authentication != null) {
-                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+                logger.info("Autologin is successful as {}", authentication.getName());
             }
         }
 
