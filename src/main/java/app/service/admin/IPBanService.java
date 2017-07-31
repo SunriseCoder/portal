@@ -10,7 +10,7 @@ import app.entity.IPBanEntity;
 public interface IPBanService {
     List<IPBanEntity> findAll();
     IPBanEntity findByIp(String ip);
-    boolean isBanned(String ip);
+    boolean isIPBanned();
     IPBanEntity add(IPBanEntity entity);
     IPBanEntity remove(Long id);
 }

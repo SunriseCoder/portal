@@ -53,12 +53,13 @@ public class RequestDispatcher extends DispatcherServlet {
 
     @Override
     protected void doDispatch(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        String ip = request.getRemoteAddr();
-        boolean isBanned = ipBanService.isBanned(ip);
+        boolean isBanned = ipBanService.isIPBanned();
         if (isBanned) {
             response.sendError(HttpServletResponse.SC_FORBIDDEN, "Your IP is banned");
             return;
         }
+
+        // TODO DDoS check (count requests and ban IP on quota exceed)
 
         if (needToLog(request)) {
             HandlerExecutionChain handler = getHandler(request);

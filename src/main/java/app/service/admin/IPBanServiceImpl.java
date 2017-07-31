@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 
 import app.dao.IPBanRepository;
 import app.entity.IPBanEntity;
+import app.security.SecurityService;
 import app.service.UserService;
 
 @Component
@@ -25,6 +26,8 @@ public class IPBanServiceImpl implements IPBanService {
     @SuppressWarnings("unused")
     private static final Logger logger = LogManager.getLogger(IPBanServiceImpl.class.getName());
 
+    @Autowired
+    private SecurityService securityService;
     @Autowired
     private UserService userService;
 
@@ -57,16 +60,24 @@ public class IPBanServiceImpl implements IPBanService {
     }
 
     @Override
-    public boolean isBanned(String ip) {
-        boolean isBanned = bannedIPs.contains(ip);
-        return isBanned;
+    public boolean isIPBanned() {
+        List<String> ips = securityService.getIps();
+        for (String ip : ips) {
+            boolean isBanned = bannedIPs.contains(ip);
+            if (isBanned) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
     @Transactional
     public IPBanEntity add(IPBanEntity entity) {
         entity.setDate(new Date());
-        entity.setBannedBy(userService.getLoggedInUser());
+        if (entity.getBannedBy() == null) {
+            entity.setBannedBy(userService.getLoggedInUser());
+        }
         entity = repository.save(entity);
         bannedIPs.add(entity.getIp());
         lastUpdate = new Date();

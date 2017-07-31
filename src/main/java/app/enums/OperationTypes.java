@@ -1,6 +1,8 @@
 package app.enums;
 
 public enum OperationTypes {
+    ADMIN_IP_BAN,
+
     ACCESS_ADMIN_AUDIT,
     ACCESS_ADMIN_DASHBOARD,
     ACCESS_ADMIN_IPBAN,

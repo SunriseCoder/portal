@@ -33,7 +33,7 @@ public class SecurityServiceImpl implements SecurityService {
     }
 
     private void addIp(List<String> ips, String ip) {
-        if (ip != null && !"".equals(ip)) {
+        if (ip != null && !"".equals(ip) && !ips.contains(ip)) {
             ips.add(ip);
         }
     }

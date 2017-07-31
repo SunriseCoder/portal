@@ -46,12 +46,20 @@
             <column name="login" value="anonymousUser" />
             <column name="pass" value="" /><!-- no way to login as anonymousUser -->
             <column name="display_name" value="Anonymous" />
-            <column name="email" value="" />
+            <column name="email" value="0" />
+        </insert>
+
+        <insert tableName="users">
+            <column name="id" value="4" />
+            <column name="login" value="system" />
+            <column name="pass" value="" /><!-- no way to login as system user -->
+            <column name="display_name" value="System" />
+            <column name="email" value="1" />
         </insert>
 
         <!-- TODO Delete it before merge to develop branch -->
         <insert tableName="users">
-            <column name="id" value="4" />
+            <column name="id" value="5" />
             <column name="login" value="user" />
             <column name="pass" value="$2a$10$hHBkdPDV.oI6pXhmbLYdJucXyMl3FPWL3cHzSwm/0ieSwamSQ7fT6" /><!-- "password" -->
             <column name="display_name" value="User" />
@@ -60,7 +68,7 @@
 
         <!-- TODO Delete it before merge to develop branch -->
         <insert tableName="users">
-            <column name="id" value="5" />
+            <column name="id" value="6" />
             <column name="login" value="editor" />
             <column name="pass" value="$2a$10$hHBkdPDV.oI6pXhmbLYdJucXyMl3FPWL3cHzSwm/0ieSwamSQ7fT6" /><!-- "password" -->
             <column name="display_name" value="Editor" />
@@ -691,14 +699,14 @@
         <!-- TODO Delete it before merge to develop branch -->
         <!-- Grant Role User to User User -->
         <insert tableName="zz_users_roles">
-            <column name="user_id" value="4" />
+            <column name="user_id" value="5" />
             <column name="role_id" value="4" />
         </insert>
 
         <!-- TODO Delete it before merge to develop branch -->
         <!-- Grant Role Editor to User Editor -->
         <insert tableName="zz_users_roles">
-            <column name="user_id" value="5" />
+            <column name="user_id" value="6" />
             <column name="role_id" value="5" />
         </insert>
 
@@ -1147,6 +1155,13 @@
             <column name="name" value="ACCESS_PLACE_EDIT" />
             <column name="comment" value="Access page - edit place" />
             <column name="severity" valueNumeric="1" />
+        </insert>
+
+        <insert tableName="e_operation_types">
+            <column name="id" value="48" />
+            <column name="name" value="ADMIN_IP_BAN" />
+            <column name="comment" value="Ban IP-address of the user" />
+            <column name="severity" valueNumeric="3" />
         </insert>
 
     </changeSet>

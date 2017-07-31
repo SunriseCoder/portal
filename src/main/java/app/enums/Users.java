@@ -1,5 +1,6 @@
 package app.enums;
 
 public enum Users {
-    anonymousUser
+    anonymousUser,
+    system
 }

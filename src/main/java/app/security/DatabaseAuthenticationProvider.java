@@ -27,6 +27,7 @@ import app.enums.AuditEventTypes;
 import app.enums.OperationTypes;
 import app.service.AuditService;
 import app.service.UserService;
+import app.service.admin.IPBanService;
 
 @Component
 public class DatabaseAuthenticationProvider implements AuthenticationProvider, UserDetailsService {
@@ -44,6 +45,11 @@ public class DatabaseAuthenticationProvider implements AuthenticationProvider, U
     @Autowired
     private HttpServletResponse response;
 
+    @Autowired
+    private BruteForceDetector bruteForceDetector;
+    @Autowired
+    private IPBanService ipBanService;
+
     private BCryptPasswordEncoder passwordEncoder;
 
     public DatabaseAuthenticationProvider() {
@@ -57,21 +63,34 @@ public class DatabaseAuthenticationProvider implements AuthenticationProvider, U
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+        boolean isBanned = ipBanService.isIPBanned();
+        if (isBanned) {
+            return null;
+        }
+
         String login = authentication.getName();
         String password = authentication.getCredentials().toString();
 
         try {
+            bruteForceDetector.checkShouldWait();
+
             UsernamePasswordAuthenticationToken token = checkUser(login, password);
-            // TODO DDoS check
+
             autologinFilter.storeAutologin(request, response, token);
+
             return token;
+        } catch (ShouldWaitException e) {
+            logger.warn("BruteForce attempt");
+            bruteForceDetector.logBruteAttempt();
+            throw e;
         } catch (Exception e) {
             logger.error(e);
+            bruteForceDetector.logFail();
             throw e;
         }
     }
 
-    private UsernamePasswordAuthenticationToken checkUser(String login, String password) {
+    private UsernamePasswordAuthenticationToken checkUser(String login, String password) throws AuthenticationException {
         UserEntity user = userService.findByLogin(login);
 
         checkUserExists(user, login);
@@ -81,7 +100,7 @@ public class DatabaseAuthenticationProvider implements AuthenticationProvider, U
         return new UsernamePasswordAuthenticationToken(login, password, new ArrayList<>());
     }
 
-    public void checkUserExists(UserEntity user, String login) {
+    public void checkUserExists(UserEntity user, String login) throws UsernameNotFoundException {
         if (user == null) {
             String message = "User not found: " + login;
             auditService.log(OperationTypes.ACCESS_USER_LOGIN, AuditEventTypes.ACCESS_DENIED, null, null, message);
@@ -89,7 +108,7 @@ public class DatabaseAuthenticationProvider implements AuthenticationProvider, U
         }
     }
 
-    public void checkUserNotLocked(UserEntity user) {
+    public void checkUserNotLocked(UserEntity user) throws LockedException {
         if (user.isLocked()) {
             String message = "User is locked: " + user.getLogin();
             auditService.log(OperationTypes.ACCESS_USER_LOGIN, AuditEventTypes.ACCESS_DENIED, null, null, message);
@@ -97,7 +116,7 @@ public class DatabaseAuthenticationProvider implements AuthenticationProvider, U
         }
     }
 
-    public void checkUserPassword(UserEntity user, String password) {
+    public void checkUserPassword(UserEntity user, String password) throws BadCredentialsException {
         if (!passwordEncoder.matches(password, user.getPass())) {
             String message = "Wrong password for user: " + user.getLogin();
             auditService.log(OperationTypes.ACCESS_USER_LOGIN, AuditEventTypes.ACCESS_DENIED, null, null, message);
