@@ -120,6 +120,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public UserEntity getSystemUser() {
+        UserEntity user = findByLogin(Users.system.name());
+        return user;
+    }
+
+    @Override
     public boolean hasPermission(Permissions permission) {
         UserEntity user = getLoggedInUser();
         return user != null && !user.isLocked() && user.hasPermission(permission);

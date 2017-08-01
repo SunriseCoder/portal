@@ -17,6 +17,7 @@ public interface UserService {
     UserEntity findByEmail(String email);
     boolean isAuthenticated();
     UserEntity getLoggedInUser();
+    UserEntity getSystemUser();
     boolean hasPermission(Permissions permission);
     UserEntity save(UserEntity user);
     UserEntity updateLoggedUser(UserProfileDTO profile);

@@ -17,7 +17,11 @@ import org.springframework.stereotype.Component;
 
 import app.dao.IPBanRepository;
 import app.entity.IPBanEntity;
+import app.entity.UserEntity;
+import app.enums.AuditEventTypes;
+import app.enums.OperationTypes;
 import app.security.SecurityService;
+import app.service.AuditService;
 import app.service.UserService;
 
 @Component
@@ -26,6 +30,8 @@ public class IPBanServiceImpl implements IPBanService {
     @SuppressWarnings("unused")
     private static final Logger logger = LogManager.getLogger(IPBanServiceImpl.class.getName());
 
+    @Autowired
+    private AuditService auditService;
     @Autowired
     private SecurityService securityService;
     @Autowired
@@ -100,5 +106,23 @@ public class IPBanServiceImpl implements IPBanService {
 
     public Date getLastUpdate() {
         return lastUpdate;
+    }
+
+    @Override
+    public void banIP(String ip, String reason, UserEntity bannedBy) {
+        if (bannedIPs.contains(ip)) {
+            return;
+        }
+
+        IPBanEntity entity = new IPBanEntity();
+        entity.setIp(ip);
+        entity.setReason(reason);
+        entity.setBannedBy(bannedBy);
+        try {
+            add(entity);
+            auditService.log(OperationTypes.ADMIN_IP_BAN, AuditEventTypes.SUSPICIOUS_ACTIVITY, ip, entity.getReason());
+        } catch (Exception e) {
+            auditService.log(OperationTypes.ADMIN_IP_BAN, AuditEventTypes.SUSPICIOUS_ACTIVITY, ip, entity.getReason(), "Failed to ban IP");
+        }
     }
 }

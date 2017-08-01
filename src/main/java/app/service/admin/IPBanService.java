@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import app.entity.IPBanEntity;
+import app.entity.UserEntity;
 
 @Service
 public interface IPBanService {
@@ -13,4 +14,6 @@ public interface IPBanService {
     boolean isIPBanned();
     IPBanEntity add(IPBanEntity entity);
     IPBanEntity remove(Long id);
+
+    void banIP(String ip, String reason, UserEntity bannedBy);
 }

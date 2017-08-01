@@ -21,6 +21,7 @@ import org.springframework.web.util.ContentCachingResponseWrapper;
 import org.springframework.web.util.WebUtils;
 
 import app.security.AccessCheckResult;
+import app.security.DDoSDetector;
 import app.security.SecurityChecker;
 import app.service.StatisticService;
 import app.service.admin.IPBanService;
@@ -50,6 +51,8 @@ public class RequestDispatcher extends DispatcherServlet {
     private IPBanService ipBanService;
     @Autowired
     private StatisticService statisticService;
+    @Autowired
+    private DDoSDetector ddosDetector;
 
     @Override
     protected void doDispatch(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -59,7 +62,8 @@ public class RequestDispatcher extends DispatcherServlet {
             return;
         }
 
-        // TODO DDoS check (count requests and ban IP on quota exceed)
+        // Count requests and ban IP on quota exceed
+        ddosDetector.checkDDoS();
 
         if (needToLog(request)) {
             HandlerExecutionChain handler = getHandler(request);

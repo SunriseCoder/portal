@@ -13,14 +13,11 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import app.entity.IPBanEntity;
-import app.enums.AuditEventTypes;
-import app.enums.OperationTypes;
-import app.enums.Users;
-import app.service.AuditService;
+import app.entity.UserEntity;
 import app.service.UserService;
 import app.service.admin.IPBanService;
 
@@ -28,12 +25,13 @@ import app.service.admin.IPBanService;
 public class BruteForceDetector {
     private static final Logger logger = LogManager.getLogger(BruteForceDetector.class);
 
-    private static final int MAX_FAILS_BEFORE_WAIT = 10;
-    private static final int WAIT_MULTIPLIER = 2;
-    private static final int MAX_BRUTES_BEFORE_IPBAN = 1000;
+    @Value("${security.bruteforce.max-fails-before-delay}")
+    private int maxFailsBeforeDelay;
+    @Value("${security.bruteforce.delay-multiplier}")
+    private int delayMultiplier;
+    @Value("${security.bruteforce.max-brutes-before-ipban}")
+    private int maxBrutesBeforeIPBan;
 
-    @Autowired
-    private AuditService auditService;
     @Autowired
     private IPBanService ipBanService;
     @Autowired
@@ -102,8 +100,10 @@ public class BruteForceDetector {
             status.bruteAttempt++;
         }
 
-        if (status.bruteAttempt > MAX_BRUTES_BEFORE_IPBAN) {
-            banIP(ip);
+        if (status.bruteAttempt > maxBrutesBeforeIPBan) {
+            UserEntity systemUser = userService.getSystemUser();
+            ipBanService.banIP(ip, "Password bruteforce", systemUser);
+            ipStatuses.remove(ip);
         }
     }
 
@@ -123,7 +123,7 @@ public class BruteForceDetector {
             status.fails++;
         }
 
-        if (status.fails > MAX_FAILS_BEFORE_WAIT) {
+        if (status.fails > maxFailsBeforeDelay) {
             status.level++;
             LocalDateTime nextAttempt = calculateWaitDelay(status.level);
             status.nextAttempt = nextAttempt;
@@ -132,26 +132,12 @@ public class BruteForceDetector {
     }
 
     private LocalDateTime calculateWaitDelay(int level) {
-        long delay = BigInteger.valueOf(WAIT_MULTIPLIER).pow(level).longValue();
+        long delay = BigInteger.valueOf(delayMultiplier).pow(level).longValue();
         LocalDateTime nextAttempt = LocalDateTime.now().plusMinutes(delay);
         return nextAttempt;
     }
 
-    private void banIP(String ip) {
-        IPBanEntity entity = new IPBanEntity();
-        entity.setIp(ip);
-        entity.setReason("Password bruteforce");
-        entity.setBannedBy(userService.findByLogin(Users.system.name()));
-        try {
-            ipBanService.add(entity);
-            auditService.log(OperationTypes.ADMIN_IP_BAN, AuditEventTypes.SUSPICIOUS_ACTIVITY, ip, entity.getReason());
-            ipStatuses.remove(ip);
-        } catch (Exception e) {
-            auditService.log(OperationTypes.ADMIN_IP_BAN, AuditEventTypes.SUSPICIOUS_ACTIVITY, ip, entity.getReason(), "Failed to ban IP");
-        }
-    }
-
-    @Scheduled(cron = "0 0 * * * *")
+    @Scheduled(cron = "0 0 * * * *") // Hourly
     private void reduction() {
         logger.info("Reduction job start");
 
