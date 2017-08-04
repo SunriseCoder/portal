@@ -54,6 +54,9 @@ public class UserEntity {
     @OneToOne(mappedBy = "user")
     private UserLockEntity lock;
 
+    @Column
+    private boolean shouldChangePassword;
+
     public Long getId() {
         return id;
     }
@@ -148,6 +151,14 @@ public class UserEntity {
 
     public void setLock(UserLockEntity lock) {
         this.lock = lock;
+    }
+
+    public boolean isShouldChangePassword() {
+        return shouldChangePassword;
+    }
+
+    public void setShouldChangePassword(boolean shouldChangePassword) {
+        this.shouldChangePassword = shouldChangePassword;
     }
 
     private void checkInitPermissions() {

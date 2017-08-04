@@ -1,25 +1,17 @@
 package app.validator;
 
-import java.beans.PropertyDescriptor;
 import java.util.regex.Pattern;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
-import org.springframework.validation.Validator;
 
 import app.entity.UserEntity;
 import app.service.UserService;
 
 @Component
-public class UserEntityValidator implements Validator {
-    private static final Logger logger = LogManager.getLogger(UserEntityValidator.class.getName());
-
+public class UserEntityValidator extends AbstractValidator {
     private static final Pattern LOGIN_PATTERN = Pattern.compile("^[A-Za-z0-9]*$");
     private static final Pattern DISPLAY_NAME_PATTERN = Pattern.compile("^[A-Za-z0-9\\-\\ \\_\\(\\)]*$");
     private static final Pattern EMAIL_PATTERN = Pattern.compile("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
@@ -108,21 +100,6 @@ public class UserEntityValidator implements Validator {
         }
         if (!EMAIL_PATTERN.matcher(email).matches()) {
             errors.rejectValue("email", "user.email.wrong_format");
-        }
-    }
-
-    private void clearValue(Errors errors, String property) {
-        if (!(errors instanceof BeanPropertyBindingResult)) {
-            return;
-        }
-
-        BeanPropertyBindingResult bindingResult = (BeanPropertyBindingResult) errors;
-        Object target = bindingResult.getTarget();
-        PropertyDescriptor pd = BeanUtils.getPropertyDescriptor(target.getClass(), property);
-        try {
-            pd.getWriteMethod().invoke(target, "");
-        } catch (Exception e) {
-            logger.error("Error due to clear bean value", e);
         }
     }
 }

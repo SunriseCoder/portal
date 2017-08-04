@@ -3,14 +3,13 @@ package app.validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
-import org.springframework.validation.Validator;
 
 import app.dto.PlaceDTO;
 import app.entity.PlaceEntity;
 import app.service.PlaceService;
 
 @Component
-public class PlaceEntityValidator implements Validator {
+public class PlaceEntityValidator extends AbstractValidator {
     @Autowired
     private PlaceService placeService;
 

@@ -88,6 +88,15 @@ public class UserProfileController extends BaseController {
             String confirm = profile.getConfirm();
             userValidator.validatePassConfirm(pass, confirm, bindingResult);
         }
+
+        // Verify current pass
+        String enteredPass = profile.getCurrentPass();
+        String encryptedUserPass = userService.getLoggedInUser().getPass();
+        boolean matches = userService.isPasswordMatches(enteredPass, encryptedUserPass);
+        if (!matches) {
+            userValidator.clearValue(bindingResult, "currentPass");
+            bindingResult.rejectValue("currentPass", "profile.currentPass.wrong");
+        }
     }
 
     private void injectUserProfileDTO(Model model) {

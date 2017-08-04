@@ -130,6 +130,7 @@ public class UserController extends BaseController {
             UserEntity userEntity = userService.findById(changePassword.getId());
             String auditObjectBefore = userEntity.toString();
             userEntity.setPass(changePassword.getPass());
+            userEntity.setShouldChangePassword(true);
             userService.encryptPass(userEntity);
             String auditObjectBeforeSave = userEntity.toString();
             try {

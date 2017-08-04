@@ -49,4 +49,21 @@ public class StringUtils {
     public static String format(String pattern, Object... arguments) {
         return MessageFormat.format(pattern, arguments);
     }
+
+    public static boolean isStartsWidthAny(String candidate, String[] strings) {
+        if (strings == null || strings.length == 0 || candidate == null) {
+            return false;
+        }
+
+        for (String string : strings) {
+            if (string == null) {
+                continue;
+            }
+            if (candidate.startsWith(string)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

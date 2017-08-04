@@ -25,11 +25,21 @@
 
     <div class="container">
         <div class="starter-template">
-            <h3>Welcome to the Portal
+            <h3>
+                Welcome to the Portal
                 <c:if test="${not empty env}">
                     (${env})
                 </c:if>
             </h3>
+
+            <c:if test="${not empty error}">
+                <p class="error">${error}</p>
+            </c:if>
+
+            <c:if test="${not empty message}">
+                <p class="success">${message}</p>
+            </c:if>
+
         </div>
     </div>
 </body>

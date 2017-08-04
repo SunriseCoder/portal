@@ -6,6 +6,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 public class ChangePasswordDTO {
     private Long id;
     private String pass;
+    private String confirm;
 
     public ChangePasswordDTO() {
         // Default constructor
@@ -32,8 +33,21 @@ public class ChangePasswordDTO {
         this.pass = pass;
     }
 
+    public String getConfirm() {
+        return confirm;
+    }
+
+    public void setConfirm(String confirm) {
+        this.confirm = confirm;
+    }
+
     @Override
     public String toString() {
         return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+    }
+
+    public void clearPasses() {
+        setPass("");
+        setConfirm("");
     }
 }

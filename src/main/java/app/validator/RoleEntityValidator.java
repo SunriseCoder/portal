@@ -5,13 +5,12 @@ import java.util.regex.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
-import org.springframework.validation.Validator;
 
 import app.entity.RoleEntity;
 import app.service.RoleService;
 
 @Component
-public class RoleEntityValidator implements Validator {
+public class RoleEntityValidator extends AbstractValidator {
     private static final Pattern NAME_PATTERN = Pattern.compile("^[A-Za-z0-9]*$");
 
     @Autowired

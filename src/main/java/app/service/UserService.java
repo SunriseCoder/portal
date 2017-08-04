@@ -22,6 +22,7 @@ public interface UserService {
     UserEntity save(UserEntity user);
     UserEntity updateLoggedUser(UserProfileDTO profile);
     void encryptPass(UserEntity user);
+    boolean isPasswordMatches(String raw, String encrypted);
     void confirmUser(Long id, String comment);
     void unconfirmUser(Long id);
     void lockUser(Long id, String reason);

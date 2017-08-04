@@ -24,6 +24,8 @@
     "upload.caption" : "Upload",
     
     "profile.caption" : "User Profile",
+    
+    "change-pass.caption" : "Change Password",
 
     "loading.error" : "Loading Error",
 

@@ -9,6 +9,7 @@ public class UserProfileDTO {
     private String pass;
     private String confirm;
     private String email;
+    private String currentPass;
 
     public Long getId() {
         return id;
@@ -50,9 +51,18 @@ public class UserProfileDTO {
         this.email = email;
     }
 
+    public String getCurrentPass() {
+        return currentPass;
+    }
+
+    public void setCurrentPass(String currentPass) {
+        this.currentPass = currentPass;
+    }
+
     public void clearPasswords() {
         setPass("");
         setConfirm("");
+        setCurrentPass("");
     }
 
     @Override

@@ -139,7 +139,9 @@ public class CookieHelper {
 
     private Map<String, String> cookiesToMap(Cookie[] cookies) {
         Map<String, String> map = new HashMap<>();
-        Arrays.stream(cookies).forEach(cookie -> map.put(cookie.getName(), cookie.getValue()));
+        Arrays.stream(cookies).forEach(cookie -> {
+            map.put(cookie.getName(), cookie.getValue());
+        });
         return map;
     }
 }

@@ -134,6 +134,7 @@ public class SecurityChecker {
         addRule(rules, "/register",                 "/",            Permissions.USER_LOGGED_OUT,        OperationTypes.CHANGE_USER_REGISTER);
         addRule(rules, "/login",                    "/",            Permissions.USER_LOGGED_OUT,        OperationTypes.ACCESS_USER_LOGIN);
         addRule(rules, "/profile",                  "/",            Permissions.USER_LOGGED_IN,         OperationTypes.CHANGE_USER_PROFILE);
+        addRule(rules, "/change-pass",              "/",            Permissions.USER_LOGGED_IN,         OperationTypes.CHANGE_USER_PASSWORD);
 
         addRule(rules, "/rest/files/list",          "/",            Permissions.PAGES_VIEW,             OperationTypes.ACCESS_PAGE_FILES);
         addRule(rules, "/rest/files/get",           "/",            Permissions.PAGES_VIEW,             OperationTypes.ACCESS_PAGE_FILES);

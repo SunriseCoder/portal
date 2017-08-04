@@ -177,6 +177,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public boolean isPasswordMatches(String rawPassword, String encodedPassword) {
+        boolean matches = bCryptPasswordEncoder.matches(rawPassword, encodedPassword);
+        return matches;
+    }
+
+    @Override
     @Transactional
     public void confirmUser(Long id, String comment) {
         UserConfirmEntity confirmation = userConfirmRepository.findByUserId(id);

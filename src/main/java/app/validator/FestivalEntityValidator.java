@@ -5,13 +5,12 @@ import java.util.Date;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
-import org.springframework.validation.Validator;
 
 import app.entity.FestivalEntity;
 import app.entity.PlaceEntity;
 
 @Component
-public class FestivalEntityValidator implements Validator {
+public class FestivalEntityValidator extends AbstractValidator {
     @Autowired
     private PlaceEntityValidator placeValidator;
 

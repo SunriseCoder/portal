@@ -20,7 +20,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private AutologinHandler autologinHandler;
     @Autowired
+    private ForceChangePasswordHandler forceChangePasswordHandler;
+
+    @Autowired
     private DatabaseAuthenticationProvider databaseAuthenticationProvider;
+
     @Autowired
     private DataSource dataSource;
 
@@ -43,6 +47,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .and().logout().addLogoutHandler(autologinHandler).logoutSuccessUrl("/");
 
         http.addFilterBefore(autologinHandler, RememberMeAuthenticationFilter.class);
+        http.addFilterAfter(forceChangePasswordHandler, RememberMeAuthenticationFilter.class);
     }
 
     @Autowired

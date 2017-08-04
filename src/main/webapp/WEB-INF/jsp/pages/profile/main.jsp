@@ -71,7 +71,18 @@
                         </td>
                     </tr>
                     <tr>
-                        <td colspan="2"><input type="submit" value="Save"></td>
+                        <td colspan="2"><hr /></td>
+                    </tr>
+                    <tr>
+                        <td>Current password: </td>
+                        <td>
+                            <form:input path="currentPass" type="password" />
+                            <form:errors path="currentPass" cssClass="error-text" /><br />
+                             (Please enter current password to commit changes)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" align="center"><input type="submit" value="Save"></td>
                     </tr>
                 </table>
             </form:form>
