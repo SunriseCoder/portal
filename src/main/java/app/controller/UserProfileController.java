@@ -66,7 +66,7 @@ public class UserProfileController extends BaseController {
         UserEntity user = userService.getLoggedInUser();
 
         // Check ID
-        if (!user.getId().equals(profile.getId())) {
+        if (profile.getId() != null && !user.getId().equals(profile.getId())) {
             auditService.log(OperationTypes.CHANGE_USER_PROFILE, AuditEventTypes.SUSPICIOUS_ACTIVITY,
                     user.toString(), profile.toString(), "IDs are different");
         }

@@ -185,7 +185,7 @@ public class UserEntity {
     @Override
     public String toString() {
         return new ReflectionToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
-                        .setExcludeFieldNames("pass", "roles", "permissions")
+                        .setExcludeFieldNames("pass", "confirm", "roles", "permissions")
                         .toString();
     }
 }

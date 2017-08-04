@@ -103,7 +103,7 @@ public class DatabaseAuthenticationProvider implements AuthenticationProvider, U
     public void checkUserExists(UserEntity user, String login) throws UsernameNotFoundException {
         if (user == null) {
             String message = "User not found: " + login;
-            auditService.log(OperationTypes.ACCESS_USER_LOGIN, AuditEventTypes.ACCESS_DENIED, null, null, message);
+            auditService.log(OperationTypes.ACCESS_USER_LOGIN, AuditEventTypes.ACCESS_DENIED, login, null, message);
             throw new UsernameNotFoundException(message);
         }
     }
@@ -111,7 +111,7 @@ public class DatabaseAuthenticationProvider implements AuthenticationProvider, U
     public void checkUserNotLocked(UserEntity user) throws LockedException {
         if (user.isLocked()) {
             String message = "User is locked: " + user.getLogin();
-            auditService.log(OperationTypes.ACCESS_USER_LOGIN, AuditEventTypes.ACCESS_DENIED, null, null, message);
+            auditService.log(OperationTypes.ACCESS_USER_LOGIN, AuditEventTypes.ACCESS_DENIED, user.getLogin(), null, message);
             throw new LockedException(message);
         }
     }
@@ -119,7 +119,7 @@ public class DatabaseAuthenticationProvider implements AuthenticationProvider, U
     public void checkUserPassword(UserEntity user, String password) throws BadCredentialsException {
         if (!passwordEncoder.matches(password, user.getPass())) {
             String message = "Wrong password for user: " + user.getLogin();
-            auditService.log(OperationTypes.ACCESS_USER_LOGIN, AuditEventTypes.ACCESS_DENIED, null, null, message);
+            auditService.log(OperationTypes.ACCESS_USER_LOGIN, AuditEventTypes.ACCESS_DENIED, user.getLogin(), null, message);
             throw new BadCredentialsException(message);
         }
     }
