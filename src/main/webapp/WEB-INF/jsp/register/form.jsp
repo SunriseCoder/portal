@@ -8,10 +8,10 @@
 <head>
     <title>Register</title>
 
-    <link rel="stylesheet" href="${appRoot}/styles/form.css" />
+    <link rel="stylesheet" href="${appRoot}/css/form.css" />
 
-    <script src="${appRoot}/scripts/jquery.js"></script>
-    <script src="${appRoot}/scripts/locale-utils.js"></script>
+    <script src="${appRoot}/js/jquery.js"></script>
+    <script src="${appRoot}/js/locale-utils.js"></script>
 
     <script>
         $(function() {
@@ -21,7 +21,8 @@
     </script>
 </head>
 <body onload="document.forms.userForm.login.focus()">
-    <jsp:include page="../../includes/header.jsp" />
+
+    <jsp:include page="/WEB-INF/jspf/header.jsp" />
 
     <div class="container">
         <div class="starter-template">

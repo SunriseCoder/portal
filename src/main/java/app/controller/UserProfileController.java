@@ -24,7 +24,7 @@ import app.validator.UserEntityValidator;
 public class UserProfileController extends BaseController {
     private static final Logger logger = LogManager.getLogger(UserProfileController.class.getName());
 
-    private static final String PROFILE_PAGE = "pages/profile/main";
+    private static final String PROFILE_PAGE = "profile/main";
 
     @Autowired
     private UserService userService;

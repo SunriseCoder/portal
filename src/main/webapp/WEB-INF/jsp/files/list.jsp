@@ -7,10 +7,10 @@
 <head>
     <title>Files</title>
 
-    <script src="${appRoot}/scripts/http-utils.js"></script>
-    <script src="${appRoot}/scripts/file-tree.js"></script>
-    <script src="${appRoot}/scripts/jquery.js"></script>
-    <script src="${appRoot}/scripts/locale-utils.js"></script>
+    <script src="${appRoot}/js/http-utils.js"></script>
+    <script src="${appRoot}/js/file-tree.js"></script>
+    <script src="${appRoot}/js/jquery.js"></script>
+    <script src="${appRoot}/js/locale-utils.js"></script>
 
     <script>
         $(function() {
@@ -26,7 +26,8 @@
     </script>
 </head>
 <body>
-    <jsp:include page="../../includes/header.jsp" />
+
+    <jsp:include page="/WEB-INF/jspf/header.jsp" />
 
     <span>&nbsp;</span>
 

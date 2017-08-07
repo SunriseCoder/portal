@@ -18,6 +18,6 @@ public class LoginController extends BaseController {
             model.addAttribute("error", e.getMessage());
         }
 
-        return "pages/login";
+        return "login";
     }
 }

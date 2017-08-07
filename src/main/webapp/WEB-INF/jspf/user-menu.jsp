@@ -2,7 +2,7 @@
 
 <c:set var="appRoot" value="${pageContext.request.contextPath}" />
 
-<link rel="stylesheet" href="${appRoot}/styles/form.css">
+<link rel="stylesheet" href="${appRoot}/css/form.css">
 
 <ul class="nav navbar-nav">
     <li><a href="${appRoot}/profile">Profile</a></li>

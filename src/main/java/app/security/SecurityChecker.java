@@ -185,9 +185,9 @@ public class SecurityChecker {
 
         //             URL            Redirect  Permission  OperationType
         addRule(rules, "/i18n/.*",    "/",      null,       OperationTypes.ACCESS_PAGE_STATIC);
-        addRule(rules, "/icons/.*",   "/",      null,       OperationTypes.ACCESS_PAGE_STATIC);
-        addRule(rules, "/scripts/.*", "/",      null,       OperationTypes.ACCESS_PAGE_STATIC);
-        addRule(rules, "/styles/.*",  "/",      null,       OperationTypes.ACCESS_PAGE_STATIC);
+        addRule(rules, "/images/.*",   "/",     null,       OperationTypes.ACCESS_PAGE_STATIC);
+        addRule(rules, "/js/.*", "/",           null,       OperationTypes.ACCESS_PAGE_STATIC);
+        addRule(rules, "/css/.*",  "/",         null,       OperationTypes.ACCESS_PAGE_STATIC);
         addRule(rules, "/webjars/.*", "/",      null,       OperationTypes.ACCESS_PAGE_STATIC);
 
         return rules;

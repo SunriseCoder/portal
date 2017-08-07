@@ -30,8 +30,8 @@ import app.validator.FestivalEntityValidator;
 public class FestivalController extends BaseController {
     private static final Logger logger = LogManager.getLogger(FestivalController.class.getName());
 
-    private static final String FESTIVAL_LIST = "pages/festivals/list";
-    private static final String FESTIVAL_EDIT = "pages/festivals/edit";
+    private static final String FESTIVAL_LIST = "festivals/list";
+    private static final String FESTIVAL_EDIT = "festivals/edit";
 
     private static final String REDIRECT_FESTIVALS = "redirect:/festivals";
 

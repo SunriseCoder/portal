@@ -28,8 +28,8 @@ import app.validator.PlaceEntityValidator;
 public class PlaceController extends BaseController {
     private static final Logger logger = LogManager.getLogger(PlaceController.class.getName());
 
-    private static final String PLACES_LIST = "pages/places/list";
-    private static final String PLACES_EDIT = "pages/places/edit";
+    private static final String PLACES_LIST = "places/list";
+    private static final String PLACES_EDIT = "places/edit";
 
     private static final String REDIRECT_PLACES = "redirect:/places";
 

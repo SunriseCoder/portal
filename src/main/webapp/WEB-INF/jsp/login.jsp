@@ -8,10 +8,10 @@
 <head>
     <title>Login</title>
 
-    <link rel="stylesheet" href="${appRoot}/styles/form.css">
+    <link rel="stylesheet" href="${appRoot}/css/form.css">
 
-    <script src="${appRoot}/scripts/jquery.js"></script>
-    <script src="${appRoot}/scripts/locale-utils.js"></script>
+    <script src="${appRoot}/js/jquery.js"></script>
+    <script src="${appRoot}/js/locale-utils.js"></script>
 
     <script>
         $(function() {
@@ -21,7 +21,8 @@
     </script>
 </head>
 <body onload="document.forms.loginForm.username.focus()">
-    <jsp:include page="../includes/header.jsp" />
+
+    <jsp:include page="/WEB-INF/jspf/header.jsp" />
 
     <div class="container">
         <div class="starter-template">
@@ -31,7 +32,7 @@
                 <h5 class="error-text">${error}</h5>
             </c:if>
 
-            <jsp:include page="../includes/loginForm.jsp">
+            <jsp:include page="/WEB-INF/jspf/loginForm.jsp">
                 <jsp:param name="formId" value="loginForm" />
             </jsp:include>
             <input type="submit" value="Login" onclick="document.getElementById('loginForm').submit();" />

@@ -11,10 +11,10 @@
 <head>
     <title>Places</title>
 
-    <link rel="stylesheet" type="text/css" href="${appRoot}/styles/form.css" />
+    <link rel="stylesheet" type="text/css" href="${appRoot}/css/form.css" />
 
-    <script src="${appRoot}/scripts/jquery.js"></script>
-    <script src="${appRoot}/scripts/locale-utils.js"></script>
+    <script src="${appRoot}/js/jquery.js"></script>
+    <script src="${appRoot}/js/locale-utils.js"></script>
 
     <script>
         $(function() {
@@ -33,7 +33,7 @@
 </head>
 <body>
 
-    <jsp:include page="../../includes/header.jsp" />
+    <jsp:include page="/WEB-INF/jspf/header.jsp" />
 
     <div class="container">
         <div class="starter-template">

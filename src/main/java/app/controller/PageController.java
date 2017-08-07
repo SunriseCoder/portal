@@ -20,6 +20,6 @@ public class PageController extends BaseController {
         }
 
         injectUser(model);
-        return "pages/index";
+        return "index";
     }
 }

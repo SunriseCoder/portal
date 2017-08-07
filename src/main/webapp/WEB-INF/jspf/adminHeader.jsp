@@ -4,7 +4,7 @@
 <c:set var="adminRoot" value="${appRoot}/admin" />
 
 <link rel="stylesheet" type="text/css" href="${appRoot}/webjars/bootstrap/3.3.7/css/bootstrap.min.css" />
-<link rel="stylesheet" type="text/css" href="${appRoot}/styles/header.css" />
+<link rel="stylesheet" type="text/css" href="${appRoot}/css/header.css" />
 
 <nav class="navbar navbar-inverse">
     <div class="container">

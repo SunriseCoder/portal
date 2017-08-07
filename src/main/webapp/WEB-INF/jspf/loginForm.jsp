@@ -3,9 +3,9 @@
 
 <c:set var="appRoot" value="${pageContext.request.contextPath}" />
 
-<link rel="stylesheet" type="text/css" href="${appRoot}/styles/form.css" />
+<link rel="stylesheet" type="text/css" href="${appRoot}/css/form.css" />
 
-<script src="${appRoot}/scripts/form-utils.js"></script>
+<script src="${appRoot}/js/form-utils.js"></script>
 
 <form:form id="${param.formId}" action="${appRoot}/login" method="POST" modelAttribute="login">
     <table>

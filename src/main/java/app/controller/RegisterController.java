@@ -30,7 +30,7 @@ import app.validator.UserEntityValidator;
 public class RegisterController extends BaseController {
     private static final Logger logger = LogManager.getLogger(RegisterController.class.getName());
 
-    private static final String REGISTER_FORM_PAGE = "pages/register/form";
+    private static final String REGISTER_FORM_PAGE = "register/form";
 
     @Autowired
     private UserService userService;

@@ -3,11 +3,11 @@
 <c:set var="appRoot" value="${pageContext.request.contextPath}" />
 
 <link rel="stylesheet" type="text/css" href="${appRoot}/webjars/bootstrap/3.3.7/css/bootstrap.min.css" />
-<link rel="stylesheet" type="text/css" href="${appRoot}/styles/header.css" />
-<link rel="stylesheet" type="text/css" href="${appRoot}/styles/popup.css" />
+<link rel="stylesheet" type="text/css" href="${appRoot}/css/header.css" />
+<link rel="stylesheet" type="text/css" href="${appRoot}/css/popup.css" />
 
-<script src="${appRoot}/scripts/form-utils.js"></script>
-<script src="${appRoot}/scripts/popup-utils.js"></script>
+<script src="${appRoot}/js/form-utils.js"></script>
+<script src="${appRoot}/js/popup-utils.js"></script>
 
 <nav class="navbar navbar-inverse">
     <div class="container">

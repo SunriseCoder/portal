@@ -12,6 +12,6 @@ public class FileController extends BaseController {
     @GetMapping
     public String files(Model model) {
         injectUser(model);
-        return "pages/files/list";
+        return "files/list";
     }
 }

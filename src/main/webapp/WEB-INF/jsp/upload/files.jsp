@@ -7,14 +7,14 @@
 <head>
     <title>Upload</title>
 
-    <link rel="stylesheet" href="${appRoot}/styles/upload.css">
+    <link rel="stylesheet" href="${appRoot}/css/upload.css">
 
-    <script src="${appRoot}/scripts/http-utils.js"></script>
-    <script src="${appRoot}/scripts/cookie-utils.js"></script>
-    <script src="${appRoot}/scripts/file-tree.js"></script>
-    <script src="${appRoot}/scripts/jquery.js"></script>
-    <script src="${appRoot}/scripts/locale-utils.js"></script>
-    <script src="${appRoot}/scripts/upload-utils.js"></script>
+    <script src="${appRoot}/js/http-utils.js"></script>
+    <script src="${appRoot}/js/cookie-utils.js"></script>
+    <script src="${appRoot}/js/file-tree.js"></script>
+    <script src="${appRoot}/js/jquery.js"></script>
+    <script src="${appRoot}/js/locale-utils.js"></script>
+    <script src="${appRoot}/js/upload-utils.js"></script>
 
     <script>
         $(function() {
@@ -26,7 +26,7 @@
     </script>
 </head>
 <body>
-    <jsp:include page="../../includes/header.jsp" />
+    <jsp:include page="/WEB-INF/jspf/header.jsp" />
 
     <span>&nbsp;</span>
 

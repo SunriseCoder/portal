@@ -25,7 +25,7 @@ import app.validator.UserEntityValidator;
 public class ChangePasswordController extends BaseController {
     private static final Logger logger = LogManager.getLogger(ChangePasswordController.class.getName());
 
-    private static final String CHANGE_PASS_PAGE = "pages/change-pass";
+    private static final String CHANGE_PASS_PAGE = "change-pass";
 
     @Autowired
     private UserEntityValidator userValidator;

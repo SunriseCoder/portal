@@ -27,7 +27,7 @@ public class ForceChangePasswordHandler implements Filter {
 
     private static final String PAGE_CHANGE_PASS = "/change-pass";
     private static final String[] PAGES_TO_IGNORE = { PAGE_CHANGE_PASS,
-                    "/WEB-INF/", "/styles/", "/scripts/", "/webjars/", "/icons/", "/i18n/" };
+                    "/WEB-INF/", "/css/", "/js/", "/webjars/", "/images/", "/i18n/" };
 
     @Autowired
     private UserService userService;

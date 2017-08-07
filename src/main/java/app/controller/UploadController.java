@@ -12,6 +12,6 @@ public class UploadController extends BaseController {
     @GetMapping
     public String uploadFiles(Model model) {
         injectUser(model);
-        return "pages/upload/files";
+        return "upload/files";
     }
 }
