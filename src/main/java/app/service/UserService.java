@@ -11,6 +11,7 @@ import app.enums.Permissions;
 @Service
 public interface UserService {
     List<UserEntity> findAll();
+    List<UserEntity> findAllNonSystem();
     UserEntity findById(Long id);
     UserEntity findByLogin(String login);
     UserEntity findByDisplayName(String displayName);

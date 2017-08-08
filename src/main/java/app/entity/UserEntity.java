@@ -56,6 +56,8 @@ public class UserEntity {
 
     @Column
     private boolean shouldChangePassword;
+    @Column
+    private boolean system;
 
     public Long getId() {
         return id;
@@ -159,6 +161,14 @@ public class UserEntity {
 
     public void setShouldChangePassword(boolean shouldChangePassword) {
         this.shouldChangePassword = shouldChangePassword;
+    }
+
+    public boolean isSystem() {
+        return system;
+    }
+
+    public void setSystem(boolean system) {
+        this.system = system;
     }
 
     private void checkInitPermissions() {

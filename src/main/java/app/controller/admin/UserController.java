@@ -54,7 +54,7 @@ public class UserController extends BaseController {
     @GetMapping
     public String userList(Model model) {
         injectUser(model);
-        List<UserEntity> userList = userService.findAll();
+        List<UserEntity> userList = userService.findAllNonSystem();
         model.addAttribute("userList", userList);
 
         auditService.log(OperationTypes.ACCESS_USER_LIST, AuditEventTypes.ACCESS_ALLOWED);
@@ -64,16 +64,16 @@ public class UserController extends BaseController {
 
     @GetMapping("/edit")
     public String editUser(HttpServletRequest request, Model model, @RequestParam("id") Long id) {
+        OperationTypes operation = OperationTypes.ACCESS_USER_EDIT;
         String auditObject = request.getQueryString();
 
-        injectUser(model);
-        UserEntity userEntity = injectUserEntity(model, id);
-
-        if (userEntity == null) {
-            auditService.log(OperationTypes.ACCESS_USER_EDIT, AuditEventTypes.ENTITY_NOT_EXISTS, auditObject);
+        boolean editable = isEditableUser(id, operation);
+        if (!editable) {
             return REDIRECT_USERS;
         }
 
+        injectUser(model);
+        UserEntity userEntity = injectUserEntity(model, id);
         injectChangeLoginDTO(model, userEntity);
         injectChangePasswordDTO(model, userEntity);
         injectChangeDisplayNameDTO(model, userEntity);
@@ -81,7 +81,7 @@ public class UserController extends BaseController {
         injectChangeRolesDTO(model, userEntity);
         injectChangeRolesData(model, userEntity);
 
-        auditService.log(OperationTypes.ACCESS_USER_EDIT, AuditEventTypes.ACCESS_ALLOWED, auditObject);
+        auditService.log(operation, AuditEventTypes.ACCESS_ALLOWED, auditObject);
 
         return USERS_EDIT;
     }
@@ -89,6 +89,13 @@ public class UserController extends BaseController {
     @PostMapping("/login")
     public String changeLogin(@ModelAttribute("changeLogin") ChangeLoginDTO changeLogin, Model model,
                     HttpServletRequest request, BindingResult bindingResult) {
+
+        OperationTypes operation = OperationTypes.CHANGE_USER_LOGIN;
+
+        boolean editable = isEditableUser(changeLogin.getId(), operation);
+        if (!editable) {
+            return REDIRECT_USERS;
+        }
 
         userValidator.validateLogin(changeLogin.getLogin(), bindingResult);
         if (!bindingResult.hasErrors()) {
@@ -99,16 +106,16 @@ public class UserController extends BaseController {
             try {
                 userEntity = userService.save(userEntity);
                 String auditObjectAfter = userEntity.toString();
-                auditService.log(OperationTypes.CHANGE_USER_LOGIN, AuditEventTypes.SUCCESSFUL, auditObjectBefore, auditObjectAfter);
+                auditService.log(operation, AuditEventTypes.SUCCESSFUL, auditObjectBefore, auditObjectAfter);
             } catch (Exception e) {
                 logger.error("Error due to save user by changing user login", e);
-                auditService.log(OperationTypes.CHANGE_USER_LOGIN, AuditEventTypes.SAVING_ERROR,
+                auditService.log(operation, AuditEventTypes.SAVING_ERROR,
                                 auditObjectBefore, auditObjectBeforeSave, e.getMessage());
             }
         } else {
             String error = bindingErrorsToString(bindingResult);
             logger.warn("Validation error due to save user by changing user login: {}", error);
-            auditService.log(OperationTypes.CHANGE_USER_LOGIN, AuditEventTypes.VALIDATION_ERROR, changeLogin.toString(), null, error);
+            auditService.log(operation, AuditEventTypes.VALIDATION_ERROR, changeLogin.toString(), null, error);
         }
 
         injectUser(model);
@@ -125,6 +132,13 @@ public class UserController extends BaseController {
     public String changePassword(@ModelAttribute("changePassword") ChangePasswordDTO changePassword, Model model,
                     HttpServletRequest request, BindingResult bindingResult) {
 
+        OperationTypes operation = OperationTypes.CHANGE_USER_PASSWORD;
+
+        boolean editable = isEditableUser(changePassword.getId(), operation);
+        if (!editable) {
+            return REDIRECT_USERS;
+        }
+
         userValidator.validatePassword(changePassword.getPass(), bindingResult);
         if (!bindingResult.hasErrors() && !DEFAULT_PASSWORD_STUB.equals(changePassword.getPass())) {
             UserEntity userEntity = userService.findById(changePassword.getId());
@@ -136,16 +150,16 @@ public class UserController extends BaseController {
             try {
                 userEntity = userService.save(userEntity);
                 String auditObjectAfter = userEntity.toString();
-                auditService.log(OperationTypes.CHANGE_USER_PASSWORD, AuditEventTypes.SUCCESSFUL, auditObjectBefore, auditObjectAfter);
+                auditService.log(operation, AuditEventTypes.SUCCESSFUL, auditObjectBefore, auditObjectAfter);
             } catch (Exception e) {
                 logger.error("Error due to save user by changing user password", e);
-                auditService.log(OperationTypes.CHANGE_USER_PASSWORD, AuditEventTypes.SAVING_ERROR,
+                auditService.log(operation, AuditEventTypes.SAVING_ERROR,
                                 auditObjectBefore, auditObjectBeforeSave, e.getMessage());
             }
         } else {
             String error = bindingErrorsToString(bindingResult);
             logger.warn("Validation error due to save user by changing user password: {}", error);
-            auditService.log(OperationTypes.CHANGE_USER_PASSWORD, AuditEventTypes.VALIDATION_ERROR, changePassword.toString(), null, error);
+            auditService.log(operation, AuditEventTypes.VALIDATION_ERROR, changePassword.toString(), null, error);
         }
 
         injectUser(model);
@@ -162,6 +176,13 @@ public class UserController extends BaseController {
     public String changeDisplayName(@ModelAttribute("changeDisplayName") ChangeDisplayNameDTO changeDisplayName, Model model,
                     HttpServletRequest request, BindingResult bindingResult) {
 
+        OperationTypes operation = OperationTypes.CHANGE_USER_DISPLAY_NAME;
+
+        boolean editable = isEditableUser(changeDisplayName.getId(), operation);
+        if (!editable) {
+            return REDIRECT_USERS;
+        }
+
         userValidator.validateDisplayName(changeDisplayName.getDisplayName(), bindingResult);
         if (!bindingResult.hasErrors()) {
             UserEntity userEntity = userService.findById(changeDisplayName.getId());
@@ -171,16 +192,15 @@ public class UserController extends BaseController {
             try {
                 userEntity = userService.save(userEntity);
                 String auditObjectAfter = userEntity.toString();
-                auditService.log(OperationTypes.CHANGE_USER_DISPLAY_NAME, AuditEventTypes.SUCCESSFUL, auditObjectBefore, auditObjectAfter);
+                auditService.log(operation, AuditEventTypes.SUCCESSFUL, auditObjectBefore, auditObjectAfter);
             } catch (Exception e) {
                 logger.error("Error due to save user by changing user display name", e);
-                auditService.log(OperationTypes.CHANGE_USER_DISPLAY_NAME, AuditEventTypes.SAVING_ERROR,
-                                auditObjectBefore, auditObjectBeforeSave, e.getMessage());
+                auditService.log(operation, AuditEventTypes.SAVING_ERROR, auditObjectBefore, auditObjectBeforeSave, e.getMessage());
             }
         } else {
             String error = bindingErrorsToString(bindingResult);
             logger.warn("Validation error due to save user by changing user display name: {}", error);
-            auditService.log(OperationTypes.CHANGE_USER_DISPLAY_NAME, AuditEventTypes.VALIDATION_ERROR, changeDisplayName.toString(), null, error);
+            auditService.log(operation, AuditEventTypes.VALIDATION_ERROR, changeDisplayName.toString(), null, error);
         }
 
         injectUser(model);
@@ -197,6 +217,13 @@ public class UserController extends BaseController {
     public String changeEmail(@ModelAttribute("changeEmail") ChangeEmailDTO changeEmail, Model model,
                     HttpServletRequest request, BindingResult bindingResult) {
 
+        OperationTypes operation = OperationTypes.CHANGE_USER_EMAIL;
+
+        boolean editable = isEditableUser(changeEmail.getId(), operation);
+        if (!editable) {
+            return REDIRECT_USERS;
+        }
+
         userValidator.validateEmail(changeEmail.getEmail(), bindingResult);
         if (!bindingResult.hasErrors()) {
             UserEntity userEntity = userService.findById(changeEmail.getId());
@@ -206,16 +233,15 @@ public class UserController extends BaseController {
             try {
                 userEntity = userService.save(userEntity);
                 String auditObjectAfter = userEntity.toString();
-                auditService.log(OperationTypes.CHANGE_USER_EMAIL, AuditEventTypes.SUCCESSFUL, auditObjectBefore, auditObjectAfter);
+                auditService.log(operation, AuditEventTypes.SUCCESSFUL, auditObjectBefore, auditObjectAfter);
             } catch (Exception e) {
                 logger.error("Error due to save user by changing user email", e);
-                auditService.log(OperationTypes.CHANGE_USER_EMAIL, AuditEventTypes.SAVING_ERROR,
-                            auditObjectBefore, auditObjectBeforeSave, e.getMessage());
+                auditService.log(operation, AuditEventTypes.SAVING_ERROR, auditObjectBefore, auditObjectBeforeSave, e.getMessage());
             }
         } else {
             String error = bindingErrorsToString(bindingResult);
             logger.warn("Validation error due to save user by changing user email: {}", error);
-            auditService.log(OperationTypes.CHANGE_USER_EMAIL, AuditEventTypes.VALIDATION_ERROR, changeEmail.toString(), null, error);
+            auditService.log(operation, AuditEventTypes.VALIDATION_ERROR, changeEmail.toString(), null, error);
         }
 
         injectUser(model);
@@ -232,6 +258,13 @@ public class UserController extends BaseController {
     public String changeRoles(@ModelAttribute("changeRoles") ChangeRolesDTO changeRoles, Model model,
                     HttpServletRequest request, BindingResult bindingResult) {
 
+        OperationTypes operation = OperationTypes.CHANGE_USER_ROLES;
+
+        boolean editable = isEditableUser(changeRoles.getId(), operation);
+        if (!editable) {
+            return REDIRECT_USERS;
+        }
+
         validateSelectedRoles(changeRoles, bindingResult);
         if (!bindingResult.hasErrors()) {
             UserEntity userEntity = userService.findById(changeRoles.getId());
@@ -241,16 +274,16 @@ public class UserController extends BaseController {
             try {
                 userEntity = userService.save(userEntity);
                 String auditObjectAfter = userEntity.toString();
-                auditService.log(OperationTypes.CHANGE_USER_ROLES, AuditEventTypes.SUCCESSFUL, auditObjectBefore, auditObjectAfter);
+                auditService.log(operation, AuditEventTypes.SUCCESSFUL, auditObjectBefore, auditObjectAfter);
             } catch (Exception e) {
                 logger.error("Error due to save user by changing user roles", e);
-                auditService.log(OperationTypes.CHANGE_USER_ROLES, AuditEventTypes.SAVING_ERROR,
+                auditService.log(operation, AuditEventTypes.SAVING_ERROR,
                             auditObjectBefore, auditObjectBeforeSave, e.getMessage());
             }
         } else {
             String error = bindingErrorsToString(bindingResult);
             logger.warn("Validation error due to save user by changing user roles: {}", error);
-            auditService.log(OperationTypes.CHANGE_USER_ROLES, AuditEventTypes.VALIDATION_ERROR, changeRoles.toString(), null, error);
+            auditService.log(operation, AuditEventTypes.VALIDATION_ERROR, changeRoles.toString(), null, error);
         }
 
         injectUser(model);
@@ -261,6 +294,26 @@ public class UserController extends BaseController {
         injectChangeEmailDTO(model, userEntity);
         injectChangeRolesData(model, userEntity);
         return USERS_EDIT;
+    }
+
+    private boolean isEditableUser(Long id, OperationTypes operation) {
+        UserEntity userEntity = userService.findById(id);
+
+        if (userEntity == null) {
+            String message = "Attempt to changing user login for non-existing user with id '" + id + "'";
+            logger.error(message);
+            auditService.log(operation, AuditEventTypes.SUSPICIOUS_ACTIVITY, null, String.valueOf(id), message);
+            return false;
+        }
+
+        if (userEntity.isSystem()) {
+            String message = "Attempt to change system user '" + userEntity.getLogin() + "'";
+            logger.error(message);
+            auditService.log(operation, AuditEventTypes.SUSPICIOUS_ACTIVITY, userEntity.toString(), String.valueOf(id), message);
+            return false;
+        }
+
+        return true;
     }
 
     @PostMapping("/confirm")
@@ -310,7 +363,6 @@ public class UserController extends BaseController {
 
         return REDIRECT_USERS;
     }
-
 
     private UserEntity injectUserEntity(Model model, Long id) {
         UserEntity user = userService.findById(id);

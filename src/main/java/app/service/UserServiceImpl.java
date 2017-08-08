@@ -52,6 +52,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public List<UserEntity> findAllNonSystem() {
+        return repository.findBySystemIsFalse();
+    }
+
+    @Override
     public UserEntity findById(Long id) {
         return repository.findOne(id);
     }
