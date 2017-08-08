@@ -66,14 +66,19 @@
             "description": "Max amount of login attempt before delay is over, then IP-Ban"
         },
         {
-            "name": "security.ddos.max-daily-requests-before-ipban",
+            "name": "security.ddos.max-minutely-requests-before-ipban",
             "type": "java.lang.String",
-            "description": "Max amount of requests per day before IP-Ban"
+            "description": "Max amount of requests per minute before IP-Ban"
         },
         {
             "name": "security.ddos.max-hourly-requests-before-ipban",
             "type": "java.lang.String",
             "description": "Max amount of requests per hour before IP-Ban"
+        },
+        {
+            "name": "security.ddos.max-daily-requests-before-ipban",
+            "type": "java.lang.String",
+            "description": "Max amount of requests per day before IP-Ban"
         }
     ]
 }

@@ -21,6 +21,8 @@ public class DDoSDetector {
 
     private static final String IPBAN_REASON = "Requests quota exceed (DDoS)";
 
+    @Value("${security.ddos.max-minutely-requests-before-ipban}")
+    private int maxMinutelyRequestsBeforeIPBan;
     @Value("${security.ddos.max-hourly-requests-before-ipban}")
     private int maxHourlyRequestsBeforeIPBan;
     @Value("${security.ddos.max-daily-requests-before-ipban}")
@@ -33,10 +35,12 @@ public class DDoSDetector {
     @Autowired
     private UserService userService;
 
+    private Map<String, Integer> minutelyRequestCounters;
     private Map<String, Integer> hourlyRequestCounters;
     private Map<String, Integer> dailyRequestCounters;
 
     public DDoSDetector() {
+        minutelyRequestCounters = new HashMap<>();
         hourlyRequestCounters = new HashMap<>();
         dailyRequestCounters = new HashMap<>();
     }
@@ -53,6 +57,7 @@ public class DDoSDetector {
     private void banIPs(List<String> ips) {
         for (String ip : ips) {
             banIP(ip);
+            minutelyRequestCounters.remove(ip);
             hourlyRequestCounters.remove(ip);
             dailyRequestCounters.remove(ip);
         }
@@ -69,8 +74,15 @@ public class DDoSDetector {
     }
 
     private boolean increaseAndCheck(String ip) {
+        int minute = createOrIncreaseAndGet(minutelyRequestCounters, ip);
         int hourly = createOrIncreaseAndGet(hourlyRequestCounters, ip);
         int daily = createOrIncreaseAndGet(dailyRequestCounters, ip);
+
+        if (minute > maxMinutelyRequestsBeforeIPBan) {
+            banIP(ip);;
+            minutelyRequestCounters.remove(ip);
+            return false;
+        }
 
         if (hourly > maxHourlyRequestsBeforeIPBan) {
             banIP(ip);
@@ -101,17 +113,25 @@ public class DDoSDetector {
         return value;
     }
 
+    @Scheduled(cron = "0 * * * * *") // Minutely
+    private void minutelyCleanup() {
+        doCleanup("Minutely", minutelyRequestCounters);
+    }
+
     @Scheduled(cron = "0 0 * * * *") // Hourly
     private void hourlyCleanup() {
-        Optional<Integer> maxHits = hourlyRequestCounters.values().stream().max((a, b) -> a - b);
-        logger.info("Hourly cleanup: max hits was: {}", maxHits.isPresent() ? maxHits.get() : 0);
-        hourlyRequestCounters.clear();
+        doCleanup("Hourly", hourlyRequestCounters);
     }
 
     @Scheduled(cron = "0 0 0 * * *") // Daily
     private void dailyCleanup() {
-        Optional<Integer> maxHits = dailyRequestCounters.values().stream().max((a, b) -> a - b);
-        logger.info("Daily cleanup: max hits was: {}", maxHits.isPresent() ? maxHits.get() : 0);
-        hourlyRequestCounters.clear();
+        doCleanup("Daily", dailyRequestCounters);
+    }
+
+    private void doCleanup(String cleanupName, Map<String, Integer> counters) {
+        Optional<Integer> maxHitsOptional = counters.values().stream().max((a, b) -> a - b);
+        int maxHits = maxHitsOptional.isPresent() ? maxHitsOptional.get() : 0;
+        logger.info("{} cleanup: max hits was: {}", cleanupName, maxHits);
+        counters.clear();
     }
 }
