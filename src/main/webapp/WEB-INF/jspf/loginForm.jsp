@@ -24,11 +24,5 @@
                 <form:errors path="password" cssClass="error-text" />
             </td>
         </tr>
-        <tr>
-            <td colspan="2">
-                <form:checkbox path="rememberMe" /> Remember me on this computer.
-                <form:errors path="rememberMe" cssClass="error-text" />
-            </td>
-        </tr>
     </table>
 </form:form>
