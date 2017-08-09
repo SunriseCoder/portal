@@ -172,6 +172,7 @@ public class SecurityChecker {
 
         addRule(rules, "/admin/cache",              "/admin",       Permissions.ADMIN_CACHE_VIEW,       OperationTypes.ACCESS_ADMIN_CACHE);
         addRule(rules, "/admin/cache/ip-ban",       "/admin",       Permissions.ADMIN_CACHE_REFRESH,    OperationTypes.REFRESH_ADMIN_CACHE);
+        addRule(rules, "/admin/cache/file-list",    "/admin",       Permissions.ADMIN_CACHE_REFRESH,    OperationTypes.REFRESH_ADMIN_CACHE);
 
         addRule(rules, "/error",                    "/",            null,                               OperationTypes.ACCESS_PAGE_ERROR);
 

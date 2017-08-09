@@ -21,6 +21,11 @@
             "description": "Relative path to upload folder"
         },
         {
+            "name": "files.rescan",
+            "type": "java.lang.Integer",
+            "description": "Interval of filesystem rescan in seconds"
+        },
+        {
             "name": "deploy.tomcat.url",
             "type": "java.lang.String",
             "description": "Url for deploy using tomcat7-maven-plugin"

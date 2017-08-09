@@ -28,6 +28,7 @@ public class FileRepositoryImpl implements FileRepository {
         File folderOnDisk = new File(unsortedFilesUrl);
         FileUtils.checkDirectoryExists(folderOnDisk);
         FolderEntity virtualTree = FileUtils.getVirtualTreeRecursively(folderOnDisk);
+        virtualTree.countChilds();
         return virtualTree;
     }
 

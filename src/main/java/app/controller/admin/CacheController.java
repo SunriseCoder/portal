@@ -13,9 +13,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import app.controller.BaseController;
 import app.dto.CacheDTO;
+import app.service.FileService;
 import app.service.admin.IPBanServiceImpl;
 
 @Controller
@@ -25,7 +27,10 @@ public class CacheController extends BaseController {
     private static final Logger logger = LogManager.getLogger(CacheController.class.getName());
 
     private static final String ADMIN_CACHE_LIST = "admin/cache/list";
+    private static final String REDIRECT_CACHE_LIST = "redirect:/admin/cache";
 
+    @Autowired
+    private FileService fileService;
     @Autowired
     private IPBanServiceImpl ipBanService;
 
@@ -35,16 +40,24 @@ public class CacheController extends BaseController {
 
         List<CacheDTO> cacheList = new ArrayList<>();
         addIpBanCache(cacheList);
+        addFileListCache(cacheList);
         model.addAttribute("cacheList", cacheList);
 
         return ADMIN_CACHE_LIST;
     }
 
     @PostMapping("/ip-ban")
-    public String refreshCache(HttpServletRequest request, Model model) {
+    public String refreshIPBanCache(HttpServletRequest request, RedirectAttributes redirectAttributes) {
         ipBanService.updateCache();
-        model.addAttribute("message", "IP-Ban cache has been refreshed");
-        return cacheList(request, model);
+        redirectAttributes.addFlashAttribute("message", "IP-Ban cache has been refreshed");
+        return REDIRECT_CACHE_LIST;
+    }
+
+    @PostMapping("/file-list")
+    public String refreshFileListCache(HttpServletRequest request, RedirectAttributes redirectAttributes) {
+        fileService.forceRescan();
+        redirectAttributes.addFlashAttribute("message", "FileList cache has been refreshed");
+        return REDIRECT_CACHE_LIST;
     }
 
     private void addIpBanCache(List<CacheDTO> cacheList) {
@@ -54,5 +67,14 @@ public class CacheController extends BaseController {
         ipBanCache.setSize(ipBanService.getSize());
         ipBanCache.setLastUpdate(ipBanService.getLastUpdate());
         cacheList.add(ipBanCache);
+    }
+
+    private void addFileListCache(List<CacheDTO> cacheList) {
+        CacheDTO fileListCache = new CacheDTO();
+        fileListCache.setName("FileList");
+        fileListCache.setUrl("file-list");
+        fileListCache.setSize(fileService.getFileListSize());
+        fileListCache.setLastUpdate(fileService.getLastUpdate());
+        cacheList.add(fileListCache);
     }
 }

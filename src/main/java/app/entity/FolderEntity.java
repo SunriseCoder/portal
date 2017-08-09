@@ -8,6 +8,8 @@ public class FolderEntity {
     private List<FolderEntity> folders;
     private List<FileEntity> files;
 
+    private int size;
+
     public FolderEntity() {
         folders = new ArrayList<>();
         files = new ArrayList<>();
@@ -35,5 +37,19 @@ public class FolderEntity {
 
     public void addFile(FileEntity file) {
         files.add(file);
+    }
+
+    public int getSize() {
+        return size;
+    }
+
+    public void setSize(int size) {
+        this.size = size;
+    }
+
+    public int countChilds() {
+        int size = folders.stream().mapToInt(folder -> folder.countChilds()).sum();
+        size += files.size() + 1 + size;
+        return this.size = size;
     }
 }
