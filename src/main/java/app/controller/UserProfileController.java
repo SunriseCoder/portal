@@ -16,7 +16,7 @@ import app.entity.UserEntity;
 import app.enums.AuditEventTypes;
 import app.enums.OperationTypes;
 import app.service.UserService;
-import app.util.StringUtils;
+import app.util.SafeUtils;
 import app.validator.UserEntityValidator;
 
 @Controller
@@ -72,12 +72,12 @@ public class UserProfileController extends BaseController {
         }
 
         // DisplayName
-        if (!StringUtils.safeEquals(user.getDisplayName(), profile.getDisplayName())) {
+        if (!SafeUtils.safeEquals(user.getDisplayName(), profile.getDisplayName())) {
             userValidator.validateDisplayName(profile.getDisplayName(), bindingResult);
         }
 
         // Email
-        if (!StringUtils.safeEquals(user.getEmail(), profile.getEmail())) {
+        if (!SafeUtils.safeEquals(user.getEmail(), profile.getEmail())) {
             userValidator.validateEmail(profile.getEmail(), bindingResult);
         }
 

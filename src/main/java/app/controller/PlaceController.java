@@ -21,6 +21,7 @@ import app.entity.PlaceEntity;
 import app.enums.AuditEventTypes;
 import app.enums.OperationTypes;
 import app.service.PlaceService;
+import app.util.SafeUtils;
 import app.validator.PlaceEntityValidator;
 
 @Controller
@@ -64,10 +65,18 @@ public class PlaceController extends BaseController {
     public String savePlace(@ModelAttribute("place") PlaceDTO place, Model model,
                     BindingResult bindingResult, RedirectAttributes redirectAttributes) {
 
+        Long id = place.getId();
+        PlaceEntity storedEntity = id == null ? null : placeService.findById(id);
+        if (storedEntity != null && storedEntity.isSystem()) {
+            Long storedParentId = storedEntity.getParent() == null ? 0 : storedEntity.getParent().getId();
+            Long newParentId = place.getParent() == null ? 0 : place.getParent().getId();
+            if (!SafeUtils.safeEquals(storedParentId, newParentId)) {
+                bindingResult.reject("parent", "place.parent.systemPlace");
+            }
+        }
+
         validator.validate(place, bindingResult);
         if (bindingResult.hasErrors()) {
-            Long id = place.getId();
-            PlaceEntity storedEntity = id == null ? null : placeService.findById(id);
             String objectBefore = storedEntity == null ? null : storedEntity.toString();
             auditService.log(OperationTypes.CHANGE_PLACE_EDIT, AuditEventTypes.VALIDATION_ERROR,
                             objectBefore, place.toString(), bindingErrorsToString(bindingResult));
@@ -76,6 +85,7 @@ public class PlaceController extends BaseController {
         }
 
         try {
+
             placeService.save(place);
             redirectAttributes.addFlashAttribute("message", "Place has been saved successfully");
         } catch (Exception e) {
@@ -90,10 +100,17 @@ public class PlaceController extends BaseController {
 
     @PostMapping("/delete")
     public String deletePlace(@RequestParam("id") Long id, Model model, RedirectAttributes redirectAttributes) {
-        if (placeService.hasChildren(id)) {
-            redirectAttributes.addFlashAttribute("message", "Cannot delte place, because it has children places");
+        PlaceEntity place = placeService.findById(id);
+        if (place != null && place.isSystem()) {
+            redirectAttributes.addFlashAttribute("message", "Cannot delete place, because it is a system place");
             return REDIRECT_PLACES;
         }
+
+        if (placeService.hasChildren(id)) {
+            redirectAttributes.addFlashAttribute("message", "Cannot delete place, because it has children places");
+            return REDIRECT_PLACES;
+        }
+
         try {
             PlaceEntity entity = placeService.delete(id);
             auditService.log(OperationTypes.CHANGE_PLACE_DELETE, AuditEventTypes.SUCCESSFUL, entity.toString(), null);

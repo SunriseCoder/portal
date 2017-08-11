@@ -35,10 +35,6 @@ public class StringUtils {
         return safeUrl;
     }
 
-    public static boolean safeEquals(String s1, String s2) {
-        return s1 == null ? s1 == s2 : s1.equals(s2);
-    }
-
     /**
      * Format message by passing arguments in placeholders
      *

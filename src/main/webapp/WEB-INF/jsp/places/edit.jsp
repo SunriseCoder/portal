@@ -52,7 +52,7 @@
                     <tr>
                         <td>Parent:</td>
                         <td>
-                            <form:select path="parent.id">
+                            <form:select path="parent.id" disabled="${place.system}">
                                 <form:option value="0">&lt; Root &gt;</form:option>
                                 <form:options items="${allPlaces}" itemValue="id" itemLabel="path" />
                             </form:select>

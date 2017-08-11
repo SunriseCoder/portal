@@ -27,7 +27,7 @@ import app.enums.AuditEventTypes;
 import app.enums.OperationTypes;
 import app.enums.Permissions;
 import app.enums.Users;
-import app.util.StringUtils;
+import app.util.SafeUtils;
 
 @Component
 public class UserServiceImpl implements UserService {
@@ -143,7 +143,7 @@ public class UserServiceImpl implements UserService {
             encryptPass(user);
         } else {
             UserEntity storedUser = repository.getOne(user.getId());
-            if (!StringUtils.safeEquals(user.getPass(), storedUser.getPass())) {
+            if (!SafeUtils.safeEquals(user.getPass(), storedUser.getPass())) {
                 // For existing user if password was changed, updating it
                 encryptPass(user);
             }
@@ -156,11 +156,11 @@ public class UserServiceImpl implements UserService {
     public UserEntity updateLoggedUser(UserProfileDTO update) {
         UserEntity user = getLoggedInUser();
 
-        if (!StringUtils.safeEquals(user.getDisplayName(), update.getDisplayName())) {
+        if (!SafeUtils.safeEquals(user.getDisplayName(), update.getDisplayName())) {
             user.setDisplayName(update.getDisplayName());
         }
 
-        if (!StringUtils.safeEquals(user.getEmail(), update.getEmail())) {
+        if (!SafeUtils.safeEquals(user.getEmail(), update.getEmail())) {
             user.setEmail(update.getEmail());
         }
 

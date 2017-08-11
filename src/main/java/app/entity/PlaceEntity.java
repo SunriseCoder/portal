@@ -16,6 +16,7 @@ public class PlaceEntity {
     @GeneratedValue
     private Long id;
     private String name;
+    private boolean system;
 
     @ManyToOne
     private PlaceEntity parent;
@@ -54,6 +55,14 @@ public class PlaceEntity {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public boolean isSystem() {
+        return system;
+    }
+
+    public void setSystem(boolean system) {
+        this.system = system;
     }
 
     public List<PlaceEntity> getChildren() {

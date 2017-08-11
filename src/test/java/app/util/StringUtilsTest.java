@@ -1,8 +1,6 @@
 package app.util;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
@@ -62,41 +60,6 @@ public class StringUtilsTest {
         String filePath = "..\\file.zip";
         String clean = StringUtils.cleanFilePath(filePath);
         assertEquals("file.zip", clean);
-    }
-
-    @Test
-    public void testSafeEqualsOk() {
-        String s1 = "123";
-        String s2 = "123";
-        assertTrue(StringUtils.safeEquals(s1, s2));
-    }
-
-    @Test
-    public void testSafeEqualsDifferent() {
-        String s1 = "12";
-        String s2 = "123";
-        assertFalse(StringUtils.safeEquals(s1, s2));
-    }
-
-    @Test
-    public void testSafeEqualsDiffS1IsNull() {
-        String s1 = null;
-        String s2 = "123";
-        assertFalse(StringUtils.safeEquals(s1, s2));
-    }
-
-    @Test
-    public void testSafeEqualsOkBothNull() {
-        String s1 = null;
-        String s2 = null;
-        assertTrue(StringUtils.safeEquals(s1, s2));
-    }
-
-    @Test
-    public void testSafeEqualsDiffS2IsNull() {
-        String s1 = "123";
-        String s2 = null;
-        assertFalse(StringUtils.safeEquals(s1, s2));
     }
 
     @Test

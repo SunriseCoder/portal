@@ -21,7 +21,7 @@
         });
     </script>
 </head>
-<body>
+<body onload="document.forms.changePassForm.pass.focus()">
 
     <jsp:include page="/WEB-INF/jspf/header.jsp" />
 
@@ -37,12 +37,12 @@
                 <p class="success">${message}</p>
             </c:if>
 
-            <form:form action="${appRoot}/change-pass" method="post" modelAttribute="changePassDTO">
+            <form:form id="changePassForm" action="${appRoot}/change-pass" method="post" modelAttribute="changePassDTO">
                 <table class="formTable">
                     <tr>
                         <td>Password:</td>
                         <td>
-                            <form:input path="pass" type="password" maxlength="64" /><br />
+                            <form:input id="pass" path="pass" type="password" maxlength="64" /><br />
                         </td>
                         <td>
                             <form:errors path="pass" cssClass="error-text" />

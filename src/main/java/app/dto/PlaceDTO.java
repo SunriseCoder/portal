@@ -11,6 +11,7 @@ import app.entity.PlaceEntity;
 public class PlaceDTO {
     private Long id;
     private String name;
+    private boolean system;
     private PlaceDTO parent;
     private List<PlaceDTO> children;
     private String path;
@@ -25,6 +26,7 @@ public class PlaceDTO {
         if (entity.getChildren() == null) {
             return;
         }
+        this.system = entity.isSystem();
 
         PlaceEntity parentEntity = entity.getParent();
         if (parentEntity != null) {
@@ -55,6 +57,14 @@ public class PlaceDTO {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public boolean isSystem() {
+        return system;
+    }
+
+    public void setSystem(boolean system) {
+        this.system = system;
     }
 
     public PlaceDTO getParent() {
