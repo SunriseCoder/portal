@@ -37,6 +37,10 @@
                     <li><a href="${adminRoot}/cache">Cache</a></li>
                 </c:if>
 
+                <c:if test="${not empty user && user.hasPermission('ADMIN_EXTJOBS_VIEW')}">
+                    <li><a href="${adminRoot}/ext-jobs">External Jobs</a></li>
+                </c:if>
+
             </ul>
         </div>
     </div>

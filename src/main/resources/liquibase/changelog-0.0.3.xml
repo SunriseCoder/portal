@@ -323,6 +323,18 @@
             <column name="comment" value="Places administration - add/edit/delete" />
         </insert>
 
+        <insert tableName="e_permissions">
+            <column name="id" value="27" />
+            <column name="name" value="ADMIN_EXTJOBS_VIEW" />
+            <column name="comment" value="External jobs view-only access" />
+        </insert>
+
+        <insert tableName="e_permissions">
+            <column name="id" value="28" />
+            <column name="name" value="ADMIN_EXTJOBS_KILL" />
+            <column name="comment" value="External jobs permission to kill jobs" />
+        </insert>
+
     </changeSet>
 
     <changeSet id="0.0.3-06" author="SunriseCoder">
@@ -530,6 +542,18 @@
         <insert tableName="zz_roles_permissions">
             <column name="role_id" value="2" />
             <column name="permission_id" value="26" />
+        </insert>
+
+        <!-- Grant Permission ADMIN_EXTJOBS_VIEW to Role Admin -->
+        <insert tableName="zz_roles_permissions">
+            <column name="role_id" value="2" />
+            <column name="permission_id" value="27" />
+        </insert>
+
+        <!-- Grant Permission ADMIN_EXTJOBS_KILL to Role Admin -->
+        <insert tableName="zz_roles_permissions">
+            <column name="role_id" value="2" />
+            <column name="permission_id" value="28" />
         </insert>
 
         <!-- Grant Permission ADMIN_PAGE to Role Moder -->
@@ -1189,6 +1213,20 @@
             <column name="name" value="ACCESS_USER_PASSWORD" />
             <column name="comment" value="Access page to change own password" />
             <column name="severity" valueNumeric="1" />
+        </insert>
+
+        <insert tableName="e_operation_types">
+            <column name="id" value="50" />
+            <column name="name" value="ACCESS_ADMIN_EXTJOBS" />
+            <column name="comment" value="Access external jobs status information" />
+            <column name="severity" valueNumeric="2" />
+        </insert>
+
+        <insert tableName="e_operation_types">
+            <column name="id" value="51" />
+            <column name="name" value="CHANGE_EXTJOBS_KILL" />
+            <column name="comment" value="Access to kill external jobs" />
+            <column name="severity" valueNumeric="3" />
         </insert>
 
     </changeSet>

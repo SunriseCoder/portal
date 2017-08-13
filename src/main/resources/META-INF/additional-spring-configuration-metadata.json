@@ -51,6 +51,11 @@
             "description": "Relative path where application logs are stored"
         },
         {
+            "name": "logging.ext-jobs.folder",
+            "type": "java.lang.String",
+            "description": "Relative path where external job logs are stored"
+        },
+        {
             "name": "statistic.non-loggable-paths",
             "type": "java.lang.String",
             "description": "List of url paths, which call should not be logged"
@@ -84,6 +89,11 @@
             "name": "security.ddos.max-daily-requests-before-ipban",
             "type": "java.lang.String",
             "description": "Max amount of requests per day before IP-Ban"
+        },
+        {
+            "name": "backups.external-tasks.daily",
+            "type": "java.lang.String",
+            "description": "Comma-separated list of external backup scripts, which should be executed daily"
         }
     ]
 }
