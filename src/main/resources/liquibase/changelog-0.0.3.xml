@@ -61,39 +61,6 @@
             <column name="system" valueBoolean="false" />
         </insert>
 
-        <!-- TODO Delete it before merge to develop branch -->
-        <insert tableName="users">
-            <column name="id" value="4" />
-            <column name="login" value="moder" />
-            <column name="pass" value="$2a$10$hHBkdPDV.oI6pXhmbLYdJucXyMl3FPWL3cHzSwm/0ieSwamSQ7fT6" /><!-- "password" -->
-            <column name="display_name" value="Moder" />
-            <column name="email" value="ch1@ange.it" />
-            <column name="should_change_password" valueBoolean="true" />
-            <column name="system" valueBoolean="false" />
-        </insert>
-
-        <!-- TODO Delete it before merge to develop branch -->
-        <insert tableName="users">
-            <column name="id" value="5" />
-            <column name="login" value="user" />
-            <column name="pass" value="$2a$10$hHBkdPDV.oI6pXhmbLYdJucXyMl3FPWL3cHzSwm/0ieSwamSQ7fT6" /><!-- "password" -->
-            <column name="display_name" value="User" />
-            <column name="email" value="ch2@ange.it" />
-            <column name="should_change_password" valueBoolean="false" />
-            <column name="system" valueBoolean="false" />
-        </insert>
-
-        <!-- TODO Delete it before merge to develop branch -->
-        <insert tableName="users">
-            <column name="id" value="6" />
-            <column name="login" value="editor" />
-            <column name="pass" value="$2a$10$hHBkdPDV.oI6pXhmbLYdJucXyMl3FPWL3cHzSwm/0ieSwamSQ7fT6" /><!-- "password" -->
-            <column name="display_name" value="Editor" />
-            <column name="email" value="ch3@ange.it" />
-            <column name="should_change_password" valueBoolean="false" />
-            <column name="system" valueBoolean="false" />
-        </insert>
-
     </changeSet>
 
     <changeSet id="0.0.3-02" author="SunriseCoder">
@@ -694,18 +661,6 @@
             <column name="permission_id" value="26" />
         </insert>
 
-        <!-- TODO - cut off - Grant Permission UPLOAD_FILES to Role User -->
-        <insert tableName="zz_roles_permissions">
-            <column name="role_id" value="5" />
-            <column name="permission_id" value="2" />
-        </insert>
-
-        <!-- TODO - cut off - Grant Permission PAGES_VIEW to Role User -->
-        <insert tableName="zz_roles_permissions">
-            <column name="role_id" value="5" />
-            <column name="permission_id" value="9" />
-        </insert>
-
     </changeSet>
 
     <changeSet id="0.0.3-08" author="SunriseCoder">
@@ -731,27 +686,6 @@
         <insert tableName="zz_users_roles">
             <column name="user_id" value="2" />
             <column name="role_id" value="1" />
-        </insert>
-
-        <!-- Grant Role Moder to User Moder -->
-        <!-- TODO Cut off -->
-        <insert tableName="zz_users_roles">
-            <column name="user_id" value="4" />
-            <column name="role_id" value="3" />
-        </insert>
-
-        <!-- TODO Delete it before merge to develop branch -->
-        <!-- Grant Role User to User User -->
-        <insert tableName="zz_users_roles">
-            <column name="user_id" value="5" />
-            <column name="role_id" value="5" />
-        </insert>
-
-        <!-- TODO Delete it before merge to develop branch -->
-        <!-- Grant Role Editor to User Editor -->
-        <insert tableName="zz_users_roles">
-            <column name="user_id" value="6" />
-            <column name="role_id" value="4" />
         </insert>
 
     </changeSet>
