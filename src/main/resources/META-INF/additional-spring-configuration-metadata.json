@@ -6,9 +6,14 @@
             "description": "Name of the development/test environment to show on UI"
         },
         {
-            "name": "files.storage",
+            "name": "files.storage.path",
             "type": "java.lang.String",
             "description": "Relative path to root of indexed file storage"
+        },
+        {
+            "name": "files.storage.max-files-in-folder",
+            "type": "java.lang.String",
+            "description": "Maximal amount of files in folder in file storage"
         },
         {
             "name": "files.filesystem",

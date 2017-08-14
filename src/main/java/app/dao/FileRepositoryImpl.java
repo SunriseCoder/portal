@@ -16,8 +16,6 @@ import app.util.HttpUtils;
 
 @ManagedBean
 public class FileRepositoryImpl implements FileRepository {
-    @Value("${files.storage}")
-    private String storageUrl;
     @Value("${files.filesystem}")
     private String unsortedFilesUrl;
     @Value("${files.upload}")

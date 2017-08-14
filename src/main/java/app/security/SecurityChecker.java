@@ -121,6 +121,8 @@ public class SecurityChecker {
         //             URL                          Redirect           Permission                          OperationType
         addRule(rules, "/",                         null,              null,                               OperationTypes.ACCESS_PAGE_MAIN);
         addRule(rules, "/files",                    "/",               Permissions.PAGES_VIEW,             OperationTypes.ACCESS_PAGE_FILES);
+        // TODO cut off
+        addRule(rules, "/files/create",             "/",               Permissions.PAGES_VIEW,             OperationTypes.ACCESS_PAGE_FILES);
         addRule(rules, "/festivals",                "/",               Permissions.PAGES_VIEW,             OperationTypes.ACCESS_PAGE_FESTIVALS);
         addRule(rules, "/festivals/create",         "/festivals",      Permissions.ADMIN_FESTIVALS_ADD,    OperationTypes.CHANGE_FESTIVAL_ADD);
         addRule(rules, "/festivals/edit",           "/festivals",      Permissions.ADMIN_FESTIVALS_EDIT,   OperationTypes.CHANGE_FESTIVAL_EDIT);
