@@ -6,8 +6,10 @@ import java.io.IOException;
 import java.nio.file.NotDirectoryException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang3.RandomStringUtils;
@@ -32,7 +34,7 @@ public class FileTree {
 
     private FileNode createFile() throws IOException {
         FileNode fileNode = new FileNode(folderForFiles, getUniqueName(folderForFiles.fileSystemPath));
-        folderForFiles.files.add(fileNode);
+        folderForFiles.files.put(fileNode.name, fileNode);
         fileNode.createFile();
         findCandidates();
         return fileNode;
@@ -72,7 +74,7 @@ public class FileTree {
             folders.add(parent);
         }
 
-        for (FolderNode folder : parent.folders) {
+        for (FolderNode folder : parent.folders.values()) {
             findFoldersForFolders(folders, folder);
         }
     }
@@ -93,7 +95,7 @@ public class FileTree {
         File parent = new File(folderForFolders.fileSystemPath);
         File file = new File(parent, getUniqueName(parent.getAbsolutePath()));
         FolderNode folder = new FolderNode(folderForFolders, file);
-        folderForFolders.folders.add(folder);
+        folderForFolders.folders.put(folder.name, folder);
         folder.createFolder();
         findCandidates();
     }
@@ -103,9 +105,20 @@ public class FileTree {
             folders.add(parent);
         }
 
-        for (FolderNode folder : parent.folders) {
+        for (FolderNode folder : parent.folders.values()) {
             findFoldersForFiles(folders, folder);
         }
+    }
+
+    public FileNode getFileNode(String path) {
+        String[] pathElements = path.split("/");
+        FolderNode folder = root;
+        for (int i = 1; i < pathElements.length - 1; i++) {
+            String folderName = pathElements[i];
+            folder = folder.getFolder(folderName);
+        }
+        FileNode fileNode = folder.getFile(pathElements[pathElements.length - 1]);
+        return fileNode;
     }
 
     public static FileTree scan(String path, int maxFilesInFolder) throws FileNotFoundException, NotDirectoryException {
@@ -129,10 +142,10 @@ public class FileTree {
         for (File child : file.listFiles()) {
             if (child.isDirectory()) {
                 FolderNode childFolder = scanRecurisevely(child, folderNode);
-                folderNode.folders.add(childFolder);
+                folderNode.folders.put(childFolder.name, childFolder);
             } else {
                 FileNode childFile = new FileNode(folderNode, child.getName());
-                folderNode.files.add(childFile);
+                folderNode.files.put(childFile.name, childFile);
             }
         }
 
@@ -144,14 +157,24 @@ public class FileTree {
         public String name;
         public int level;
         public String fileSystemPath;
-        public List<FolderNode> folders = new ArrayList<>();
-        public List<FileNode> files = new ArrayList<>();
+        public Map<String, FolderNode> folders = new HashMap<>();
+        public Map<String, FileNode> files = new HashMap<>();
 
         public FolderNode(FolderNode parent, File file) {
             this.parent = parent;
             this.level = parent == null ? 0 : parent.level + 1;
             this.name = file.getName();
             this.fileSystemPath = file.getAbsolutePath();
+        }
+
+        public FolderNode getFolder(String folderName) {
+            FolderNode folder = folders.get(folderName);
+            return folder;
+        }
+
+        public FileNode getFile(String fileName) {
+            FileNode file = files.get(fileName);
+            return file;
         }
 
         public void createFolder() {
@@ -182,6 +205,13 @@ public class FileTree {
 
         private String getParentPath(FolderNode parent) {
             String path = parent == null ? "" : parent.name + "/";
+            return path;
+        }
+
+        public String getAbsolutePath() {
+            File parentFile = new File(parent.fileSystemPath);
+            File file = new File(parentFile, name);
+            String path = file.getAbsolutePath();
             return path;
         }
     }

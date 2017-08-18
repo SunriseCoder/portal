@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import app.controller.rest.BaseRestController.SimpleResult.Status;
 import app.entity.FolderEntity;
@@ -23,7 +24,6 @@ import app.entity.StorageFileEntity;
 import app.entity.UserEntity;
 import app.enums.AuditEventTypes;
 import app.enums.OperationTypes;
-import app.enums.Permissions;
 import app.service.AuditService;
 import app.service.FileService;
 import app.service.FileStorageService;
@@ -76,10 +76,31 @@ public class FileRestController extends BaseRestController {
         try {
             StorageFileEntity placeHolder = fileStorageService.createFilePlaceHolder(request);
             Long id = placeHolder != null ? placeHolder.getId() : null;
+            auditService.log(OperationTypes.CHANGE_FILE_CREATE_PLACEHOLDER, AuditEventTypes.SUCCESSFUL, null, "id = " + id);
             return new SimpleResult(Status.Ok, String.valueOf(id));
         } catch (Exception e) {
             String message = "Error due to create file placeholder";
             logger.error(message, e);
+            auditService.log(OperationTypes.CHANGE_FILE_CREATE_PLACEHOLDER, AuditEventTypes.SAVING_ERROR, null, message, e.getMessage());
+            return new SimpleResult(Status.Error, message);
+        }
+    }
+
+    @PostMapping("upload-chunk")
+    public SimpleResult uploadFileChunk(@RequestParam("chunk") MultipartFile chunk, MultipartHttpServletRequest request) {
+        String filePlaceHolderId = request.getParameter("filePlaceHolderId");
+
+        String auditObject = "filePlaceHolderId=" + filePlaceHolderId;
+        try {
+            int nextChunkId = fileStorageService.uploadFileChunk(chunk, filePlaceHolderId);
+            if (nextChunkId == -1) {
+                auditService.log(OperationTypes.CHANGE_FILE_UPLOAD_CHUNK, AuditEventTypes.SUCCESSFUL, null, auditObject);
+            }
+            return new SimpleResult(Status.Ok, nextChunkId);
+        } catch (Exception e) {
+            String message = "Chunk upload error";
+            logger.error(message, e);
+            auditService.log(OperationTypes.CHANGE_FILE_UPLOAD_CHUNK, AuditEventTypes.SAVING_ERROR, message, auditObject, e.getMessage());
             return new SimpleResult(Status.Error, message);
         }
     }
@@ -91,22 +112,6 @@ public class FileRestController extends BaseRestController {
         UserEntity user = userService.getLoggedInUser();
         String name = user == null ? "" : user.getLogin();
         LogUtils.logUploadRequest(logger, request, name, file);
-
-        if (user == null) {
-            logger.error("Unauthorized user tries to upload file");
-            auditService.log(OperationTypes.CHANGE_FILE_UPLOAD, AuditEventTypes.ACCESS_DENIED);
-            HttpUtils.sendResponseError(response, HttpServletResponse.SC_FORBIDDEN, "You are not authorized.");
-            return;
-        }
-
-        Permissions permssion = Permissions.UPLOAD_FILES;
-        if (!userService.hasPermission(permssion)) {
-            logger.error("User {} tries to upload file, but don't have permission {}", user.getLogin(), permssion);
-            auditService.log(OperationTypes.CHANGE_FILE_UPLOAD, AuditEventTypes.ACCESS_DENIED, user.getLogin());
-            HttpUtils.sendResponseError(response, HttpServletResponse.SC_FORBIDDEN,
-                            "You don't have sufficient permissions to upload files.");
-            return;
-        }
 
         String auditObject = StringUtils.format("File[name={0},size={1}]", file.getName(), file.getSize());
         try {

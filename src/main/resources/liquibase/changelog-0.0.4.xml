@@ -21,11 +21,11 @@
             <column name="size" type="bigint">
                 <constraints nullable="false" />
             </column>
-            <column name="chunk_size" type="bigint">
+            <column name="chunk_size" type="int">
                 <constraints nullable="false" />
             </column>
-            <column name="check_sum" type="blob">
-                <constraints nullable="false" />
+            <column name="check_sum" type="varchar(32)">
+                <constraints nullable="true" />
             </column>
             <column name="path" type="varchar(255)">
                 <constraints unique="true" uniqueConstraintName="ui_storage_files_path" nullable="false" />
@@ -33,7 +33,28 @@
             <column name="completed" type="boolean">
                 <constraints nullable="false" />
             </column>
+            <column name="last_updated" type="datetime">
+                <constraints nullable="false" />
+            </column>
         </createTable>
+
+    </changeSet>
+
+    <changeSet id="0.0.4-02" author="SunriseCoder">
+
+        <insert tableName="e_operation_types">
+            <column name="id" value="52" />
+            <column name="name" value="CHANGE_FILE_CREATE_PLACEHOLDER" />
+            <column name="comment" value="Creating file placeholder as initializing of file upload" />
+            <column name="severity" valueNumeric="0" />
+        </insert>
+
+        <insert tableName="e_operation_types">
+            <column name="id" value="53" />
+            <column name="name" value="CHANGE_FILE_UPLOAD_CHUNK" />
+            <column name="comment" value="Uploading a file chunk as a part of a file" />
+            <column name="severity" valueNumeric="0" />
+        </insert>
 
     </changeSet>
 

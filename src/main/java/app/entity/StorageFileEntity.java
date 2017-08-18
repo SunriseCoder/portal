@@ -1,5 +1,7 @@
 package app.entity;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -21,13 +23,15 @@ public class StorageFileEntity {
     @Column
     private long size;
     @Column
-    private long chunkSize;
-    @Column(columnDefinition = "BLOB")
-    private byte[] checkSum;
+    private int chunkSize;
+    @Column
+    private String checkSum;
     @Column(unique = true)
     private String path;
     @Column
     private boolean completed;
+    @Column
+    private Date lastUpdated;
 
     public Long getId() {
         return id;
@@ -61,19 +65,19 @@ public class StorageFileEntity {
         this.size = size;
     }
 
-    public long getChunkSize() {
+    public int getChunkSize() {
         return chunkSize;
     }
 
-    public void setChunkSize(long chunkSize) {
+    public void setChunkSize(int chunkSize) {
         this.chunkSize = chunkSize;
     }
 
-    public byte[] getCheckSum() {
+    public String getCheckSum() {
         return checkSum;
     }
 
-    public void setCheckSum(byte[] checkSum) {
+    public void setCheckSum(String checkSum) {
         this.checkSum = checkSum;
     }
 
@@ -91,6 +95,14 @@ public class StorageFileEntity {
 
     public void setCompleted(boolean completed) {
         this.completed = completed;
+    }
+
+    public Date getLastUpdated() {
+        return lastUpdated;
+    }
+
+    public void setLastUpdated(Date lastUpdated) {
+        this.lastUpdated = lastUpdated;
     }
 
     @Override

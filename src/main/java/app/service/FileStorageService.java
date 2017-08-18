@@ -1,7 +1,5 @@
 package app.service;
 
-import java.io.IOException;
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Service;
@@ -11,6 +9,7 @@ import app.entity.StorageFileEntity;
 
 @Service
 public interface FileStorageService {
-    StorageFileEntity createFilePlaceHolder(HttpServletRequest request) throws IOException;
+    StorageFileEntity createFilePlaceHolder(HttpServletRequest request) throws Exception;
+    int uploadFileChunk(MultipartFile chunk, String filePlaceHolderId) throws Exception;
     void uploadFile(StorageFileEntity placeHolder, MultipartFile file);
 }

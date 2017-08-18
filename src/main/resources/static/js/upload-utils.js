@@ -19,6 +19,7 @@ var UploadUtils = {
             var files = input.files;
             this._addFilesToTable(table, files);
         } else {
+            // TODO try to use old loader in this case
             alert('Sorry, Your browser does not support workers, file upload is impossible');
         }
     },
@@ -75,25 +76,35 @@ var UploadUtils = {
 
     _updateStatus: function(event) {
         var message = event.data;
+        var id = message.id;
         if (message.type === 'checksum') {
-            // TODO update progress bar with checksum update info ("checksum: XX%")
-            // And color = maybe blue or so
+            var percent = message.percent;
+            var bar = document.getElementById('bar' + id);
+            bar.classList.add('progressChecksumForeground');
+            bar.style = "width: " + percent + "%;";
+            var label = document.getElementById('label' + id);
+            label.innerText = 'Checksum: ' + percent.toFixed(2) + "%";
+            if (percent > 100) {
+                console.log(1);
+            }
         } else if (message.type === 'upload') {
-            // TODO update progress bar with upload update info ("upload: XX%")
-            // And color = maybe green or so
+            var percent = message.percent;
+            var bar = document.getElementById('bar' + id);
+            bar.classList.add('progressUploadForeground');
+            bar.style = "width: " + percent + "%;";
+            var label = document.getElementById('label' + id);
+            label.innerText = 'Upload: ' + percent.toFixed(2) + "%";
         } else if (message.type === 'failed') {
-            UploadUtils._setUploadError(message.id);
+            var label = document.getElementById('label' + id);
+            label.classList.add("errorLabel");
+            label.innerText = "Failed";
         } else if (message.type === 'done') {
-            // TODO change status to done via UploadUtils._setUploadDone(message.id);
+            var label = document.getElementById('label' + id);
+            label.classList.add("doneLabel");
+            label.innerText = "Done";
         }
-        console.log(message);
     },
 
-    _setUploadError: function(id) {
-        var label = document.getElementById('label' + id);
-        label.style = "background-color: #c44; color: #ccc;";
-        label.innerText = "Failed";
-    },
 // TODO cut off rest after it will be completely replaced with new code
     _runJobs: function(jobs) {
         this._processJobs(jobs);

@@ -28,6 +28,8 @@
 <body>
     <jsp:include page="/WEB-INF/jspf/header.jsp" />
 
+<!-- TODO Implement list of non-completely uploaded files to be able to continue or cancel uploading -->
+
     <span>&nbsp;</span>
 
     <div class="container">

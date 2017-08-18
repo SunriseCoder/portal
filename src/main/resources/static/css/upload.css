@@ -15,9 +15,30 @@ div.progressForeground {
     width: 0;
 }
 
+div.progressChecksumForeground {
+    background-color: #aaf;
+}
+
+div.progressUploadForeground {
+    background-color: #4c4;
+}
+
 div.progressLabel {
     height: 100%;
     width: 100%;
     position: absolute;
     text-align: center;
+    font-size: 100%;
+    padding-top: 3px;
+    padding-bottom: 3px;
+}
+
+div.errorLabel {
+    background-color: #c44;
+    color: #eee;
+}
+
+div.doneLabel {
+    background-color: #4c4;
+    color: #eee;
 }

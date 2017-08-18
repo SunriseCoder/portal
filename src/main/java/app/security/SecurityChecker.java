@@ -139,6 +139,7 @@ public class SecurityChecker {
         addRule(rules, "/rest/files/list",          "/",               Permissions.PAGES_VIEW,             OperationTypes.ACCESS_PAGE_FILES);
         addRule(rules, "/rest/files/get",           "/",               Permissions.PAGES_VIEW,             OperationTypes.ACCESS_PAGE_FILES);
         addRule(rules, "/rest/files/create",        "/",               Permissions.UPLOAD_FILES,           OperationTypes.CHANGE_FILE_UPLOAD);
+        addRule(rules, "/rest/files/upload-chunk",  "/",               Permissions.UPLOAD_FILES,           OperationTypes.CHANGE_FILE_UPLOAD);
         addRule(rules, "/rest/files/upload",        "/",               Permissions.UPLOAD_FILES,           OperationTypes.CHANGE_FILE_UPLOAD);
 
         addRule(rules, "/admin",                    "/",               Permissions.ADMIN_PAGE,             OperationTypes.ACCESS_ADMIN_DASHBOARD);

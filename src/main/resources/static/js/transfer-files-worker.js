@@ -1,4 +1,6 @@
-var chunkSize = 10; //TODO change to 1Mb
+var createFilePlaceholderUrl = "/rest/files/create";
+var uploadChunkUrl = "/rest/files/upload-chunk";
+var chunkSize = 10; //TODO change to 10?Mb
 
 var jobs = [];
 var csrf = undefined;
@@ -9,6 +11,7 @@ function loop() {
     var job = jobs.shift();
     if (job !== undefined) {
         processJob(job);
+        setTimeout("loop()", 0);
     } else {
         setTimeout("loop()", 500);
     }
@@ -33,12 +36,15 @@ function processJob(job) {
     }
     job.filePlaceHolderId = filePlaceHolderId;
 
-    // TODO Send chunks one by one to server and control the checksum is ok
-    // TODO postMessage(...) after every chunk uploaded to update progress
-    
-    // TODO After all done postMessage to change progress bar to done
-    //postMessage(i);
-    setTimeout("loop()", 0);//TODO change to 0
+    // Uploading chunks one by one to server
+    var chunksSent = sendChunksToServer(job, 0);
+    if (chunksSent === undefined) {
+        return;
+    }
+
+    // Reporting that the job is done
+    var message = {type: 'done', id: job.id};
+    postMessage(message);
 }
 
 function createFilePlaceholder(job) {
@@ -58,10 +64,11 @@ function createFilePlaceholder(job) {
         } else {
             var sum = md5sum(file, offset, toRead);
             md5sums = md5sums.concat(sum);
-            offset += size;
+            offset += toRead;
         }
 
-        var message = {type: 'checksum', id: job.id, percent: offset * 100 / size};
+        var percent = offset * 100 / size;
+        var message = {type: 'checksum', id: job.id, percent: percent};
         postMessage(message);
     }
 
@@ -77,10 +84,13 @@ function createFilePlaceholder(job) {
     params += '&size=' + job.file.size;
     params += '&chunkSize=' + chunkSize;
     params += '&checkSum=' + checkSum;
-    var response = syncPost("/rest/files/create", params);
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", createFilePlaceholderUrl, false);
+    xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xhr.send(params);
 
     // And retrieving that placeholder's id
-    var status = response.status;
+    var status = xhr.status;
     if (status != 200) {
         console.log("Server response error");
         var message = {type: 'failed', id: job.id};
@@ -88,7 +98,7 @@ function createFilePlaceholder(job) {
         return;
     }
 
-    var result = JSON.parse(response.response);
+    var result = JSON.parse(xhr.response);
     if (result.status !== 'Ok') {
         console.log("Create file placeholder error: " + result.error);
         var message = {type: 'failed', id: job.id};
@@ -115,12 +125,66 @@ function createFilePlaceholder(job) {
     }
 }
 
-function syncPost(url, params) {
-    var xhttp = new XMLHttpRequest();
-    xhttp.open("POST", url, false);
-    xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    xhttp.send(params);
-    return xhttp;
+function sendChunksToServer(job, nextChunk) {
+    var file = job.file;
+    var filePlaceHolderId = job.filePlaceHolderId;
+    var sentChunksCounter = 0;
+    var nextChunk = 0;
+    while (nextChunk != -1) {
+        var xhr = sendChunk(file, nextChunk, filePlaceHolderId);
+        nextChunk = getNextChunkNumber(xhr, job);
+        if (nextChunk !== undefined) {
+            if (nextChunk != -1) {
+                var percentDone = nextChunk * chunkSize * 100 / file.size;
+                var message = {type: 'upload', id: job.id, percent: percentDone};
+                postMessage(message);
+            }
+        } else {
+            return;
+        }
+        sentChunksCounter++;
+    }
+
+    return sentChunksCounter;
+
+    function sendChunk(file, nextChunk, filePlaceHolderId) {
+        var offset = nextChunk * chunkSize;
+        var toRead = file.size >= offset + chunkSize ? chunkSize : file.size - offset;
+        var chunk = file.slice(offset, offset + toRead);
+
+        var formData = new FormData();
+        formData.append(csrf.name, csrf.value);
+        formData.append('filePlaceHolderId', filePlaceHolderId);
+        formData.append("chunk", chunk);
+
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', uploadChunkUrl, false);
+        xhr.send(formData);
+
+        return xhr;
+    }
+
+    function getNextChunkNumber(xhr, job) {
+        // And retrieving that placeholder's id
+        var status = xhr.status;
+        if (status != 200) {
+            console.log("Server response error");
+            var message = {type: 'failed', id: job.id};
+            postMessage(message);
+            return;
+        }
+
+        var result = JSON.parse(xhr.response);
+        if (result.status !== 'Ok') {
+            console.log("Chunk sending error: " + result.error);
+            var message = {type: 'failed', id: job.id};
+            postMessage(message);
+            return;
+        }
+
+        var nextChunkNumber = result.response;
+        return nextChunkNumber;
+    }
 }
 
 loop();
@@ -129,7 +193,7 @@ var Md5 = {
     arrayBufferToArray: function(arrayBuffer) {
         var size = arrayBuffer.byteLength;
         if (size % 4 != 0) {
-        	var toFill = 4 - size % 4;
+            var toFill = 4 - size % 4;
             var array8bit = new Int8Array(arrayBuffer);
             var adjustedArray = new Int8Array(size + toFill);
             for (var i = 0; i < size; i++) {
