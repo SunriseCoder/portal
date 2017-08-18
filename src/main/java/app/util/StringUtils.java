@@ -11,6 +11,8 @@ import org.apache.tomcat.util.codec.binary.Base64;
 public class StringUtils {
     private static final Logger logger = LogManager.getLogger(StringUtils.class.getName());
 
+    private final static char[] HEX_CHARS = "0123456789abcdef".toCharArray();
+
     public static String decodeDownloadPath(String url) {
         // De-escaping slashes due to URL security
         url = url.replaceAll("_", "/");
@@ -61,5 +63,24 @@ public class StringUtils {
         }
 
         return false;
+    }
+
+    public static byte[] hexToBytes(String hexString) {
+        int length = hexString.length();
+        byte[] array = new byte[length / 2];
+        for (int i = 0; i < length; i += 2) {
+            array[i / 2] = (byte) ((Character.digit(hexString.charAt(i), 16) << 4) + Character.digit(hexString.charAt(i+1), 16));
+        }
+        return array;
+    }
+
+    public static String bytesToHex(byte[] bytes) {
+        char[] hexChars = new char[bytes.length * 2];
+        for (int i = 0; i < bytes.length; i++) {
+            int value = bytes[i] & 0xFF;
+            hexChars[i * 2] = HEX_CHARS[value >>> 4];
+            hexChars[i * 2 + 1] = HEX_CHARS[value & 0x0F];
+        }
+        return new String(hexChars);
     }
 }

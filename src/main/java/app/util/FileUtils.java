@@ -18,6 +18,7 @@ import app.entity.FileEntity;
 import app.entity.FolderEntity;
 
 public class FileUtils {
+    public static final String[] RESTRICTED_SYMBOLS_IN_FILENAME = { "\\", "/", ":", "*", "?", "\"", "<", ">", "|" };
 
     public static void checkExists(File file) throws FileNotFoundException {
         if (!file.exists()) {
@@ -103,5 +104,20 @@ public class FileUtils {
         } while (file.exists());
 
         return file;
+    }
+
+    public static boolean isValidFilename(String filename, int maxLength) {
+        if (filename == null || filename.trim().isEmpty()) {
+            return false;
+        }
+
+        for (String symbol : RESTRICTED_SYMBOLS_IN_FILENAME) {
+            if (filename.contains(symbol)) {
+                return false;
+            }
+        }
+
+        boolean result = filename.length() <= maxLength;
+        return result;
     }
 }

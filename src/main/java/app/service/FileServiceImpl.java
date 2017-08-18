@@ -14,7 +14,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import app.dao.FileRepository;
-import app.entity.StorageFileEntity;
 import app.entity.FolderEntity;
 
 @Component
@@ -88,8 +87,11 @@ public class FileServiceImpl implements FileService {
     @Override
     public void uploadFile(String name, MultipartFile file) throws IOException {
         long size = file.getSize();
-        StorageFileEntity placeHolder = fileStorageService.createFilePlaceHolder(name, size);
-        fileStorageService.uploadFile(placeHolder, file);
+        String filename = file.getName();
+        // TODO Implement
+        //StorageFileEntity placeHolder = fileStorageService.createFilePlaceHolder(filename, size);
+        //fileStorageService.uploadFile(placeHolder, file);
+
         // TODO cut off
         //repository.uploadFile(name, file);
     }

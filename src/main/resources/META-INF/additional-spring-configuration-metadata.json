@@ -16,6 +16,21 @@
             "description": "Maximal amount of files in folder in file storage"
         },
         {
+            "name": "files.storage.max-file-size",
+            "type": "java.lang.Long",
+            "description": "Maximal supported file size in file storage"
+        },
+        {
+            "name": "files.storage.min-chunk-size",
+            "type": "java.lang.Long",
+            "description": "Minimal supported chunk size for file upload"
+        },
+        {
+            "name": "files.storage.max-chunk-size",
+            "type": "java.lang.Long",
+            "description": "Maximal supported chunk size for file upload"
+        },
+        {
             "name": "files.filesystem",
             "type": "java.lang.String",
             "description": "Relative path to unsorted file archive root"

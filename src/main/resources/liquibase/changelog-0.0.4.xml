@@ -14,11 +14,24 @@
             <column name="name" type="varchar(255)">
                 <constraints nullable="false" />
             </column>
+            <column name="owner_id" type="bigint">
+                <constraints nullable="false" foreignKeyName="fk_storage_files_owner"
+                             referencedTableName="users" referencedColumnNames="id" />
+            </column>
             <column name="size" type="bigint">
+                <constraints nullable="false" />
+            </column>
+            <column name="chunk_size" type="bigint">
+                <constraints nullable="false" />
+            </column>
+            <column name="check_sum" type="blob">
                 <constraints nullable="false" />
             </column>
             <column name="path" type="varchar(255)">
                 <constraints unique="true" uniqueConstraintName="ui_storage_files_path" nullable="false" />
+            </column>
+            <column name="completed" type="boolean">
+                <constraints nullable="false" />
             </column>
         </createTable>
 

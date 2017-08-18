@@ -17,7 +17,7 @@ import app.entity.UserEntity;
 import app.service.AuditService;
 import app.service.UserService;
 
-public class BaseController {
+public abstract class BaseController {
     @Autowired
     protected AuditService auditService;
     @Autowired

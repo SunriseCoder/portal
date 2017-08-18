@@ -1,4 +1,4 @@
-package app.controller;
+package app.controller.rest;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -17,13 +17,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import app.controller.rest.BaseRestController.SimpleResult.Status;
 import app.entity.FolderEntity;
+import app.entity.StorageFileEntity;
 import app.entity.UserEntity;
 import app.enums.AuditEventTypes;
 import app.enums.OperationTypes;
 import app.enums.Permissions;
 import app.service.AuditService;
 import app.service.FileService;
+import app.service.FileStorageService;
 import app.service.UserService;
 import app.util.HttpUtils;
 import app.util.LogUtils;
@@ -31,13 +34,15 @@ import app.util.StringUtils;
 
 @RestController
 @RequestMapping("/rest/files/")
-public class FileRestController {
+public class FileRestController extends BaseRestController {
     private static final Logger logger = LogManager.getLogger(FileRestController.class.getName());
 
     @Autowired
     private AuditService auditService;
     @Autowired
     private FileService fileService;
+    @Autowired
+    private FileStorageService fileStorageService;
     @Autowired
     private UserService userService;
 
@@ -48,7 +53,7 @@ public class FileRestController {
         return data;
     }
 
-    @RequestMapping("/get")
+    @RequestMapping("get")
     public void getFile(HttpServletRequest request, HttpServletResponse response, @RequestParam("id") String id) {
         try {
             String safeUrl = StringUtils.decodeDownloadPath(id);
@@ -66,7 +71,20 @@ public class FileRestController {
         }
     }
 
-    @PostMapping("/upload")
+    @PostMapping("create")
+    public SimpleResult createFiles(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            StorageFileEntity placeHolder = fileStorageService.createFilePlaceHolder(request);
+            Long id = placeHolder != null ? placeHolder.getId() : null;
+            return new SimpleResult(Status.Ok, String.valueOf(id));
+        } catch (Exception e) {
+            String message = "Error due to create file placeholder";
+            logger.error(message, e);
+            return new SimpleResult(Status.Error, message);
+        }
+    }
+
+    @PostMapping("upload")
     public void uploadFile(@RequestParam("file") MultipartFile file,
             HttpServletRequest request, HttpServletResponse response) {
 

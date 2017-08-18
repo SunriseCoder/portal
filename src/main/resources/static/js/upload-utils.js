@@ -1,16 +1,32 @@
 var UploadUtils = {
     uploadUrl: undefined,
+    _transferFilesWorker: undefined,
+    _jobCounter: 0,
 
     onChange: function(input) {
-        var table = document.getElementById('uploadTable');
-        var files = input.files;
-        this._addFilesToTable(table, files);
+        if (typeof(Worker) !== "undefined") {
+            if (typeof(this._transferFilesWorker) == "undefined") {
+                this._transferFilesWorker = new Worker("js/transfer-files-worker.js");
+
+                this._transferFilesWorker.onmessage = this._updateStatus;
+
+                var csrf = document.getElementById("csrf");
+                var csrfMessage = {type: 'csrf', name: csrf.name, value: csrf.value};
+                this._transferFilesWorker.postMessage(csrfMessage)
+            }
+
+            var table = document.getElementById('uploadTable');
+            var files = input.files;
+            this._addFilesToTable(table, files);
+        } else {
+            alert('Sorry, Your browser does not support workers, file upload is impossible');
+        }
     },
 
     _addFilesToTable: function(table, files) {
-        var jobs = [];
         for (var i = 0; i < files.length; i++) {
             var file = files[i];
+            var jobId = this._jobCounter++;
 
             var tr = document.createElement("tr");
             table.appendChild(tr);
@@ -24,22 +40,25 @@ var UploadUtils = {
             td.className += " progress";
             tr.appendChild(td);
 
-            var progressBar = this._createProgressBar(file);
+            var progressBar = this._createProgressBar(jobId);
             td.appendChild(progressBar);
 
             var job = {};
+            job.type = 'job';
+            job.id = jobId;
             job.file = file;
-            job.progressBar = progressBar;
-            jobs.push(job);
+            this._transferFilesWorker.postMessage(job);
         }
-        this._runJobs(jobs);
+
+        //this._runJobs(jobs);
     },
 
-    _createProgressBar() {
+    _createProgressBar(id) {
         var background = document.createElement("div");
         background.className += " progressBackground";
 
         var label = document.createElement("div");
+        label.id = 'label' + id;
         label.className += " label progressLabel";
         background.appendChild(label);
 
@@ -47,12 +66,35 @@ var UploadUtils = {
         label.appendChild(text);
 
         var indicator = document.createElement("div");
+        indicator.id = 'bar' + id;
         indicator.className += " bar progressForeground";
         background.appendChild(indicator);
 
         return background;
     },
 
+    _updateStatus: function(event) {
+        var message = event.data;
+        if (message.type === 'checksum') {
+            // TODO update progress bar with checksum update info ("checksum: XX%")
+            // And color = maybe blue or so
+        } else if (message.type === 'upload') {
+            // TODO update progress bar with upload update info ("upload: XX%")
+            // And color = maybe green or so
+        } else if (message.type === 'failed') {
+            UploadUtils._setUploadError(message.id);
+        } else if (message.type === 'done') {
+            // TODO change status to done via UploadUtils._setUploadDone(message.id);
+        }
+        console.log(message);
+    },
+
+    _setUploadError: function(id) {
+        var label = document.getElementById('label' + id);
+        label.style = "background-color: #c44; color: #ccc;";
+        label.innerText = "Failed";
+    },
+// TODO cut off rest after it will be completely replaced with new code
     _runJobs: function(jobs) {
         this._processJobs(jobs);
     },
