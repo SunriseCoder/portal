@@ -30,14 +30,13 @@ onmessage = function(event) {
 
 function processJob(job) {
     // Create file placeholder
-    var filePlaceHolderId = createFilePlaceholder(job);
-    if (filePlaceHolderId === undefined) {
+    createFilePlaceholder(job);
+    if (job.filePlaceHolderId === undefined) {
         return;
     }
-    job.filePlaceHolderId = filePlaceHolderId;
 
     // Uploading chunks one by one to server
-    var chunksSent = sendChunksToServer(job, 0);
+    var chunksSent = sendChunksToServer(job);
     if (chunksSent === undefined) {
         return;
     }
@@ -80,6 +79,9 @@ function createFilePlaceholder(job) {
 
     // Creating placeholder on the server side
     var params = csrf.name + '=' + csrf.value;
+    if (job.fileId !== undefined) {
+        params += '&fileId=' + job.fileId;
+    }
     params += '&name=' + job.file.name;
     params += '&size=' + job.file.size;
     params += '&chunkSize=' + chunkSize;
@@ -106,8 +108,9 @@ function createFilePlaceholder(job) {
         return;
     }
 
-    var filePlaceHolderId = result.response;
-    return filePlaceHolderId;
+    job.filePlaceHolderId = result.response.placeHolderId;
+    job.nextChunk = result.response.nextChunk;
+    return;
 
     function md5sum(file, offset, length) {
         var chunk = file.slice(offset, offset + length);
@@ -125,15 +128,16 @@ function createFilePlaceholder(job) {
     }
 }
 
-function sendChunksToServer(job, nextChunk) {
+function sendChunksToServer(job) {
     var file = job.file;
     var filePlaceHolderId = job.filePlaceHolderId;
     var sentChunksCounter = 0;
-    var nextChunk = 0;
+    var nextChunk = job.nextChunk;
     while (nextChunk != -1) {
         var xhr = sendChunk(file, nextChunk, filePlaceHolderId);
         nextChunk = getNextChunkNumber(xhr, job);
         if (nextChunk !== undefined) {
+            job.nextChunk = nextChunk;
             if (nextChunk != -1) {
                 var percentDone = nextChunk * chunkSize * 100 / file.size;
                 var message = {type: 'upload', id: job.id, percent: percentDone};

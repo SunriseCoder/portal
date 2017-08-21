@@ -11,7 +11,7 @@ import org.apache.tomcat.util.codec.binary.Base64;
 public class StringUtils {
     private static final Logger logger = LogManager.getLogger(StringUtils.class.getName());
 
-    private final static char[] HEX_CHARS = "0123456789abcdef".toCharArray();
+    private static final char[] HEX_CHARS = "0123456789abcdef".toCharArray();
 
     public static String decodeDownloadPath(String url) {
         // De-escaping slashes due to URL security

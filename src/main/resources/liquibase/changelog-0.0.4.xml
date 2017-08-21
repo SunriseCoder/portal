@@ -14,8 +14,8 @@
             <column name="name" type="varchar(255)">
                 <constraints nullable="false" />
             </column>
-            <column name="owner_id" type="bigint">
-                <constraints nullable="false" foreignKeyName="fk_storage_files_owner"
+            <column name="uploaded_by_id" type="bigint">
+                <constraints nullable="false" foreignKeyName="fk_storage_files_uploaded_by"
                              referencedTableName="users" referencedColumnNames="id" />
             </column>
             <column name="size" type="bigint">
@@ -26,6 +26,9 @@
             </column>
             <column name="check_sum" type="varchar(32)">
                 <constraints nullable="true" />
+            </column>
+            <column name="uploaded_bytes" type="bigint">
+                <constraints nullable="false" />
             </column>
             <column name="path" type="varchar(255)">
                 <constraints unique="true" uniqueConstraintName="ui_storage_files_path" nullable="false" />

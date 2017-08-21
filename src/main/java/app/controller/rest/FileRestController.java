@@ -3,6 +3,7 @@ package app.controller.rest;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.NotDirectoryException;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -75,9 +76,12 @@ public class FileRestController extends BaseRestController {
     public SimpleResult createFiles(HttpServletRequest request, HttpServletResponse response) {
         try {
             StorageFileEntity placeHolder = fileStorageService.createFilePlaceHolder(request);
-            Long id = placeHolder != null ? placeHolder.getId() : null;
+            Long id = placeHolder.getId();
+            Integer nextChunk = placeHolder.calclateUploadedChunksNumber();
+            Map<String, String> info = toMap("placeHolderId", String.valueOf(id), "nextChunk", String.valueOf(nextChunk));
+            SimpleResult result = new SimpleResult(Status.Ok, info);
             auditService.log(OperationTypes.CHANGE_FILE_CREATE_PLACEHOLDER, AuditEventTypes.SUCCESSFUL, null, "id = " + id);
-            return new SimpleResult(Status.Ok, String.valueOf(id));
+            return result;
         } catch (Exception e) {
             String message = "Error due to create file placeholder";
             logger.error(message, e);

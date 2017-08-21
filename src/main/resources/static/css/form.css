@@ -95,3 +95,11 @@ span.permission {
 div.wide-page {
     width: 100%;
 }
+
+.textAlignCenter {
+    text-align: center;
+}
+
+.textAlignRight {
+    text-align: right;
+}

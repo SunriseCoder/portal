@@ -3,6 +3,15 @@ var UploadUtils = {
     _transferFilesWorker: undefined,
     _jobCounter: 0,
 
+    onClick: function(input) {
+        var fileId = document.getElementById('fileId');
+        fileId.value = undefined;
+
+        var file = document.getElementById('file');
+        file.multiple = 'multiple';
+        file.click();
+    },
+
     onChange: function(input) {
         if (typeof(Worker) !== "undefined") {
             if (typeof(this._transferFilesWorker) == "undefined") {
@@ -48,6 +57,10 @@ var UploadUtils = {
             job.type = 'job';
             job.id = jobId;
             job.file = file;
+            var fileId = document.getElementById('fileId').value;
+            if (fileId !== 'undefined') {
+                job.fileId = fileId;
+            }
             this._transferFilesWorker.postMessage(job);
         }
 

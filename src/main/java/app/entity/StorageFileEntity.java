@@ -19,13 +19,15 @@ public class StorageFileEntity {
     @Column
     private String name;
     @ManyToOne
-    private UserEntity owner;
+    private UserEntity uploadedBy;
     @Column
     private long size;
     @Column
     private int chunkSize;
     @Column
     private String checkSum;
+    @Column
+    private long uploadedBytes;
     @Column(unique = true)
     private String path;
     @Column
@@ -49,12 +51,12 @@ public class StorageFileEntity {
         this.name = name;
     }
 
-    public UserEntity getOwner() {
-        return owner;
+    public UserEntity getUploadedBy() {
+        return uploadedBy;
     }
 
-    public void setOwner(UserEntity owner) {
-        this.owner = owner;
+    public void setUploadedBy(UserEntity uploadedBy) {
+        this.uploadedBy = uploadedBy;
     }
 
     public long getSize() {
@@ -79,6 +81,14 @@ public class StorageFileEntity {
 
     public void setCheckSum(String checkSum) {
         this.checkSum = checkSum;
+    }
+
+    public long getUploadedBytes() {
+        return uploadedBytes;
+    }
+
+    public void setUploadedBytes(long uploadedBytes) {
+        this.uploadedBytes = uploadedBytes;
     }
 
     public String getPath() {
@@ -108,5 +118,10 @@ public class StorageFileEntity {
     @Override
     public String toString() {
         return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+    }
+
+    public int calclateUploadedChunksNumber() {
+        int uploadedChunksNumber = (int) (uploadedBytes / chunkSize);
+        return uploadedChunksNumber;
     }
 }

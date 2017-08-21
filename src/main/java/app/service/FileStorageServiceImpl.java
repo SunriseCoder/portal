@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.security.MessageDigest;
 import java.util.Date;
+import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
@@ -24,6 +25,7 @@ import app.structures.FileTree.FileNode;
 import app.util.CheckSumUtils;
 import app.util.FileUtils;
 import app.util.NumberUtils;
+import app.util.SafeUtils;
 import app.util.StringUtils;
 
 @Component
@@ -51,9 +53,37 @@ public class FileStorageServiceImpl implements FileStorageService {
     }
 
     @Override
+    public List<StorageFileEntity> findAllNonCompletedUploadedByCurrentUser() {
+        UserEntity user = userService.getLoggedInUser();
+        List<StorageFileEntity> nonCompleted = repository.findByCompletedIsFalseAndUploadedBy(user);
+        return nonCompleted;
+    }
+
+    @Override
+    public List<StorageFileEntity> findAllCompletedUploadedByCurrentUser() {
+        UserEntity user = userService.getLoggedInUser();
+        List<StorageFileEntity> completed = repository.findByCompletedIsTrueAndUploadedBy(user);
+        return completed;
+    }
+
+    @Override
     @Transactional
     public StorageFileEntity createFilePlaceHolder(HttpServletRequest request) throws Exception {
-        StorageFileEntity entity = new StorageFileEntity();
+        UserEntity user = userService.getLoggedInUser();
+
+        StorageFileEntity entity;
+        String fileIdStr = request.getParameter("fileId");
+        if (NumberUtils.isValidLong(fileIdStr)) {
+            Long fileId = Long.valueOf(fileIdStr);
+            entity = repository.findOne(fileId);
+            if (entity != null && SafeUtils.safeEquals(entity.getUploadedBy().getId(), user.getId())) {
+                return entity;
+            } else {
+                entity = new StorageFileEntity();
+            }
+        } else {
+            entity = new StorageFileEntity();
+        }
 
         // File name validation
         String name = request.getParameter("name");
@@ -93,8 +123,7 @@ public class FileStorageServiceImpl implements FileStorageService {
         entity.setPath(relativePath);
         saveCheckSumToFile(checkSumByteArray, relativePath);
 
-        UserEntity user = userService.getLoggedInUser();
-        entity.setOwner(user);
+        entity.setUploadedBy(user);
         entity.setLastUpdated(new Date());
 
         entity = repository.saveAndFlush(entity);
@@ -126,12 +155,10 @@ public class FileStorageServiceImpl implements FileStorageService {
         // Verifying checksum of the given chunk
         FileNode fileNode = fileTree.getFileNode(filePlaceHolder.getPath());
         File file = new File(fileNode.getAbsolutePath());
-        long alreadyDownloadedBytes = file.length();
-        long chunkSize = filePlaceHolder.getChunkSize();
-        int downloadedChunks = (int) (alreadyDownloadedBytes / chunkSize);
+        int uploadedChunks = filePlaceHolder.calclateUploadedChunksNumber();
         byte[] allCheckSums = extractCheckSumFromFile(filePlaceHolder.getPath());
         byte[] currentChunkCheckSum = new byte[16];
-        System.arraycopy(allCheckSums, downloadedChunks * 16, currentChunkCheckSum, 0, 16);
+        System.arraycopy(allCheckSums, uploadedChunks * 16, currentChunkCheckSum, 0, 16);
         byte[] chunkBytes = chunk.getBytes();
         boolean chunkValid = CheckSumUtils.isCheckSumValid(chunkBytes, currentChunkCheckSum);
         if (!chunkValid) {
@@ -143,6 +170,7 @@ public class FileStorageServiceImpl implements FileStorageService {
             fos.write(chunkBytes);
             fos.flush();
         }
+        filePlaceHolder.setUploadedBytes(file.length());
 
         // Checking if it was last chunk - then changing status to completed
         if (file.length() == filePlaceHolder.getSize()) {
@@ -153,7 +181,7 @@ public class FileStorageServiceImpl implements FileStorageService {
         filePlaceHolder.setLastUpdated(new Date());
         repository.saveAndFlush(filePlaceHolder);
 
-        return downloadedChunks + 1;
+        return uploadedChunks + 1;
     }
 
     private void checkWholeFile(StorageFileEntity filePlaceHolder, File file) throws Exception {
