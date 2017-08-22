@@ -109,6 +109,7 @@ public class FileRestController extends BaseRestController {
         }
     }
 
+    // TODO cut off or keep old uploader?
     @PostMapping("upload")
     public void uploadFile(@RequestParam("file") MultipartFile file,
             HttpServletRequest request, HttpServletResponse response) {
@@ -125,6 +126,18 @@ public class FileRestController extends BaseRestController {
             logger.error(e);
             auditService.log(OperationTypes.CHANGE_FILE_UPLOAD, AuditEventTypes.SAVING_ERROR, null, auditObject, e.getMessage());
             HttpUtils.sendResponseError(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping("delete")
+    public void deleteFile(@RequestParam("id") Long id, HttpServletRequest request, HttpServletResponse response) {
+        try {
+            fileStorageService.deletePlaceHolder(id);
+            auditService.log(OperationTypes.CHANGE_FILE_DELETE_PLACEHOLDER, AuditEventTypes.SUCCESSFUL, "id=" + id);
+        } catch (Exception e) {
+            String message = "Error due to delete filePlaceHolder with id: " + id;
+            logger.error(message, e);
+            auditService.log(OperationTypes.CHANGE_FILE_DELETE_PLACEHOLDER, AuditEventTypes.DELETE_ERROR, "id=" + id, null, e.getMessage());
         }
     }
 }

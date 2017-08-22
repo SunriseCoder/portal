@@ -16,4 +16,5 @@ public interface FileStorageService {
     StorageFileEntity createFilePlaceHolder(HttpServletRequest request) throws Exception;
     int uploadFileChunk(MultipartFile chunk, String filePlaceHolderId) throws Exception;
     void uploadFile(StorageFileEntity placeHolder, MultipartFile file);
+    void deletePlaceHolder(Long id) throws Exception;
 }

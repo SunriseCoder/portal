@@ -59,6 +59,13 @@
             <column name="severity" valueNumeric="0" />
         </insert>
 
+        <insert tableName="e_operation_types">
+            <column name="id" value="54" />
+            <column name="name" value="CHANGE_FILE_DELETE_PLACEHOLDER" />
+            <column name="comment" value="Deleting an incomplete file placeholder" />
+            <column name="severity" valueNumeric="0" />
+        </insert>
+
     </changeSet>
 
 </databaseChangeLog>

@@ -27,6 +27,7 @@ import app.util.FileUtils;
 import app.util.NumberUtils;
 import app.util.SafeUtils;
 import app.util.StringUtils;
+import javassist.NotFoundException;
 
 @Component
 public class FileStorageServiceImpl implements FileStorageService {
@@ -236,6 +237,18 @@ public class FileStorageServiceImpl implements FileStorageService {
         }
     }
 
+    private void deleteFile(String relativePath) {
+        String filePath = getFilePath(relativePath);
+        File file = new File(filePath);
+        file.delete();
+    }
+
+    private String getFilePath(String relativePath) {
+        FileNode fileNode = fileTree.getFileNode(relativePath);
+        String filePath = fileNode.getAbsolutePath();
+        return filePath;
+    }
+
     private void deleteCheckSumFile(String relativePath) {
         String checkSumPath = getCheckSumPath(relativePath);
         File file = new File(checkSumPath);
@@ -259,5 +272,23 @@ public class FileStorageServiceImpl implements FileStorageService {
     public void uploadFile(StorageFileEntity placeHolder, MultipartFile file) {
         // TODO Auto-generated method stub
 
+    }
+
+    @Override
+    @Transactional
+    public void deletePlaceHolder(Long id) throws Exception {
+        UserEntity user = userService.getLoggedInUser();
+        StorageFileEntity filePlaceHolder = repository.findOne(id);
+        if (filePlaceHolder == null) {
+            throw new NotFoundException("File placeholder with id: '" + id + "' was not found");
+        }
+        if (!SafeUtils.safeEquals(filePlaceHolder.getUploadedBy().getId(), user.getId())) {
+            throw new IllegalAccessException("User tries to delete not his own file placeholder");
+        }
+
+        repository.delete(filePlaceHolder);
+        deleteFile(filePlaceHolder.getPath());
+        deleteCheckSumFile(filePlaceHolder.getPath());
+        repository.flush();
     }
 }
