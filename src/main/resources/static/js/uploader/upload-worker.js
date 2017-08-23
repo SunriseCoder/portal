@@ -1,5 +1,5 @@
 var uploadChunkUrl = undefined;
-var chunkSize = 10; //TODO change to 10?Mb
+var chunkSize = undefined;
 
 var jobs = [];
 var csrf = undefined;
@@ -25,8 +25,11 @@ onmessage = function(event) {
         console.log('upload worker: got csrf');
         csrf = message;
     } else if (message.type === 'uploadChunkUrl') {
-        console.log('checksum worker: got uploadChunkUrl');
+        console.log('upload worker: got uploadChunkUrl');
         uploadChunkUrl = message.url;
+    } else if (message.type === 'chunkSize') {
+        console.log('upload worker: got chunkSize');
+        chunkSize = message.value;
     }
 };
 
@@ -39,11 +42,9 @@ function processJob(job) {
         nextChunk = getNextChunkNumber(xhr, job);
         if (nextChunk !== undefined) {
             job.nextChunk = nextChunk;
-            if (nextChunk != -1) {
-                var percentDone = nextChunk * chunkSize * 100 / file.size;
-                var message = {type: 'progress', id: job.id, percent: percentDone};
-                postMessage(message);
-            }
+            var percentDone = nextChunk != -1 ? nextChunk * chunkSize * 100 / file.size : 100;
+            var message = {type: 'progress', id: job.id, percent: percentDone};
+            postMessage(message);
         } else {
             return;
         }

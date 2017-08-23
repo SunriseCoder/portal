@@ -1,4 +1,5 @@
 var Uploader = {
+    chunkSize: 10, //TODO change to 10?Mb
     checkSumWorkerUrl: undefined,
     chunkUploadWorkerUrl: undefined,
     createFilePlaceHolderUrl: undefined,
@@ -26,6 +27,7 @@ var Uploader = {
                 this._checkSumWorker.onmessage = this._checkSumWorkerMessage;
                 this._checkSumWorker.postMessage(csrfMessage);
                 this._checkSumWorker.postMessage({type: 'createFilePlaceHolderUrl', url: this.createFilePlaceholderUrl});
+                this._checkSumWorker.postMessage({type: 'chunkSize', value: this.chunkSize});
             }
 
             if (typeof(this._chunkUploadWorker) == 'undefined') {
@@ -33,6 +35,7 @@ var Uploader = {
                 this._chunkUploadWorker.onmessage = this._chunkUploadWorkerMessage;
                 this._chunkUploadWorker.postMessage(csrfMessage);
                 this._chunkUploadWorker.postMessage({type: 'uploadChunkUrl', url: this.uploadChunkUrl})
+                this._chunkUploadWorker.postMessage({type: 'chunkSize', value: this.chunkSize});
             }
 
             var table = document.getElementById('uploadTable');

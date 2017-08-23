@@ -1,5 +1,5 @@
 var createFilePlaceHolderUrl = undefined;
-var chunkSize = 10; //TODO change to 10?Mb
+var chunkSize = undefined;
 
 var jobs = [];
 var csrf = undefined;
@@ -27,6 +27,9 @@ onmessage = function(event) {
     } else if (message.type === 'createFilePlaceHolderUrl') {
         console.log('checksum worker: got createFilePlaceHolderUrl');
         createFilePlaceHolderUrl = message.url;
+    } else if (message.type === 'chunkSize') {
+        console.log('checksum worker: got chunkSize');
+        chunkSize = message.value;
     }
 };
 
