@@ -75,7 +75,7 @@ public class FileRestController extends BaseRestController {
     @PostMapping("create")
     public SimpleResult createFiles(HttpServletRequest request, HttpServletResponse response) {
         try {
-            StorageFileEntity placeHolder = fileStorageService.createFilePlaceHolder(request);
+            StorageFileEntity placeHolder = fileStorageService.getOrCreateFilePlaceHolder(request);
             Long id = placeHolder.getId();
             Integer nextChunk = placeHolder.calclateUploadedChunksNumber();
             Map<String, String> info = toMap("placeHolderId", String.valueOf(id), "nextChunk", String.valueOf(nextChunk));

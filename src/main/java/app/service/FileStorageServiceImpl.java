@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.security.MessageDigest;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -68,30 +69,39 @@ public class FileStorageServiceImpl implements FileStorageService {
     }
 
     @Override
-    @Transactional
-    public StorageFileEntity createFilePlaceHolder(HttpServletRequest request) throws Exception {
+    public StorageFileEntity getOrCreateFilePlaceHolder(HttpServletRequest request) throws Exception {
         UserEntity user = userService.getLoggedInUser();
 
-        StorageFileEntity entity;
+        // Checking, is this attempt to resume upload of incomplete file
+        StorageFileEntity filePlaceHolderEntity;
         String fileIdStr = request.getParameter("fileId");
         if (NumberUtils.isValidLong(fileIdStr)) {
             Long fileId = Long.valueOf(fileIdStr);
-            entity = repository.findOne(fileId);
-            if (entity != null && SafeUtils.safeEquals(entity.getUploadedBy().getId(), user.getId())) {
-                return entity;
-            } else {
-                entity = new StorageFileEntity();
+            filePlaceHolderEntity = repository.findOne(fileId);
+            if (filePlaceHolderEntity != null && SafeUtils.safeEquals(filePlaceHolderEntity.getUploadedBy().getId(), user.getId())) {
+                boolean matches = checkSumMatchWithExisting(filePlaceHolderEntity, request);
+                if (matches) {
+                    return filePlaceHolderEntity;
+                }
+                throw new IllegalArgumentException("Checksum of the file being submitted doesn't match with existing one");
             }
-        } else {
-            entity = new StorageFileEntity();
         }
+
+        // Otherwise creating new file placeholder
+        filePlaceHolderEntity = createFilePlaceHolder(request, user);
+        return filePlaceHolderEntity;
+    }
+
+    @Transactional
+    private StorageFileEntity createFilePlaceHolder(HttpServletRequest request, UserEntity user) throws Exception {
+        StorageFileEntity filePlaceHolderEntity = new StorageFileEntity();
 
         // File name validation
         String name = request.getParameter("name");
         if (!FileUtils.isValidFilename(name, 255)) {
             throw new IllegalArgumentException("Invalid file name");
         }
-        entity.setName(name);
+        filePlaceHolderEntity.setName(name);
 
         // File size validation
         String sizeStr = request.getParameter("size");
@@ -100,7 +110,7 @@ public class FileStorageServiceImpl implements FileStorageService {
             throw new IllegalArgumentException("Invalid file size");
         }
         long size = Long.valueOf(sizeStr);
-        entity.setSize(size);
+        filePlaceHolderEntity.setSize(size);
 
         // Chunk size validation
         String chunkSizeStr = request.getParameter("chunkSize");
@@ -110,7 +120,7 @@ public class FileStorageServiceImpl implements FileStorageService {
             throw new IllegalArgumentException("Invalid file size");
         }
         int chunkSize = Integer.valueOf(chunkSizeStr);
-        entity.setChunkSize(chunkSize);
+        filePlaceHolderEntity.setChunkSize(chunkSize);
 
         // Check sum validation
         String checkSum = request.getParameter("checkSum");
@@ -121,15 +131,24 @@ public class FileStorageServiceImpl implements FileStorageService {
 
         FileNode placeHolder = fileTree.createPlaceHolder();
         String relativePath = placeHolder.getRelativePath();
-        entity.setPath(relativePath);
+        filePlaceHolderEntity.setPath(relativePath);
         saveCheckSumToFile(checkSumByteArray, relativePath);
 
-        entity.setUploadedBy(user);
-        entity.setLastUpdated(new Date());
+        filePlaceHolderEntity.setUploadedBy(user);
+        filePlaceHolderEntity.setLastUpdated(new Date());
 
-        entity = repository.saveAndFlush(entity);
+        filePlaceHolderEntity = repository.saveAndFlush(filePlaceHolderEntity);
 
-        return entity;
+        return filePlaceHolderEntity;
+    }
+
+    private boolean checkSumMatchWithExisting(StorageFileEntity filePlaceHolderEntity, HttpServletRequest request) throws Exception {
+        String filePath = filePlaceHolderEntity.getPath();
+        byte[] existingChecksum = extractCheckSumFromFile(filePath);
+        String checkSum = request.getParameter("checkSum");
+        byte[] submittedCheckSum = StringUtils.hexToBytes(checkSum);
+        boolean equals = Arrays.equals(existingChecksum, submittedCheckSum);
+        return equals;
     }
 
     @Override
@@ -239,24 +258,36 @@ public class FileStorageServiceImpl implements FileStorageService {
 
     private void deleteFile(String relativePath) {
         String filePath = getFilePath(relativePath);
+        if (filePath == null) {
+            return;
+        }
         File file = new File(filePath);
         file.delete();
     }
 
     private String getFilePath(String relativePath) {
         FileNode fileNode = fileTree.getFileNode(relativePath);
+        if (fileNode == null) {
+            return null;
+        }
         String filePath = fileNode.getAbsolutePath();
         return filePath;
     }
 
     private void deleteCheckSumFile(String relativePath) {
         String checkSumPath = getCheckSumPath(relativePath);
+        if (checkSumPath == null) {
+            return;
+        }
         File file = new File(checkSumPath);
         file.delete();
     }
 
     private String getCheckSumPath(String relativePath) {
         FileNode fileNode = fileTree.getFileNode(relativePath);
+        if (fileNode == null) {
+            return null;
+        }
         String filePath = fileNode.getAbsolutePath();
         String checkSumPath = filePath + CHECK_SUM_FILE_SUFFIX;
         return checkSumPath;

@@ -4,6 +4,7 @@
 
 <c:set var="appRoot" value="${pageContext.request.contextPath}" />
 <c:set var="restFilesRoot" value="${appRoot}/rest/files" />
+<c:set var="uploaderRoot" value="${appRoot}/js/uploader" />
 
 <!DOCTYPE html>
 <html>
@@ -17,15 +18,17 @@
     <script src="${appRoot}/js/file-tree.js"></script>
     <script src="${appRoot}/js/jquery.js"></script>
     <script src="${appRoot}/js/locale-utils.js"></script>
-    <script src="${appRoot}/js/upload-utils.js"></script>
+    <script src="${uploaderRoot}/uploader.js"></script>
 
     <script>
         $(function() {
             Locales.appRoot = '${appRoot}';
             Locales.writeTitle("upload.caption");
 
-            // TODO Cut off or keep old uploader?
-            UploadUtils.uploadUrl = "${restFilesRoot}/upload";
+            Uploader.checkSumWorkerUrl = "${uploaderRoot}/checksum-worker.js"
+            Uploader.chunkUploadWorkerUrl = "${uploaderRoot}/upload-worker.js";
+            Uploader.createFilePlaceholderUrl = "${restFilesRoot}/create";
+            Uploader.uploadChunkUrl = "${restFilesRoot}/upload-chunk";
         });
 
         function resumeDownload(id) {
@@ -119,8 +122,8 @@
             <input id="csrf" type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
             <table id="uploadTable"></table>
             <input id="fileId" type="hidden" />
-            <input id="file" type="file" onchange="UploadUtils.onChange(this);" style="display: none" />
-            <input type="button" value="Upload" onclick="UploadUtils.onClick(this);" />
+            <input id="file" type="file" onchange="Uploader.uploadFiles(this);" style="display: none" />
+            <input type="button" value="Upload" onclick="Uploader.selectFiles(this);" />
 
         </div>
     </div>
