@@ -29,6 +29,7 @@
             Uploader.chunkUploadWorkerUrl = "${uploaderRoot}/upload-worker.js";
             Uploader.createFilePlaceholderUrl = "${restFilesRoot}/create";
             Uploader.uploadChunkUrl = "${restFilesRoot}/upload-chunk";
+            Uploader.deleteFileUrl = "${restFilesRoot}/delete";
         });
 
         function resumeDownload(id) {
@@ -103,7 +104,6 @@
                                 <td class="textAlignRight">${NumberUtils.format(100 * item.uploadedBytes / item.size, "##0")}%</td>
                                 <td>
                                     <a class="noHref" onclick="resumeDownload(${item.id})">Resume</a>
-                                    <!-- TODO Implement -->
                                     <a class="noHref" onclick="deleteFile('${restFilesRoot}/delete', ${item.id}, '${item.name}')">Delete</a>
                                 </td>
                             </tr>
@@ -119,11 +119,12 @@
 
         <div class="starter-template">
 
-            <input id="csrf" type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
             <table id="uploadTable"></table>
+
+            <input id="csrf" type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
             <input id="fileId" type="hidden" />
             <input id="file" type="file" onchange="Uploader.uploadFiles(this);" style="display: none" />
-            <input type="button" value="Upload" onclick="Uploader.selectFiles(this);" />
+            <input id="uploadButton" type="button" value="Upload" onclick="Uploader.selectFiles(this);" />
 
         </div>
     </div>

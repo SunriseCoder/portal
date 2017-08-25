@@ -15,6 +15,23 @@ var HttpUtils = {
         xhttp.send();
     },
 
+    post: function(url, params, async, successHandler, errorHandler, that) {
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', url, async);
+        if (async) {
+            xhr.onload = function () {
+                if (successHandler !== undefined && xhr.status === 200) {
+                    successHandler(that);
+                } else if (errorHandler !== undefined) {
+                    errorHandler(that);
+                }
+            };
+        }
+        xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xhr.send(params);
+        return xhr;
+    },
+
     upload: function(url, formData, progressBar, success, error) {
         var xhr = new XMLHttpRequest();
         xhr.open('POST', url, true);

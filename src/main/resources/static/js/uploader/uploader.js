@@ -1,9 +1,10 @@
 var Uploader = {
-    chunkSize: 10, //TODO change to 10?Mb
+    chunkSize: 10, //TODO change to 4Mb
     checkSumWorkerUrl: undefined,
     chunkUploadWorkerUrl: undefined,
     createFilePlaceHolderUrl: undefined,
     uploadChunkUrl: undefined,
+    deleteFileUrl: undefined,
     _checkSumWorker: undefined,
     _chunkUploadWorker: undefined,
     _jobCounter: 0,
@@ -51,14 +52,17 @@ var Uploader = {
             var file = files[i];
             var jobId = this._jobCounter++;
 
+            // Table row
             var tr = document.createElement("tr");
             table.appendChild(tr);
 
+            // File name cell
             var td = document.createElement("td");
             tr.appendChild(td);
             var text = document.createTextNode(file.name);
             td.appendChild(text);
 
+            // Progress cell
             td = document.createElement("td");
             td.className += " progress";
             tr.appendChild(td);
@@ -66,6 +70,17 @@ var Uploader = {
             var progressBar = this._createProgressBar(jobId);
             td.appendChild(progressBar);
 
+            // Cancel upload cell
+            td = document.createElement("td");
+            tr.appendChild(td);
+            var cancelButton = document.createElement('button');
+            td.appendChild(cancelButton);
+            var cancelButtonText = document.createTextNode('Cancel');
+            cancelButton.jobId = jobId; 
+            cancelButton.appendChild(cancelButtonText);
+            cancelButton.onclick = this._cancelJob;
+
+            // Creating job object
             var job = {};
             job.type = 'job';
             job.id = jobId;
@@ -98,15 +113,30 @@ var Uploader = {
         return background;
     },
 
+    _cancelJob: function(event) {
+        var confirmed = confirm('Are You sure to cancel upload?');
+        if (!confirmed) {
+            return;
+        }
+
+        this.style.visibility = 'hidden';
+        var jobId = this.jobId;
+        var message = {type: 'cancelJob', jobId: jobId};
+        Uploader._checkSumWorker.postMessage(message);
+        Uploader._chunkUploadWorker.postMessage(message);
+    },
+
     _checkSumWorkerMessage: function(event) {
         var message = event.data;
         var id = message.id;
         if (message.type === 'progress') {
             var percent = message.percent;
             Uploader._setJobProgress(id, percent, 'progressChecksumForeground', 'Checksum: ');
+        } else if (message.type === 'cancelled') {
+            Uploader._setJobCancelled(id);
         } else if (message.type === 'failed') {
             Uploader._setJobFailed(id);
-        } else if (message.type === 'done') {
+        } else if (message.type === 'checkSumDone') {
             var job = message.job;
             Uploader._chunkUploadWorker.postMessage(job);
             Uploader._setJobCheckSumDone(id);
@@ -119,9 +149,12 @@ var Uploader = {
         if (message.type === 'progress') {
             var percent = message.percent;
             Uploader._setJobProgress(id, percent, 'progressUploadForeground', 'Upload: ');
+        } else if (message.type === 'cancelled') {
+            Uploader._setJobCancelled(id);
+            Uploader._deleteFileFromServer(message.job.filePlaceHolderId);
         } else if (message.type === 'failed') {
             Uploader._setJobFailed(id);
-        } else if (message.type === 'done') {
+        } else if (message.type === 'uploadDone') {
             Uploader._setJobUploadDone(id);
         }
     },
@@ -132,6 +165,12 @@ var Uploader = {
         bar.style = "width: " + percent + "%;";
         var label = document.getElementById('label' + id);
         label.innerText = labelText + percent.toFixed(2) + "%";
+    },
+
+    _setJobCancelled: function(id) {
+        var label = document.getElementById('label' + id);
+        label.classList.add("errorLabel");
+        label.innerText = "Cancelled";
     },
 
     _setJobFailed: function(id) {
@@ -148,5 +187,12 @@ var Uploader = {
     _setJobUploadDone: function(id) {
         var label = document.getElementById('label' + id);
         label.innerText = "Done";
+    },
+
+    _deleteFileFromServer(filePlaceHolderId) {
+        var csrf = document.getElementById("csrf");
+        var params = csrf.name + '=' + csrf.value;
+        params += '&id=' + filePlaceHolderId;
+        HttpUtils.post(Uploader.deleteFileUrl, params, true);
     }
 }

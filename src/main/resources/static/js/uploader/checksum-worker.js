@@ -7,13 +7,25 @@ var reader = new FileReaderSync();
 
 function loop() {
     console.log("checksum worker: checking for a job"); // TODO cut off logging?
-    var job = jobs.shift();
-    if (job !== undefined) {
-        processJob(job);
-        setTimeout("loop()", 0);
-    } else {
+    if (jobs.length == 0) {
         setTimeout("loop()", 500);
+        return;
     }
+
+    var job = jobs[0];
+    if (job.checkSumDone) {
+        postMessage({type: 'checkSumDone', id: job.id, job: job});
+        jobs.shift();
+    } else if (job.cancelled) {
+        postMessage({type: 'cancelled', id: job.id});
+        jobs.shift();
+    } else if (job.failed) {
+        postMessage({type: 'failed', id: job.id});
+        jobs.shift();
+    } else {
+        processJob(job);
+    }
+    setTimeout("loop()", 0);
 }
 
 onmessage = function(event) {
@@ -30,39 +42,72 @@ onmessage = function(event) {
     } else if (message.type === 'chunkSize') {
         console.log('checksum worker: got chunkSize');
         chunkSize = message.value;
+    } else if (message.type === 'cancelJob') {
+        console.log('checksum worker: got cancel job');
+        var jobId = message.jobId;
+        var job = jobs.find(function(job) { return job.id == jobId});
+        if (job !== undefined) {
+            job.cancelled = true;
+        }
     }
 };
 
 function processJob(job) {
-    console.log('processing job ' + job.id);
-
-    // Calculating hash-sums for chunks
-    var file = job.file;
-    var md5sums = [];
-    var size = file.size;
-    var offset = 0;
-    while (offset < size) {
-        var toRead = size - offset;
-        if (toRead >= chunkSize) {
-            var sum = md5sum(file, offset, chunkSize);
-            md5sums = md5sums.concat(sum);
-            offset += chunkSize;
-        } else {
-            var sum = md5sum(file, offset, toRead);
-            md5sums = md5sums.concat(sum);
-            offset += toRead;
-        }
-
-        var percent = offset * 100 / size;
-        var message = {type: 'progress', id: job.id, percent: percent};
-        postMessage(message);
+    if (job.md5sums === undefined) {
+        job.md5sums = [];
+        job.offset = 0;
     }
 
-    job.checkSums = md5sums; // Sums of chunks without final digest
+    if (job.offset < job.file.size) {
+        // Hash next chunk
+        calculateChunk(job);
+        updateProgress(job);
+        return;
+    }
 
-    var finalSum = finalMd5sum(md5sums);
-    md5sums = md5sums.concat(finalSum);
-    var checkSum = Md5.array32ToString(md5sums); // Sums of chunks and final digest
+    // Create file placeholder
+    createFilePlaceHolder(job);
+    if (job.filePlaceHolderId === undefined) {
+        job.failed = true;
+    } else {
+        job.checkSumDone = true;
+    }
+}
+
+function calculateChunk(job) {
+    var toRead = job.file.size - job.offset;
+    if (toRead >= chunkSize) {
+        var sum = md5sum(job.file, job.offset, chunkSize);
+        job.md5sums = job.md5sums.concat(sum);
+        job.offset += chunkSize;
+    } else {
+        var sum = md5sum(job.file, job.offset, toRead);
+        job.md5sums = job.md5sums.concat(sum);
+        job.offset += toRead;
+    }
+    return;
+
+    function md5sum(file, offset, length) {
+        var chunk = file.slice(offset, offset + length);
+        var arrayBuffer = reader.readAsArrayBuffer(chunk);
+        var array = Md5.arrayBufferToArray(arrayBuffer);
+        var lengthBits = length * 8;
+        var sum = Md5.md5(array, lengthBits);
+        return sum;
+    }
+}
+
+function updateProgress(job) {
+    var percent = job.offset * 100 / job.file.size;
+    var message = {type: 'progress', id: job.id, percent: percent};
+    postMessage(message);
+}
+
+function createFilePlaceHolder(job) {
+    // Sums of chunks and final digest
+    var finalSum = finalMd5sum(job.md5sums);
+    job.md5sums = job.md5sums.concat(finalSum);
+    var checkSum = Md5.array32ToString(job.md5sums);
 
     // Creating placeholder on the server side
     var params = csrf.name + '=' + csrf.value;
@@ -97,19 +142,7 @@ function processJob(job) {
 
     job.filePlaceHolderId = result.response.placeHolderId;
     job.nextChunk = result.response.nextChunk;
-
-    var message = {type: 'done', id: job.id, job: job};
-    postMessage(message);
     return;
-
-    function md5sum(file, offset, length) {
-        var chunk = file.slice(offset, offset + length);
-        var arrayBuffer = reader.readAsArrayBuffer(chunk);
-        var array = Md5.arrayBufferToArray(arrayBuffer);
-        var lengthBits = length * 8;
-        var sum = Md5.md5(array, lengthBits);
-        return sum;
-    }
 
     function finalMd5sum(array) {
         var lengthBits = array.length * 32;

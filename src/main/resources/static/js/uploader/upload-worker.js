@@ -7,13 +7,25 @@ var reader = new FileReaderSync();
 
 function loop() {
     console.log("upload worker: checking job"); // TODO cut off
-    var job = jobs.shift();
-    if (job !== undefined) {
-        processJob(job);
-        setTimeout("loop()", 0);
-    } else {
+    if (jobs.length == 0) {
         setTimeout("loop()", 500);
+        return;
     }
+
+    var job = jobs[0];
+    if (job.uploadDone) {
+        postMessage({type: 'uploadDone', id: job.id, job: job});
+        jobs.shift();
+    } else if (job.cancelled) {
+        postMessage({type: 'cancelled', id: job.id, job: job});
+        jobs.shift();
+    } else if (job.failed) {
+        postMessage({type: 'failed', id: job.id});
+        jobs.shift();
+    } else {
+        processJob(job);
+    }
+    setTimeout("loop()", 0);
 }
 
 onmessage = function(event) {
@@ -30,39 +42,39 @@ onmessage = function(event) {
     } else if (message.type === 'chunkSize') {
         console.log('upload worker: got chunkSize');
         chunkSize = message.value;
+    } else if (message.type === 'cancelJob') {
+        console.log('upload worker: got cancel job');
+        var jobId = message.jobId;
+        var job = jobs.find(function(job) { return job.id == jobId});
+        if (job !== undefined) {
+            job.cancelled = true;
+        }
     }
 };
 
 function processJob(job) {
-    var file = job.file;
-    var filePlaceHolderId = job.filePlaceHolderId;
-    var nextChunk = job.nextChunk;
-    while (nextChunk != -1) {
-        var xhr = sendChunk(file, nextChunk, filePlaceHolderId);
-        nextChunk = getNextChunkNumber(xhr, job);
-        if (nextChunk !== undefined) {
-            job.nextChunk = nextChunk;
-            var percentDone = nextChunk != -1 ? nextChunk * chunkSize * 100 / file.size : 100;
-            var message = {type: 'progress', id: job.id, percent: percentDone};
-            postMessage(message);
-        } else {
-            return;
-        }
+    if (job.nextChunk == -1) {
+        job.uploadDone = true;
+        return;
     }
 
-    // Reporting that the job is done
-    var message = {type: 'done', id: job.id};
-    postMessage(message);
-    return;
+    var xhr = sendChunk(job);
+    var nextChunk = getNextChunkNumber(xhr, job);
+    if (nextChunk !== undefined) {
+        job.nextChunk = nextChunk;
+        updateProgress(job);
+    } else {
+        job.failed = true;
+    }
 
-    function sendChunk(file, nextChunk, filePlaceHolderId) {
-        var offset = nextChunk * chunkSize;
-        var toRead = file.size >= offset + chunkSize ? chunkSize : file.size - offset;
-        var chunk = file.slice(offset, offset + toRead);
+    function sendChunk(job) {
+        var offset = job.nextChunk * chunkSize;
+        var toRead = job.file.size >= offset + chunkSize ? chunkSize : job.file.size - offset;
+        var chunk = job.file.slice(offset, offset + toRead);
 
         var formData = new FormData();
         formData.append(csrf.name, csrf.value);
-        formData.append('filePlaceHolderId', filePlaceHolderId);
+        formData.append('filePlaceHolderId', job.filePlaceHolderId);
         formData.append("chunk", chunk);
 
         var xhr = new XMLHttpRequest();
@@ -73,7 +85,7 @@ function processJob(job) {
     }
 
     function getNextChunkNumber(xhr, job) {
-        // And retrieving that placeholder's id
+        // Retrieving placeholder's id
         var status = xhr.status;
         if (status != 200) {
             console.log("Server response error");
@@ -93,6 +105,12 @@ function processJob(job) {
         var nextChunkNumber = result.response;
         return nextChunkNumber;
     }
+}
+
+function updateProgress(job) {
+    var percentDone = job.nextChunk != -1 ? job.nextChunk * chunkSize * 100 / job.file.size : 100;
+    var message = {type: 'progress', id: job.id, percent: percentDone};
+    postMessage(message);
 }
 
 loop();
