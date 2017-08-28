@@ -13,6 +13,7 @@
 
     <link rel="stylesheet" href="${appRoot}/css/upload.css">
 
+    <script src="${appRoot}/js/prototypes.js"></script>
     <script src="${appRoot}/js/http-utils.js"></script>
     <script src="${appRoot}/js/cookie-utils.js"></script>
     <script src="${appRoot}/js/file-tree.js"></script>
@@ -21,6 +22,8 @@
     <script src="${uploaderRoot}/uploader.js"></script>
 
     <script>
+        var deleteFileUrl = "${restFilesRoot}/delete";
+
         $(function() {
             Locales.appRoot = '${appRoot}';
             Locales.writeTitle("upload.caption");
@@ -39,17 +42,29 @@
             file.click();
         }
 
-        function deleteFile(url, id, name) {
+        function deleteFile(id, name) {
             var confirmed = confirm('Are You sure to delete file: ' + name + '?');
             if (confirmed) {
                 var csrf = document.getElementById("csrf");
                 var params = csrf.name + '=' + csrf.value;
-                params += '&id=' + id;
-                deleteFileOnServer(url, params, deleteFileSuccess, deleteFileError, id);
+                params += '&ids=' + id;
+                deleteFileOnServer(deleteFileUrl, params, deleteFilesSuccess, deleteFileError, id);
             }
         }
 
-        function deleteFileSuccess(id) {
+        function deleteFilesSuccess(ids) {
+            if (!Array.isArray(ids)) {
+                deleteFileFromTable(ids);
+                return;
+            }
+
+            for (var i = 0; i < ids.length; i++) {
+                var id = ids[i];
+                deleteFileFromTable(id);
+            }
+        }
+
+        function deleteFileFromTable(id) {
             var row = document.getElementById('file' + id);
             if (row != undefined) {
                 var parent = row.parentNode;
@@ -77,6 +92,44 @@
             };
             xhr.send(params);
         }
+
+        function checkBoxesToggle(that, pattern) {
+            var value = that.checked;
+            var checkboxes = $('[id^=' + pattern + ']');
+            for (var i = 0; i < checkboxes.length; i++) {
+                var checkbox = checkboxes[i];
+                checkbox.checked = value;
+            }
+        }
+
+        function deleteSelected(that, pattern) {
+            var checkboxes = $('[id^=' + pattern + ']');
+            var selectedCheckboxes = [];
+            for (var i = 0; i < checkboxes.length; i++) {
+                var checkbox = checkboxes[i];
+                if (checkbox.checked) {
+                    selectedCheckboxes.push(checkbox);
+                }
+            }
+
+            var confirmed = confirm('Are You sure to delete ' + selectedCheckboxes.length + ' file(s)?');
+            if (!confirmed) {
+                return;
+            }
+
+            var ids = [];
+            for (var i = 0; i < selectedCheckboxes.length; i++) {
+                var checkbox = selectedCheckboxes[i];
+                var idParts = checkbox.id.split('-');
+                var id = idParts.last();
+                ids.push(id);
+            }
+
+            var csrf = document.getElementById("csrf");
+            var params = csrf.name + '=' + csrf.value;
+            params += '&ids=' + ids.join(',');
+            deleteFileOnServer(deleteFileUrl, params, deleteFilesSuccess, deleteFileError, ids);
+        }
     </script>
 </head>
 <body>
@@ -90,6 +143,9 @@
                 <table>
                     <thead>
                         <tr>
+                            <th class="textAlignCenter">
+                                <input id="incomplete-checkbox_all" type="checkbox" onclick="checkBoxesToggle(this, 'incomplete-checkbox-');" />
+                            </th>
                             <th class="textAlignCenter">Filename</th>
                             <th class="textAlignCenter">Size</th>
                             <th class="textAlignCenter">Done</th>
@@ -99,17 +155,19 @@
                     <tbody>
                         <c:forEach items="${nonCompleted}" var="item">
                             <tr id="file${item.id}">
+                                <td><input id="incomplete-checkbox-${item.id}" type="checkbox" /></td>
                                 <td>${item.name}</td>
                                 <td class="textAlignRight">${NumberUtils.humanReadableSize(item.size)}</td>
                                 <td class="textAlignRight">${NumberUtils.format(100 * item.uploadedBytes / item.size, "##0")}%</td>
                                 <td>
                                     <a class="noHref" onclick="resumeDownload(${item.id})">Resume</a>
-                                    <a class="noHref" onclick="deleteFile('${restFilesRoot}/delete', ${item.id}, '${item.name}')">Delete</a>
+                                    <a class="noHref" onclick="deleteFile(${item.id}, '${item.name}')">Delete</a>
                                 </td>
                             </tr>
                         </c:forEach>
                     </tbody>
                 </table>
+                <input id="incomplete-delete-selected" type="button" value="Delete" onclick="deleteSelected(this, 'incomplete-checkbox-');" />
             </div>
         </c:if>
     </div>
@@ -137,6 +195,9 @@
                 <table>
                     <thead>
                         <tr>
+                            <th class="textAlignCenter">
+                                <input id="complete-checkbox_all" type="checkbox" onclick="checkBoxesToggle(this, 'complete-checkbox-');" />
+                            </th>
                             <th class="textAlignCenter">Filename</th>
                             <th class="textAlignCenter">Size</th>
                             <th class="textAlignCenter">Completed</th>
@@ -145,6 +206,7 @@
                     <tbody>
                         <c:forEach items="${completed}" var="item">
                             <tr id="file${item.id}">
+                                <td><input id="complete-checkbox-${item.id}" type="checkbox" /></td>
                                 <td>${item.name}</td>
                                 <td class="textAlignRight">${NumberUtils.humanReadableSize(item.size)}</td>
                                 <td>${item.lastUpdated}</td>
@@ -152,6 +214,7 @@
                         </c:forEach>
                     </tbody>
                 </table>
+                <input id="complete-delete-selected" type="button" value="Delete" onclick="deleteSelected(this, 'complete-checkbox-');" />
             </div>
         </c:if>
     </div>

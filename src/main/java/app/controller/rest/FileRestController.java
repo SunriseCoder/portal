@@ -130,14 +130,21 @@ public class FileRestController extends BaseRestController {
     }
 
     @PostMapping("delete")
-    public void deleteFile(@RequestParam("id") Long id, HttpServletRequest request, HttpServletResponse response) {
+    public void deleteFile(HttpServletRequest request, HttpServletResponse response) {
+        String idsStr = request.getParameter("ids");
         try {
-            fileStorageService.deletePlaceHolder(id);
-            auditService.log(OperationTypes.CHANGE_FILE_DELETE_PLACEHOLDER, AuditEventTypes.SUCCESSFUL, "id=" + id);
+            if (idsStr != null && !idsStr.isEmpty()) {
+                String[] idsArr = idsStr.split(",");
+                for (String idStr : idsArr) {
+                    Long id = Long.valueOf(idStr);
+                    fileStorageService.deletePlaceHolder(id);
+                }
+                auditService.log(OperationTypes.CHANGE_FILE_DELETE_PLACEHOLDER, AuditEventTypes.SUCCESSFUL, "ids=" + idsStr);
+            }
         } catch (Exception e) {
-            String message = "Error due to delete filePlaceHolder with id: " + id;
+            String message = "Error due to delete filePlaceHolder with ids: " + idsStr;
             logger.error(message, e);
-            auditService.log(OperationTypes.CHANGE_FILE_DELETE_PLACEHOLDER, AuditEventTypes.DELETE_ERROR, "id=" + id, null, e.getMessage());
+            auditService.log(OperationTypes.CHANGE_FILE_DELETE_PLACEHOLDER, AuditEventTypes.DELETE_ERROR, "ids=" + idsStr, null, e.getMessage());
         }
     }
 }
