@@ -14,13 +14,13 @@ function loop() {
 
     var job = jobs[0];
     if (job.checkSumDone) {
-        postMessage({type: 'checkSumDone', id: job.id, job: job});
+        postMessage({type: 'checkSumDone', job: job});
         jobs.shift();
     } else if (job.cancelled) {
-        postMessage({type: 'cancelled', id: job.id});
+        postMessage({type: 'cancelled', job: job});
         jobs.shift();
     } else if (job.failed) {
-        postMessage({type: 'failed', id: job.id});
+        postMessage({type: 'failed', job: job});
         jobs.shift();
     } else {
         processJob(job);
@@ -98,8 +98,7 @@ function calculateChunk(job) {
 }
 
 function updateProgress(job) {
-    var percent = job.offset * 100 / job.file.size;
-    var message = {type: 'progress', id: job.id, percent: percent};
+    var message = {type: 'progress', job: job};
     postMessage(message);
 }
 
@@ -127,7 +126,7 @@ function createFilePlaceHolder(job) {
     var status = xhr.status;
     if (status != 200) {
         console.log("Server response error");
-        var message = {type: 'failed', id: job.id};
+        var message = {type: 'failed', job: job};
         postMessage(message);
         return;
     }
@@ -135,7 +134,7 @@ function createFilePlaceHolder(job) {
     var result = JSON.parse(xhr.response);
     if (result.status !== 'Ok') {
         console.log("Create file placeholder error: " + result.error);
-        var message = {type: 'failed', id: job.id};
+        var message = {type: 'failed', job: job};
         postMessage(message);
         return;
     }

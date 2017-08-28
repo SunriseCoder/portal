@@ -14,13 +14,13 @@ function loop() {
 
     var job = jobs[0];
     if (job.uploadDone) {
-        postMessage({type: 'uploadDone', id: job.id, job: job});
+        postMessage({type: 'uploadDone', job: job});
         jobs.shift();
     } else if (job.cancelled) {
-        postMessage({type: 'cancelled', id: job.id, job: job});
+        postMessage({type: 'cancelled', job: job});
         jobs.shift();
     } else if (job.failed) {
-        postMessage({type: 'failed', id: job.id});
+        postMessage({type: 'failed', job: job});
         jobs.shift();
     } else {
         processJob(job);
@@ -89,7 +89,7 @@ function processJob(job) {
         var status = xhr.status;
         if (status != 200) {
             console.log("Server response error");
-            var message = {type: 'failed', id: job.id};
+            var message = {type: 'failed', job: job};
             postMessage(message);
             return;
         }
@@ -97,7 +97,7 @@ function processJob(job) {
         var result = JSON.parse(xhr.response);
         if (result.status !== 'Ok') {
             console.log("Chunk sending error: " + result.error);
-            var message = {type: 'failed', id: job.id};
+            var message = {type: 'failed', job: job};
             postMessage(message);
             return;
         }
@@ -108,8 +108,7 @@ function processJob(job) {
 }
 
 function updateProgress(job) {
-    var percentDone = job.nextChunk != -1 ? job.nextChunk * chunkSize * 100 / job.file.size : 100;
-    var message = {type: 'progress', id: job.id, percent: percentDone};
+    var message = {type: 'progress', job};
     postMessage(message);
 }
 

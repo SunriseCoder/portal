@@ -5,6 +5,9 @@ var Uploader = {
     createFilePlaceHolderUrl: undefined,
     uploadChunkUrl: undefined,
     deleteFileUrl: undefined,
+
+    _failedJobs: [],
+
     _checkSumWorker: undefined,
     _chunkUploadWorker: undefined,
     _jobCounter: 0,
@@ -76,9 +79,20 @@ var Uploader = {
             var cancelButton = document.createElement('button');
             td.appendChild(cancelButton);
             var cancelButtonText = document.createTextNode('Cancel');
+            cancelButton.id = 'cancel' + jobId;
             cancelButton.jobId = jobId; 
             cancelButton.appendChild(cancelButtonText);
             cancelButton.onclick = this._cancelJob;
+
+            // Retry upload button
+            var retryButton = document.createElement('button');
+            var retryButtonText = document.createTextNode('Retry');
+            retryButton.id = 'retry' + jobId;
+            retryButton.jobId = jobId;
+            retryButton.appendChild(retryButtonText);
+            retryButton.style.visibility = 'hidden';
+            retryButton.onclick = this._retryJob;
+            td.appendChild(retryButton);
 
             // Creating job object
             var job = {};
@@ -126,33 +140,64 @@ var Uploader = {
         Uploader._chunkUploadWorker.postMessage(message);
     },
 
+    _retryJob: function(event) {
+        this.style.visibility = 'hidden';
+        var jobId = this.jobId;
+        var finder = function(element) { return element.id == jobId; };
+        var job = Uploader._failedJobs.findFirstAndPop(finder);
+        if (job === undefined) {
+            return;
+        }
+
+        delete job.cancelled;
+        delete job.failed;
+        // Remove error label
+        var label = document.getElementById('label' + jobId);
+        if (label.classList.contains('errorLabel')) {
+            label.classList.remove('errorLabel');
+        }
+        // Make Cancel button active again
+        var cancelButton = document.getElementById('cancel' + jobId);
+        cancelButton.style.visibility = 'visible';
+
+        if (job.filePlaceHolderId === undefined) {
+            Uploader._checkSumWorker.postMessage(job);
+            return;
+        }
+
+        Uploader._chunkUploadWorker.postMessage(job);
+    },
+
     _checkSumWorkerMessage: function(event) {
         var message = event.data;
-        var id = message.id;
+        var job = message.job;
+        var id = job.id;
         if (message.type === 'progress') {
-            var percent = message.percent;
+            var percent = job.offset * 100 / job.file.size;
             Uploader._setJobProgress(id, percent, 'progressChecksumForeground', 'Checksum: ');
         } else if (message.type === 'cancelled') {
             Uploader._setJobCancelled(id);
         } else if (message.type === 'failed') {
+            Uploader._failedJobs.push(job);
             Uploader._setJobFailed(id);
         } else if (message.type === 'checkSumDone') {
-            var job = message.job;
-            Uploader._chunkUploadWorker.postMessage(job);
             Uploader._setJobCheckSumDone(id);
+            Uploader._chunkUploadWorker.postMessage(job);
         }
     },
 
     _chunkUploadWorkerMessage: function(event) {
         var message = event.data;
-        var id = message.id;
+        var job = message.job;
+        var id = job.id;
         if (message.type === 'progress') {
-            var percent = message.percent;
+            var percent = job.nextChunk != -1 ? job.nextChunk * Uploader.chunkSize * 100 / job.file.size : 100;
             Uploader._setJobProgress(id, percent, 'progressUploadForeground', 'Upload: ');
         } else if (message.type === 'cancelled') {
             Uploader._setJobCancelled(id);
             Uploader._deleteFileFromServer(message.job.filePlaceHolderId);
         } else if (message.type === 'failed') {
+            Uploader._failedJobs.push(job);
             Uploader._setJobFailed(id);
         } else if (message.type === 'uploadDone') {
             Uploader._setJobUploadDone(id);
@@ -177,6 +222,11 @@ var Uploader = {
         var label = document.getElementById('label' + id);
         label.classList.add("errorLabel");
         label.innerText = "Failed";
+
+        var retry = document.getElementById('retry' + id);
+        if (retry !== undefined) {
+            retry.style.visibitily = 'visible';
+        }
     },
 
     _setJobCheckSumDone: function(id) {
@@ -187,6 +237,9 @@ var Uploader = {
     _setJobUploadDone: function(id) {
         var label = document.getElementById('label' + id);
         label.innerText = "Done";
+
+        var cancelButton = document.getElementById('cancel' + id);
+        cancelButton.style.visibility = 'hidden';
     },
 
     _deleteFileFromServer(filePlaceHolderId) {
