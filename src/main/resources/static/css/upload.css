@@ -1,10 +1,29 @@
-td.progress {
-    width: 200px;
+div.uploadBlock {
+    border-color: #ddd;
+    border-width: thin;
+    border-style: dashed;
+    width: 800px;
+}
+
+div.filename {
+    color: #7af;
+    font-weight: bold;
+}
+
+div.cancelButtonDiv {
+    display: inline-block;
+}
+
+div.uploadLine {
+    display: flex;
+    flex-flow: row;
+    height: 26px;
+    width: 100%;
 }
 
 div.progressBackground {
-    background-color: #eee;
-    height: 20px;
+    flex: 1;
+    background-color: #ccc;
     width: 100%;
     position: relative;
 }
@@ -15,7 +34,7 @@ div.progressForeground {
 }
 
 div.progressChecksumForeground {
-    background-color: #aaf;
+    background-color: #88f;
 }
 
 div.progressUploadForeground {
@@ -23,16 +42,36 @@ div.progressUploadForeground {
 }
 
 div.progressLabel {
+    color: #fff;
     height: 100%;
     width: 100%;
     position: absolute;
     text-align: center;
     font-size: 100%;
-    padding-top: 3px;
-    padding-bottom: 3px;
+    font-weight: bold;
 }
 
 div.errorLabel {
     background-color: #c44;
     color: #eee;
+}
+
+div.info1 {
+    display: flex;
+    flex-flow: row;
+    padding: 5px;
+}
+
+div.titleGroup {
+    flex: 1;
+    display: flex;
+    flex-flow: row;
+}
+
+input.titleInput {
+    flex: 1
+}
+
+div.publishButtonDiv {
+    text-align: right;
 }

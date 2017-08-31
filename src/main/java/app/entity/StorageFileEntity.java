@@ -17,7 +17,15 @@ public class StorageFileEntity {
     @GeneratedValue
     private Long id;
     @Column
-    private String name;
+    private String title;
+    @Column
+    private int eventDay;
+    @Column
+    private int eventMonth;
+    @Column
+    private int eventYear;
+    @Column
+    private String filename;
     @ManyToOne
     private UserEntity uploadedBy;
     @Column
@@ -33,6 +41,8 @@ public class StorageFileEntity {
     @Column
     private boolean completed;
     @Column
+    private boolean deleted;
+    @Column
     private Date lastUpdated;
 
     public Long getId() {
@@ -43,12 +53,44 @@ public class StorageFileEntity {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getTitle() {
+        return title;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public int getEventDay() {
+        return eventDay;
+    }
+
+    public void setEventDay(int eventDay) {
+        this.eventDay = eventDay;
+    }
+
+    public int getEventMonth() {
+        return eventMonth;
+    }
+
+    public void setEventMonth(int eventMonth) {
+        this.eventMonth = eventMonth;
+    }
+
+    public int getEventYear() {
+        return eventYear;
+    }
+
+    public void setEventYear(int eventYear) {
+        this.eventYear = eventYear;
+    }
+
+    public String getFilename() {
+        return filename;
+    }
+
+    public void setFilename(String filename) {
+        this.filename = filename;
     }
 
     public UserEntity getUploadedBy() {
@@ -105,6 +147,14 @@ public class StorageFileEntity {
 
     public void setCompleted(boolean completed) {
         this.completed = completed;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 
     public Date getLastUpdated() {

@@ -11,7 +11,19 @@
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" primaryKeyName="pk_storage_files" nullable="false" />
             </column>
-            <column name="name" type="varchar(255)">
+            <column name="title" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="event_day" type="int">
+                <constraints nullable="true" />
+            </column>
+            <column name="event_month" type="int">
+                <constraints nullable="true" />
+            </column>
+            <column name="event_year" type="int">
+                <constraints nullable="true" />
+            </column>
+            <column name="filename" type="varchar(255)">
                 <constraints nullable="false" />
             </column>
             <column name="uploaded_by_id" type="bigint">
@@ -34,6 +46,9 @@
                 <constraints unique="true" uniqueConstraintName="ui_storage_files_path" nullable="false" />
             </column>
             <column name="completed" type="boolean">
+                <constraints nullable="false" />
+            </column>
+            <column name="deleted" type="boolean">
                 <constraints nullable="false" />
             </column>
             <column name="last_updated" type="datetime">

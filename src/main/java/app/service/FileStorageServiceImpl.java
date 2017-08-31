@@ -64,7 +64,7 @@ public class FileStorageServiceImpl implements FileStorageService {
     @Override
     public List<StorageFileEntity> findAllCompletedUploadedByCurrentUser() {
         UserEntity user = userService.getLoggedInUser();
-        List<StorageFileEntity> completed = repository.findByCompletedIsTrueAndUploadedBy(user);
+        List<StorageFileEntity> completed = repository.findByCompletedIsTrueAndDeletedIsFalseAndUploadedBy(user);
         return completed;
     }
 
@@ -101,7 +101,7 @@ public class FileStorageServiceImpl implements FileStorageService {
         if (!FileUtils.isValidFilename(name, 255)) {
             throw new IllegalArgumentException("Invalid file name");
         }
-        filePlaceHolderEntity.setName(name);
+        filePlaceHolderEntity.setFilename(name);
 
         // File size validation
         String sizeStr = request.getParameter("size");
@@ -317,9 +317,14 @@ public class FileStorageServiceImpl implements FileStorageService {
             throw new IllegalAccessException("User tries to delete not his own file placeholder");
         }
 
-        repository.delete(filePlaceHolder);
-        deleteFile(filePlaceHolder.getPath());
-        deleteCheckSumFile(filePlaceHolder.getPath());
-        repository.flush();
+        if (filePlaceHolder.isCompleted()) {
+            filePlaceHolder.setDeleted(true);
+            repository.saveAndFlush(filePlaceHolder);
+        } else {
+            repository.delete(filePlaceHolder);
+            deleteFile(filePlaceHolder.getPath());
+            deleteCheckSumFile(filePlaceHolder.getPath());
+            repository.flush();
+        }
     }
 }

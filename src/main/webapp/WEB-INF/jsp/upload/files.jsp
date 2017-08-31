@@ -20,6 +20,7 @@
     <script src="${appRoot}/js/jquery.js"></script>
     <script src="${appRoot}/js/locale-utils.js"></script>
     <script src="${uploaderRoot}/uploader.js"></script>
+    <script src="${uploaderRoot}/uploader-ui.js"></script>
 
     <script>
         var deleteFileUrl = "${restFilesRoot}/delete";
@@ -156,12 +157,12 @@
                         <c:forEach items="${nonCompleted}" var="item">
                             <tr id="file${item.id}">
                                 <td><input id="incomplete-checkbox-${item.id}" type="checkbox" /></td>
-                                <td>${item.name}</td>
+                                <td>${item.filename}</td>
                                 <td class="textAlignRight">${NumberUtils.humanReadableSize(item.size)}</td>
                                 <td class="textAlignRight">${NumberUtils.format(100 * item.uploadedBytes / item.size, "##0")}%</td>
                                 <td>
                                     <a class="noHref" onclick="resumeDownload(${item.id})">Resume</a>
-                                    <a class="noHref" onclick="deleteFile(${item.id}, '${item.name}')">Delete</a>
+                                    <a class="noHref" onclick="deleteFile(${item.id}, '${item.filename}')">Delete</a>
                                 </td>
                             </tr>
                         </c:forEach>
@@ -177,7 +178,7 @@
 
         <div class="starter-template">
 
-            <table id="uploadTable"></table>
+            <div id="uploadTable"></div><br />
 
             <input id="csrf" type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
             <input id="fileId" type="hidden" />
@@ -207,7 +208,7 @@
                         <c:forEach items="${completed}" var="item">
                             <tr id="file${item.id}">
                                 <td><input id="complete-checkbox-${item.id}" type="checkbox" /></td>
-                                <td>${item.name}</td>
+                                <td>${item.filename}</td>
                                 <td class="textAlignRight">${NumberUtils.humanReadableSize(item.size)}</td>
                                 <td>${item.lastUpdated}</td>
                             </tr>
