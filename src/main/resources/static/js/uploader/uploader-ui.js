@@ -78,6 +78,11 @@ UploadElementProto.createdCallback = function() {
                     '<div class="positionGroup">' +
                         'Position: <input class="positionInput" size="3" pattern="[0-9?]+" placeholder="E.g. 1" />' +
                     '</div>' +
+                '</div>' +
+                '<div class="infoLine">' +
+                    '<div class="saveButtonDiv">' +
+                        '<button class="saveButton">Save</button>' +
+                    '</div>' +
                     '<div class="publishButtonDiv">' +
                         '<button class="publishButton">Publish</button>' +
                     '</div>' +
@@ -190,7 +195,7 @@ UploadElement.prototype._setJobUploadDone = function() {
     Array.removeIfExists(label.classList, 'errorLabel');
     label.innerText = "Done";
 
-    this._cancelButton.remove();
+    this._removeCancelButton();
 }
 
 UploadElement.prototype._setJobCancelled = function() {
@@ -198,7 +203,7 @@ UploadElement.prototype._setJobCancelled = function() {
     Array.addIfNotExists(label.classList, 'errorLabel');
     label.innerText = "Cancelled";
 
-    this._cancelButton.remove();
+    this._removeCancelButton();
     this._restoreRetryButton();
 }
 
@@ -207,13 +212,23 @@ UploadElement.prototype._setJobFailed = function() {
     Array.addIfNotExists(label.classList, 'errorLabel');
     label.innerText = "Failed";
 
-    this._cancelButton.remove();
+    this._removeCancelButton();
     this._restoreRetryButton();
+}
+
+UploadElement.prototype._removeCancelButton = function() {
+    var button = $(this).find('button.cancelButton')[0];
+    button.remove();
 }
 
 UploadElement.prototype._restoreCancelButton = function() {
     var cancelButtonDiv = $(this).find('div.cancelButtonDiv')[0];
     cancelButtonDiv.appendChild(this._cancelButton);
+}
+
+UploadElement.prototype._removeRetryButton = function() {
+    var button = $(this).find('button.retryButton')[0];
+    button.remove();
 }
 
 UploadElement.prototype._restoreRetryButton = function() {
