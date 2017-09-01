@@ -311,12 +311,6 @@ public class FileStorageServiceImpl implements FileStorageService {
     }
 
     @Override
-    public void uploadFile(StorageFileEntity placeHolder, MultipartFile file) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
     @Transactional
     public void deletePlaceHolder(Long id) throws Exception {
         UserEntity user = userService.getLoggedInUser();

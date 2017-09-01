@@ -6,7 +6,6 @@ var csrf = undefined;
 var reader = new FileReaderSync();
 
 function loop() {
-    console.log("checksum worker: checking for a job"); // TODO cut off logging?
     if (jobs.length == 0) {
         setTimeout("loop()", 500);
         return;
@@ -165,7 +164,7 @@ var Md5 = {
             arrayBuffer = adjustedArray.buffer;
         }
         var array32bit = new Int32Array(arrayBuffer);
-        // TODO investigate, why Int32Array doesn't work
+        // Int32Array doesn't work, causes a wrong result
         var result = [];
         for (var i = 0; i < array32bit.length; i++) {
             result[i] = array32bit[i];

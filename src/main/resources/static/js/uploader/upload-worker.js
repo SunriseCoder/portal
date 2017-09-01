@@ -6,7 +6,6 @@ var csrf = undefined;
 var reader = new FileReaderSync();
 
 function loop() {
-    console.log("upload worker: checking job"); // TODO cut off
     if (jobs.length == 0) {
         setTimeout("loop()", 500);
         return;

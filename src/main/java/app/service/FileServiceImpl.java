@@ -11,7 +11,6 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.springframework.web.multipart.MultipartFile;
 
 import app.dao.FileRepository;
 import app.entity.FolderEntity;
@@ -20,10 +19,7 @@ import app.entity.FolderEntity;
 public class FileServiceImpl implements FileService {
     private static final Logger logger = LogManager.getLogger(FileService.class);
 
-    @Autowired
-    private FileStorageService fileStorageService;
-
-    // TODO Cut off
+    // TODO Cut off after migration process will be done
     @Autowired
     private FileRepository repository;
 
@@ -82,18 +78,6 @@ public class FileServiceImpl implements FileService {
     @Override
     public void downloadFile(HttpServletRequest request, HttpServletResponse response, String url) throws IOException {
         repository.downloadFile(request, response, url);
-    }
-
-    @Override
-    public void uploadFile(String name, MultipartFile file) throws IOException {
-        long size = file.getSize();
-        String filename = file.getName();
-        // TODO Implement
-        //StorageFileEntity placeHolder = fileStorageService.createFilePlaceHolder(filename, size);
-        //fileStorageService.uploadFile(placeHolder, file);
-
-        // TODO cut off
-        //repository.uploadFile(name, file);
     }
 
     @Override

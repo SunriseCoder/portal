@@ -16,7 +16,6 @@ public interface FileStorageService {
     List<StorageFileEntity> findAllCompletedUploadedByCurrentUser();
     StorageFileEntity getOrCreateFilePlaceHolder(HttpServletRequest request) throws Exception;
     int uploadFileChunk(MultipartFile chunk, String filePlaceHolderId) throws Exception;
-    void uploadFile(StorageFileEntity placeHolder, MultipartFile file);
     void deletePlaceHolder(Long id) throws Exception;
     long getFreeSpace() throws IOException;
 }

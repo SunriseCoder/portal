@@ -22,13 +22,11 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import app.controller.rest.BaseRestController.SimpleResult.Status;
 import app.entity.FolderEntity;
 import app.entity.StorageFileEntity;
-import app.entity.UserEntity;
 import app.enums.AuditEventTypes;
 import app.enums.OperationTypes;
 import app.service.AuditService;
 import app.service.FileService;
 import app.service.FileStorageService;
-import app.service.UserService;
 import app.util.HttpUtils;
 import app.util.LogUtils;
 import app.util.StringUtils;
@@ -44,8 +42,6 @@ public class FileRestController extends BaseRestController {
     private FileService fileService;
     @Autowired
     private FileStorageService fileStorageService;
-    @Autowired
-    private UserService userService;
 
     @RequestMapping("/list")
     public FolderEntity list(HttpServletRequest request) throws Exception {
@@ -106,26 +102,6 @@ public class FileRestController extends BaseRestController {
             logger.error(message, e);
             auditService.log(OperationTypes.CHANGE_FILE_UPLOAD_CHUNK, AuditEventTypes.SAVING_ERROR, message, auditObject, e.getMessage());
             return new SimpleResult(Status.Error, message);
-        }
-    }
-
-    // TODO cut off or keep old uploader?
-    @PostMapping("upload")
-    public void uploadFile(@RequestParam("file") MultipartFile file,
-            HttpServletRequest request, HttpServletResponse response) {
-
-        UserEntity user = userService.getLoggedInUser();
-        String name = user == null ? "" : user.getLogin();
-        LogUtils.logUploadRequest(logger, request, name, file);
-
-        String auditObject = StringUtils.format("File[name={0},size={1}]", file.getName(), file.getSize());
-        try {
-            fileService.uploadFile(name, file);
-            auditService.log(OperationTypes.CHANGE_FILE_UPLOAD, AuditEventTypes.SUCCESSFUL, null, auditObject);
-        } catch (IOException e) {
-            logger.error(e);
-            auditService.log(OperationTypes.CHANGE_FILE_UPLOAD, AuditEventTypes.SAVING_ERROR, null, auditObject, e.getMessage());
-            HttpUtils.sendResponseError(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
     }
 
