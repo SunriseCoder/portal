@@ -68,9 +68,16 @@ UploadElementProto.createdCallback = function() {
                     '</div>' +
                 '</div>' +
 
-                '<div class="info1">' +
+                '<div class="infoLine">' +
                     '<div class="titleGroup">Title: <input class="titleInput" /></div>' +
-                    '<div class="dateGroup">Date: <input class="dateInput" size="10" /></div>' +
+                '</div>' +
+                '<div class="infoLine">' +
+                    '<div class="dateGroup">' +
+                        'Date: <input class="dateInput" size="10" pattern="[0-9?]{2}\.[0-9?]{2}\.[0-9?]{4}" placeholder="E.g. 25.??.1998" />' +
+                    '</div>' +
+                    '<div class="positionGroup">' +
+                        'Position: <input class="positionInput" size="3" pattern="[0-9?]+" placeholder="E.g. 1" />' +
+                    '</div>' +
                     '<div class="publishButtonDiv">' +
                         '<button class="publishButton">Publish</button>' +
                     '</div>' +
@@ -125,10 +132,28 @@ Object.defineProperty(UploadElement.prototype, 'filename', {
         return this._filename;
     },
 
-    set: function(newValue) {
-        this._filename = newValue;
+    set: function(filename) {
+        this._filename = filename;
         var element = $(this).find('div.filename')[0];
         element.innerText = this._filename;
+
+        var filenameWithoutExt = filename.substr(0, filename.lastIndexOf('.'));
+        var re = /^([0-9]{8})[_]*([0-9]*)[\s\-\_]*(.*)$/;
+        var groups = filenameWithoutExt.match(re);
+        if (groups !== null) {
+            var date = groups[1];
+            date = date.substr(6, 2) + '.' + date.substr(4, 2) + '.' + date.substr(0, 4);
+            $(this).find('input.dateInput')[0].value = date;
+            var position = groups[2];
+            if (position != '') {
+                while (position.startsWith('0') && position.length > 1) {
+                    position = position.substr(1, position.length - 1);
+                }
+                $(this).find('input.positionInput')[0].value = position;
+            }
+            var title = groups[3];
+            $(this).find('input.titleInput')[0].value = title;
+        }
     }
 });
 

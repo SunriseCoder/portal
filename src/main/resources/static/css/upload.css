@@ -56,7 +56,7 @@ div.errorLabel {
     color: #eee;
 }
 
-div.info1 {
+div.infoLine {
     display: flex;
     flex-flow: row;
     padding: 5px;
