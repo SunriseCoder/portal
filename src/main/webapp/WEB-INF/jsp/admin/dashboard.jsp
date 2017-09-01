@@ -35,7 +35,24 @@
             </c:if>
 
             <c:if test="${not empty user && user.hasPermission('ADMIN_DASHBOARD')}">
-                <p>Secret block here</p>
+                <h4>System information</h4>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Parameter</th>
+                            <th>Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Free space:</td>
+                            <td>
+                                <c:if test="${not empty freeSpace}">${freeSpace}</c:if>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </c:if>
         </div>
     </div>

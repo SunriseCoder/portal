@@ -31,6 +31,11 @@
             "description": "Maximal supported chunk size for file upload"
         },
         {
+            "name": "files.storage.min-free-space-on-disk",
+            "type": "java.lang.Long",
+            "description": "Minimal free space on the storage disk, reserved for the system"
+        },
+        {
             "name": "files.filesystem",
             "type": "java.lang.String",
             "description": "Relative path to unsorted file archive root"

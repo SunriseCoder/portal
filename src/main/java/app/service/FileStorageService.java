@@ -1,5 +1,6 @@
 package app.service;
 
+import java.io.IOException;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,4 +18,5 @@ public interface FileStorageService {
     int uploadFileChunk(MultipartFile chunk, String filePlaceHolderId) throws Exception;
     void uploadFile(StorageFileEntity placeHolder, MultipartFile file);
     void deletePlaceHolder(Long id) throws Exception;
+    long getFreeSpace() throws IOException;
 }

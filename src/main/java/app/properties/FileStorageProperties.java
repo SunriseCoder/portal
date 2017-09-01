@@ -15,6 +15,8 @@ public class FileStorageProperties {
     private long minChunkSize;
     @Value("${files.storage.max-chunk-size}")
     private long maxChunkSize;
+    @Value("${files.storage.min-free-space-on-disk}")
+    private long minFreeSpaceOnDisk;
 
     public String getStoragePath() {
         return storagePath;
@@ -34,5 +36,9 @@ public class FileStorageProperties {
 
     public long getMaxChunkSize() {
         return maxChunkSize;
+    }
+
+    public long getMinFreeSpaceOnDisk() {
+        return minFreeSpaceOnDisk;
     }
 }

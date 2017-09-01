@@ -94,6 +94,8 @@ public class FileStorageServiceImpl implements FileStorageService {
 
     @Transactional
     private StorageFileEntity createFilePlaceHolder(HttpServletRequest request, UserEntity user) throws Exception {
+        checkFreeSpace();
+
         StorageFileEntity filePlaceHolderEntity = new StorageFileEntity();
 
         // File name validation
@@ -154,6 +156,7 @@ public class FileStorageServiceImpl implements FileStorageService {
     @Override
     @Transactional
     public int uploadFileChunk(MultipartFile chunk, String filePlaceHolderIdString) throws Exception {
+        checkFreeSpace();
         // Checking that filePlaceHolderId is a number
         boolean valid = NumberUtils.isValidLong(filePlaceHolderIdString);
         if (!valid) {
@@ -202,6 +205,14 @@ public class FileStorageServiceImpl implements FileStorageService {
         repository.saveAndFlush(filePlaceHolder);
 
         return uploadedChunks + 1;
+    }
+
+    private void checkFreeSpace() throws IOException {
+        long actualFreeSpace = getFreeSpace();
+        long minFreeSpace = properties.getMinFreeSpaceOnDisk();
+        if (actualFreeSpace < minFreeSpace) {
+            throw new IOException("Storage disk space quota exceeded");
+        }
     }
 
     private void checkWholeFile(StorageFileEntity filePlaceHolder, File file) throws Exception {
@@ -326,5 +337,13 @@ public class FileStorageServiceImpl implements FileStorageService {
             deleteCheckSumFile(filePlaceHolder.getPath());
             repository.flush();
         }
+    }
+
+    @Override
+    public long getFreeSpace() throws IOException {
+        String storagePath = properties.getStoragePath();
+        File storageFolder = new File(storagePath);
+        long freeSpace = storageFolder.getFreeSpace();
+        return freeSpace;
     }
 }
