@@ -18,6 +18,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import app.dao.StorageFileRepository;
+import app.dto.FileInfoDTO;
 import app.entity.StorageFileEntity;
 import app.entity.UserEntity;
 import app.properties.FileStorageProperties;
@@ -308,6 +309,20 @@ public class FileStorageServiceImpl implements FileStorageService {
         byte[] subArray = new byte[length];
         System.arraycopy(array, start, subArray, 0, length);
         return subArray;
+    }
+
+    @Override
+    @Transactional
+    public void updateFileInfo(FileInfoDTO fileInfo) {
+        Long id = fileInfo.getId();
+        StorageFileEntity filePlaceHolder = repository.findOne(id);
+
+        filePlaceHolder.setTitle(fileInfo.getTitle());
+        filePlaceHolder.setEventDay(fileInfo.getEventDay());
+        filePlaceHolder.setEventMonth(fileInfo.getEventMonth());
+        filePlaceHolder.setEventYear(fileInfo.getEventYear());
+
+        repository.saveAndFlush(filePlaceHolder);
     }
 
     @Override

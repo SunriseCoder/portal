@@ -81,6 +81,13 @@
             <column name="severity" valueNumeric="0" />
         </insert>
 
+        <insert tableName="e_operation_types">
+            <column name="id" value="55" />
+            <column name="name" value="CHANGE_FILE_UPDATE_INFO" />
+            <column name="comment" value="Updating file placeholder's information" />
+            <column name="severity" valueNumeric="0" />
+        </insert>
+
     </changeSet>
 
 </databaseChangeLog>

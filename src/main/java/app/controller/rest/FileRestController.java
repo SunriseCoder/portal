@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import app.controller.rest.BaseRestController.SimpleResult.Status;
+import app.dto.FileInfoDTO;
 import app.entity.FolderEntity;
 import app.entity.StorageFileEntity;
 import app.enums.AuditEventTypes;
@@ -121,6 +122,20 @@ public class FileRestController extends BaseRestController {
             String message = "Error due to delete filePlaceHolder with ids: " + idsStr;
             logger.error(message, e);
             auditService.log(OperationTypes.CHANGE_FILE_DELETE_PLACEHOLDER, AuditEventTypes.DELETE_ERROR, "ids=" + idsStr, null, e.getMessage());
+        }
+    }
+
+    @PostMapping("save-info")
+    public void saveFileInfo(HttpServletRequest request, HttpServletResponse response) {
+        String idStr = request.getParameter("id");
+        try {
+            FileInfoDTO fileInfo = FileInfoDTO.fromRequest(request);
+            fileStorageService.updateFileInfo(fileInfo);
+            auditService.log(OperationTypes.CHANGE_FILE_UPDATE_INFO, AuditEventTypes.SUCCESSFUL, fileInfo.toString());
+        } catch (Exception e) {
+            String message = "Error due to update filePlaceHolder info with id: " + idStr;
+            logger.error(message, e);
+            auditService.log(OperationTypes.CHANGE_FILE_UPDATE_INFO, AuditEventTypes.SAVING_ERROR, "id=" + idStr, null, e.getMessage());
         }
     }
 }

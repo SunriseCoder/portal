@@ -5,6 +5,11 @@ import java.text.DecimalFormat;
 public class NumberUtils {
     private static final String SIZES_ABBREVIATION = "kMGTPE";
 
+    public static boolean isValidInt(String string) {
+        boolean valid = isValidLong(string, Integer.MIN_VALUE, Integer.MAX_VALUE);
+        return valid;
+    }
+
     public static boolean isValidLong(String string) {
         return isValidLong(string, Long.MIN_VALUE, Long.MAX_VALUE);
     }

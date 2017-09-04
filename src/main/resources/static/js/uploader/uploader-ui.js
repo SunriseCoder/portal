@@ -10,9 +10,11 @@ UploadTable.prototype.setJobProgress = function(jobId, stage, percent) {
     }
 };
 
-UploadTable.prototype.setJobCheckSumDone = function(jobId) {
+UploadTable.prototype.setJobCheckSumDone = function(job) {
+    var jobId = job.id;
     var element = this._findByJobId(jobId);
     if (element !== undefined) {
+        element.job = job;
         element._setJobCheckSumDone();
     }
 }
@@ -116,6 +118,30 @@ UploadElementProto.createdCallback = function() {
         }
     }
     UploadElementProto._retryButton.remove();
+
+    UploadElementProto._saveButton = $(this).find('button.saveButton')[0];
+    UploadElementProto._saveButton.onclick = function(event) {
+        var uploadElement = UploadElement.findUploadElement(this);
+        var csrf = document.getElementById("csrf");
+        var job = uploadElement.job;
+        var params = csrf.name + '=' + csrf.value +
+                '&id=' + job.filePlaceHolderId +
+                '&title=' + $(uploadElement).find('input.titleInput')[0].value +
+                '&date=' + $(uploadElement).find('input.dateInput')[0].value +
+                '&position=' + $(uploadElement).find('input.positionInput')[0].value;
+        var url = Uploader.saveFileInfoUrl;
+        HttpUtils.post(url, params, true, saveOk, saveError, this);
+
+        function saveOk(event) {
+            console.log(1);
+            // TODO make circle - save -> saved -> changed -> save button is active again
+        }
+
+        function saveError(event) {
+            console.log(2);
+            // TODO sign somehow that the error has been occurred
+        }
+    }
 };
 
 var UploadElement = document.registerElement('upload-element', { prototype: UploadElementProto, extends: 'tr' });
@@ -129,6 +155,7 @@ UploadElement.findUploadElement = function(element) {
     }
 }
 
+UploadElement.prototype.job = undefined;
 UploadElement.prototype.jobId = undefined;
 UploadElement.prototype._filename = undefined;
 

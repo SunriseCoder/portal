@@ -34,6 +34,7 @@
             Uploader.createFilePlaceholderUrl = "${restFilesRoot}/create";
             Uploader.uploadChunkUrl = "${restFilesRoot}/upload-chunk";
             Uploader.deleteFileUrl = "${restFilesRoot}/delete";
+            Uploader.saveFileInfoUrl = "${restFilesRoot}/save-info";
         });
 
         function resumeDownload(id) {

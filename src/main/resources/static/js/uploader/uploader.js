@@ -74,6 +74,7 @@ var Uploader = {
             if (fileId !== 'undefined') {
                 job.fileId = fileId;
             }
+            uploadElement.job = job;
             this._checkSumWorker.postMessage(job);
         }
     },
@@ -121,7 +122,7 @@ var Uploader = {
             Uploader._failedJobs.push(job);
             Uploader._uploadTable.setJobFailed(id);
         } else if (message.type === 'checkSumDone') {
-            Uploader._uploadTable.setJobCheckSumDone(id);
+            Uploader._uploadTable.setJobCheckSumDone(job);
             Uploader._chunkUploadWorker.postMessage(job);
         }
     },
