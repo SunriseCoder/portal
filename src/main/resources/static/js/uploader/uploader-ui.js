@@ -123,7 +123,11 @@ UploadElementProto.createdCallback = function() {
     UploadElementProto._saveButton.onclick = function(event) {
         var target = event.target;
         target.disabled = true;
+
         Array.removeIfExists(target.classList, 'error');
+        Array.removeIfExists(target.classList, 'success');
+        Array.addIfNotExists(target.classList, 'saving');
+
         var uploadElement = UploadElement.findUploadElement(this);
         var csrf = document.getElementById("csrf");
         var job = uploadElement.job;
@@ -141,11 +145,17 @@ UploadElementProto.createdCallback = function() {
             updateDefaultValue(uploadElement, 'input.dateInput');
             updateDefaultValue(uploadElement, 'input.positionInput');
             uploadElement._checkUnsavedChanges(target);
+
+            var saveButton = $(uploadElement).find('button.saveButton')[0];
+            Array.addIfNotExists(saveButton.classList, 'success');
+            Array.removeIfExists(saveButton.classList, 'saving');
         }
 
         function saveError(target) {
             var saveButton = $(uploadElement).find('button.saveButton')[0];
             saveButton.disabled = false;
+
+            Array.removeIfExists(saveButton.classList, 'saving');
             Array.addIfNotExists(saveButton.classList, 'error');
         }
 
@@ -173,6 +183,9 @@ UploadElementProto.createdCallback = function() {
         var infoChanged = titleChanged || dateChanged || positionChanged;
         var saveButton = $(uploadElement).find('button.saveButton')[0];
         saveButton.disabled = !infoChanged;
+
+        Array.removeIfExists(saveButton.classList, 'success');
+        Array.removeIfExists(saveButton.classList, 'error');
     }
     $(this).find('input.titleInput')[0].onchange = UploadElementProto._checkUnsavedChanges;
     $(this).find('input.titleInput')[0].onkeyup = UploadElementProto._checkUnsavedChanges;

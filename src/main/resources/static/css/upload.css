@@ -76,7 +76,25 @@ div.publishButtonDiv {
     text-align: right;
 }
 
+button.saving {
+    background-image: url("/images/loading.png");
+    background-repeat: no-repeat;
+    background-position: right;
+    padding-right: 20px;
+}
+
+button.success {
+    background-image: url("/images/apply.png");
+    background-repeat: no-repeat;
+    background-position: right;
+    padding-right: 20px;
+}
+
 button.error {
     background-color: #c44;
     color: #ddd;
+    background-image: url("/images/delete.png");
+    background-repeat: no-repeat;
+    background-position: right;
+    padding-right: 20px;
 }
