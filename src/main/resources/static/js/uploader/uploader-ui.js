@@ -121,6 +121,9 @@ UploadElementProto.createdCallback = function() {
 
     UploadElementProto._saveButton = $(this).find('button.saveButton')[0];
     UploadElementProto._saveButton.onclick = function(event) {
+        var target = event.target;
+        target.disabled = true;
+        Array.removeIfExists(target.classList, 'error');
         var uploadElement = UploadElement.findUploadElement(this);
         var csrf = document.getElementById("csrf");
         var job = uploadElement.job;
@@ -132,16 +135,51 @@ UploadElementProto.createdCallback = function() {
         var url = Uploader.saveFileInfoUrl;
         HttpUtils.post(url, params, true, saveOk, saveError, this);
 
-        function saveOk(event) {
-            console.log(1);
-            // TODO make circle - save -> saved -> changed -> save button is active again
+        function saveOk(target) {
+            var uploadElement = UploadElement.findUploadElement(target);
+            updateDefaultValue(uploadElement, 'input.titleInput');
+            updateDefaultValue(uploadElement, 'input.dateInput');
+            updateDefaultValue(uploadElement, 'input.positionInput');
+            uploadElement._checkUnsavedChanges(target);
         }
 
-        function saveError(event) {
-            console.log(2);
-            // TODO sign somehow that the error has been occurred
+        function saveError(target) {
+            var saveButton = $(uploadElement).find('button.saveButton')[0];
+            saveButton.disabled = false;
+            Array.addIfNotExists(saveButton.classList, 'error');
+        }
+
+        function updateDefaultValue(parent, pattern) {
+            var value = $(parent).find(pattern)[0].value;
+            $(parent).find(pattern)[0].defaultValue = value;
         }
     }
+
+    UploadElementProto._infoChanged = false;
+    UploadElementProto._checkUnsavedChanges = function(target) {
+        if (target.target !== undefined) {
+            target = target.target;
+        }
+        var uploadElement = UploadElement.findUploadElement(target);
+        var titleInput = $(uploadElement).find('input.titleInput')[0];
+        var titleChanged = titleInput.defaultValue !== titleInput.value;
+
+        var dateInput = $(uploadElement).find('input.dateInput')[0];
+        var dateChanged = dateInput.defaultValue !== dateInput.value;
+
+        var positionInput = $(uploadElement).find('input.positionInput')[0];
+        var positionChanged = positionInput.defaultValue !== positionInput.value;
+
+        var infoChanged = titleChanged || dateChanged || positionChanged;
+        var saveButton = $(uploadElement).find('button.saveButton')[0];
+        saveButton.disabled = !infoChanged;
+    }
+    $(this).find('input.titleInput')[0].onchange = UploadElementProto._checkUnsavedChanges;
+    $(this).find('input.titleInput')[0].onkeyup = UploadElementProto._checkUnsavedChanges;
+    $(this).find('input.dateInput')[0].onchange = UploadElementProto._checkUnsavedChanges;
+    $(this).find('input.dateInput')[0].onkeyup = UploadElementProto._checkUnsavedChanges;
+    $(this).find('input.positionInput')[0].onchange = UploadElementProto._checkUnsavedChanges;
+    $(this).find('input.positionInput')[0].onkeyup = UploadElementProto._checkUnsavedChanges;
 };
 
 var UploadElement = document.registerElement('upload-element', { prototype: UploadElementProto, extends: 'tr' });

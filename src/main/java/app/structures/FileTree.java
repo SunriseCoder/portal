@@ -204,7 +204,11 @@ public class FileTree {
         }
 
         private String getParentPath(FolderNode parent) {
-            String path = parent == null ? "" : parent.name + "/";
+            if (parent == null) {
+                return "";
+            }
+
+            String path = getParentPath(parent.parent) + parent.name + "/";
             return path;
         }
 

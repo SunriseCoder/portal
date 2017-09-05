@@ -75,3 +75,8 @@ input.titleInput {
 div.publishButtonDiv {
     text-align: right;
 }
+
+button.error {
+    background-color: #c44;
+    color: #ddd;
+}

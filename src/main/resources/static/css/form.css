@@ -103,3 +103,7 @@ div.wide-page {
 .textAlignRight {
     text-align: right;
 }
+
+button:disabled {
+    color: graytext;
+}

@@ -11,6 +11,7 @@
 <head>
     <title>Upload</title>
 
+    <link rel="stylesheet" href="${appRoot}/css/form.css">
     <link rel="stylesheet" href="${appRoot}/css/upload.css">
 
     <script src="${appRoot}/js/prototypes.js"></script>
