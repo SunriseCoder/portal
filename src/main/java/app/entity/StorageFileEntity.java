@@ -41,6 +41,8 @@ public class StorageFileEntity {
     @Column
     private boolean completed;
     @Column
+    private boolean published;
+    @Column
     private boolean deleted;
     @Column
     private Date lastUpdated;
@@ -147,6 +149,14 @@ public class StorageFileEntity {
 
     public void setCompleted(boolean completed) {
         this.completed = completed;
+    }
+
+    public boolean isPublished() {
+        return published;
+    }
+
+    public void setPublished(boolean published) {
+        this.published = published;
     }
 
     public boolean isDeleted() {

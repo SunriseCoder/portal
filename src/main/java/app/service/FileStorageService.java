@@ -14,6 +14,7 @@ import app.entity.StorageFileEntity;
 @Service
 public interface FileStorageService {
     List<StorageFileEntity> findAllNonCompletedUploadedByCurrentUser();
+    List<StorageFileEntity> findAllNonPublishedUploadedByCurrentUser();
     List<StorageFileEntity> findAllCompletedUploadedByCurrentUser();
     StorageFileEntity getOrCreateFilePlaceHolder(HttpServletRequest request) throws Exception;
     int uploadFileChunk(MultipartFile chunk, String filePlaceHolderId) throws Exception;

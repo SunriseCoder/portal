@@ -48,6 +48,9 @@
             <column name="completed" type="boolean">
                 <constraints nullable="false" />
             </column>
+            <column name="published" type="boolean">
+                <constraints nullable="false" />
+            </column>
             <column name="deleted" type="boolean">
                 <constraints nullable="false" />
             </column>
