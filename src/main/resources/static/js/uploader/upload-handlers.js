@@ -1,4 +1,4 @@
-var UploaderController = {
+var DeleteFileHandler = {
     deleteFileUrl: undefined,
 
     checkBoxesToggle: function(that, pattern) {

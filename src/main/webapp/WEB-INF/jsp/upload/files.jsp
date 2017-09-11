@@ -22,7 +22,7 @@
     <script src="${appRoot}/js/locale-utils.js"></script>
     <script src="${uploaderRoot}/uploader.js"></script>
     <script src="${uploaderRoot}/uploader-ui.js"></script>
-    <script src="${uploaderRoot}/uploader-controller.js"></script>
+    <script src="${uploaderRoot}/upload-handlers.js"></script>
 
     <script>
         $(function() {
@@ -36,7 +36,7 @@
             Uploader.deleteFileUrl = "${restFilesRoot}/delete";
             Uploader.saveFileInfoUrl = "${restFilesRoot}/save-info";
 
-            UploaderController.deleteFileUrl = "${restFilesRoot}/delete";
+            DeleteFileHandler.deleteFileUrl = "${restFilesRoot}/delete";
         });
     </script>
 </head>
@@ -54,7 +54,7 @@
                     <thead>
                         <tr>
                             <th class="textAlignCenter">
-                                <input id="incomplete-checkbox_all" type="checkbox" onclick="UploaderController.checkBoxesToggle(this, 'incomplete-checkbox-');" />
+                                <input id="incomplete-checkbox_all" type="checkbox" onclick="DeleteFileHandler.checkBoxesToggle(this, 'incomplete-checkbox-');" />
                             </th>
                             <th class="textAlignCenter">Filename</th>
                             <th class="textAlignCenter">Size</th>
@@ -70,14 +70,14 @@
                                 <td class="textAlignRight">${NumberUtils.humanReadableSize(item.size)}</td>
                                 <td class="textAlignRight">${NumberUtils.format(100 * item.uploadedBytes / item.size, "##0")}%</td>
                                 <td>
-                                    <a class="noHref" onclick="UploaderController.resumeDownload(${item.id})">Resume</a>
-                                    <a class="noHref" onclick="UploaderController.deleteFile(${item.id}, '${item.filename}')">Delete</a>
+                                    <a class="noHref" onclick="DeleteFileHandler.resumeDownload(${item.id})">Resume</a>
+                                    <a class="noHref" onclick="DeleteFileHandler.deleteFile(${item.id}, '${item.filename}')">Delete</a>
                                 </td>
                             </tr>
                         </c:forEach>
                     </tbody>
                 </table>
-                <input id="incomplete-delete-selected" type="button" value="Delete" onclick="UploaderController.deleteSelected(this, 'incomplete-checkbox-');" />
+                <input id="incomplete-delete-selected" type="button" value="Delete" onclick="DeleteFileHandler.deleteSelected(this, 'incomplete-checkbox-');" />
             </div>
         </c:if>
     </div>
@@ -108,7 +108,7 @@
                     <thead>
                         <tr>
                             <th class="textAlignCenter">
-                                <input id="complete-checkbox_all" type="checkbox" onclick="UploaderController.checkBoxesToggle(this, 'complete-checkbox-');" />
+                                <input id="complete-checkbox_all" type="checkbox" onclick="DeleteFileHandler.checkBoxesToggle(this, 'complete-checkbox-');" />
                             </th>
                             <th class="textAlignCenter">Filename</th>
                             <th class="textAlignCenter">Size</th>
@@ -126,7 +126,7 @@
                         </c:forEach>
                     </tbody>
                 </table>
-                <input id="complete-delete-selected" type="button" value="Delete" onclick="UploaderController.deleteSelected(this, 'complete-checkbox-');" />
+                <input id="complete-delete-selected" type="button" value="Delete" onclick="DeleteFileHandler.deleteSelected(this, 'complete-checkbox-');" />
             </div>
         </c:if>
     </div>
@@ -142,7 +142,7 @@
                     <thead>
                         <tr>
                             <th class="textAlignCenter">
-                                <input id="complete-checkbox_all" type="checkbox" onclick="UploaderController.checkBoxesToggle(this, 'complete-checkbox-');" />
+                                <input id="complete-checkbox_all" type="checkbox" onclick="DeleteFileHandler.checkBoxesToggle(this, 'complete-checkbox-');" />
                             </th>
                             <th class="textAlignCenter">Filename</th>
                             <th class="textAlignCenter">Size</th>
@@ -160,7 +160,7 @@
                         </c:forEach>
                     </tbody>
                 </table>
-                <input id="complete-delete-selected" type="button" value="Delete" onclick="UploaderController.deleteSelected(this, 'complete-checkbox-');" />
+                <input id="complete-delete-selected" type="button" value="Delete" onclick="DeleteFileHandler.deleteSelected(this, 'complete-checkbox-');" />
             </div>
         </c:if>
     </div>
