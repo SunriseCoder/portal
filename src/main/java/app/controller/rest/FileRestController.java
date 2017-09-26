@@ -138,4 +138,40 @@ public class FileRestController extends BaseRestController {
             auditService.log(OperationTypes.CHANGE_FILE_UPDATE_INFO, AuditEventTypes.SAVING_ERROR, "id=" + idStr, null, e.getMessage());
         }
     }
+
+    @PostMapping("publish")
+    public void publishFile(HttpServletRequest request, HttpServletResponse response) {
+        String idStr = request.getParameter("id");
+        try {
+            Long id = Long.parseLong(idStr);
+            fileStorageService.updateFileVisibility(id, true);
+            auditService.log(OperationTypes.CHANGE_FILE_PUBLISH, AuditEventTypes.SUCCESSFUL, idStr);
+        } catch (SecurityException e) {
+            String message = "Error due to publish filePlaceHolder with id: " + idStr;
+            logger.error(message, e);
+            auditService.log(OperationTypes.CHANGE_FILE_PUBLISH, AuditEventTypes.SUSPICIOUS_ACTIVITY, "id=" + idStr, null, e.getMessage());
+        } catch (Exception e) {
+            String message = "Error due to publish filePlaceHolder with id: " + idStr;
+            logger.error(message, e);
+            auditService.log(OperationTypes.CHANGE_FILE_PUBLISH, AuditEventTypes.SAVING_ERROR, "id=" + idStr, null, e.getMessage());
+        }
+    }
+
+    @PostMapping("unpublish")
+    public void unpublishFile(HttpServletRequest request, HttpServletResponse response) {
+        String idStr = request.getParameter("id");
+        try {
+            Long id = Long.parseLong(idStr);
+            fileStorageService.updateFileVisibility(id, false);
+            auditService.log(OperationTypes.CHANGE_FILE_UNPUBLISH, AuditEventTypes.SUCCESSFUL, idStr);
+        } catch (SecurityException e) {
+            String message = "Error due to unpublish filePlaceHolder with id: " + idStr;
+            logger.error(message, e);
+            auditService.log(OperationTypes.CHANGE_FILE_UNPUBLISH, AuditEventTypes.SUSPICIOUS_ACTIVITY, "id=" + idStr, null, e.getMessage());
+        } catch (Exception e) {
+            String message = "Error due to unpublish filePlaceHolder with id: " + idStr;
+            logger.error(message, e);
+            auditService.log(OperationTypes.CHANGE_FILE_UNPUBLISH, AuditEventTypes.SAVING_ERROR, "id=" + idStr, null, e.getMessage());
+        }
+    }
 }

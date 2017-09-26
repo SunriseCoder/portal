@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
+import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 
@@ -21,6 +22,7 @@ import app.dao.StorageFileRepository;
 import app.dto.FileInfoDTO;
 import app.entity.StorageFileEntity;
 import app.entity.UserEntity;
+import app.enums.Permissions;
 import app.properties.FileStorageProperties;
 import app.structures.FileTree;
 import app.structures.FileTree.FileNode;
@@ -330,6 +332,24 @@ public class FileStorageServiceImpl implements FileStorageService {
         filePlaceHolder.setEventYear(fileInfo.getEventYear());
 
         repository.saveAndFlush(filePlaceHolder);
+    }
+
+    @Override
+    @Transactional
+    public void updateFileVisibility(Long id, boolean isPublic) {
+        StorageFileEntity filePlaceHolder = repository.findOne(id);
+        if (filePlaceHolder == null) {
+            throw new EntityNotFoundException(String.valueOf(id));
+        }
+
+        UserEntity user = userService.getLoggedInUser();
+        UserEntity uploadedBy = filePlaceHolder.getUploadedBy();
+        if (!uploadedBy.getId().equals(user.getId()) && !user.hasPermission(Permissions.ADMIN_FILES_PUBLISH)) {
+            throw new SecurityException("Insufficient permissions");
+        }
+
+        filePlaceHolder.setPublished(isPublic);
+        repository.save(filePlaceHolder);
     }
 
     @Override

@@ -48,7 +48,7 @@
 
     <div class="container">
         <c:if test="${nonCompleted.size() > 0}">
-            <h3>Incomplete uploads:</h3>
+            <h3>Incompletely uploaded files:</h3>
 
             <div class="starter-template">
                 <table>
@@ -102,7 +102,7 @@
 
     <div class="container">
         <c:if test="${nonPublished.size() > 0}">
-            <h3>Non-published:</h3>
+            <h3>Non-published files:</h3>
 
             <div class="starter-template">
                 <table>
@@ -136,7 +136,7 @@
 
     <div class="container">
         <c:if test="${completed.size() > 0}">
-            <h3>Upload history:</h3>
+            <h3>Published files:</h3>
 
             <div class="starter-template">
                 <table>

@@ -19,6 +19,7 @@ public interface FileStorageService {
     StorageFileEntity getOrCreateFilePlaceHolder(HttpServletRequest request) throws Exception;
     int uploadFileChunk(MultipartFile chunk, String filePlaceHolderId) throws Exception;
     void updateFileInfo(FileInfoDTO fileInfo);
+    void updateFileVisibility(Long id, boolean isPublic);
     void deletePlaceHolder(Long id) throws Exception;
     long getFreeSpace() throws IOException;
 }

@@ -58,13 +58,13 @@ var DeleteFileHandler = {
 
     _deleteFilesSuccess: function(ids) {
         if (!Array.isArray(ids)) {
-            UploaderController._deleteFileFromTable(ids);
+            DeleteFileHandler._deleteFileFromTable(ids);
             return;
         }
 
         for (var i = 0; i < ids.length; i++) {
             var id = ids[i];
-            UploaderController._deleteFileFromTable(id);
+            DeleteFileHandler._deleteFileFromTable(id);
         }
     },
 

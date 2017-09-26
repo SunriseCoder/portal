@@ -148,7 +148,7 @@ var Uploader = {
     _deleteFileFromServer(filePlaceHolderId) {
         var csrf = document.getElementById("csrf");
         var params = csrf.name + '=' + csrf.value;
-        params += '&id=' + filePlaceHolderId;
+        params += '&ids=' + filePlaceHolderId;
         HttpUtils.post(Uploader.deleteFileUrl, params, true);
     }
 }

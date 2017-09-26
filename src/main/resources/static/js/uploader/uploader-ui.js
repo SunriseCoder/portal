@@ -320,7 +320,6 @@ UploadElement.prototype._setJobCancelled = function() {
     label.innerText = "Cancelled";
 
     this._removeCancelButton();
-    this._restoreRetryButton();
 }
 
 UploadElement.prototype._setJobFailed = function() {
@@ -334,7 +333,9 @@ UploadElement.prototype._setJobFailed = function() {
 
 UploadElement.prototype._removeCancelButton = function() {
     var button = $(this).find('button.cancelButton')[0];
-    button.remove();
+    if (button !== undefined) {
+        button.remove();
+    }
 }
 
 UploadElement.prototype._restoreCancelButton = function() {
