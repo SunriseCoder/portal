@@ -1,5 +1,10 @@
-// UploadTable
+// Global variables and URLs
+var UploaderUI = {
+    saveFileInfoUrl: undefined,
+    publishFileUrl: undefined
+}
 
+// UploadTable
 var UploadTableProto = Object.create(HTMLElement.prototype);
 var UploadTable = document.registerElement('upload-table', { prototype: UploadTableProto, extends: 'table' });
 
@@ -136,7 +141,7 @@ UploadElementProto.createdCallback = function() {
                 '&title=' + $(uploadElement).find('input.titleInput')[0].value +
                 '&date=' + $(uploadElement).find('input.dateInput')[0].value +
                 '&position=' + $(uploadElement).find('input.positionInput')[0].value;
-        var url = Uploader.saveFileInfoUrl;
+        var url = UploaderUI.saveFileInfoUrl;
         HttpUtils.post(url, params, true, saveOk, saveError, this);
 
         function saveOk(target) {
@@ -162,6 +167,39 @@ UploadElementProto.createdCallback = function() {
         function updateDefaultValue(parent, pattern) {
             var value = $(parent).find(pattern)[0].value;
             $(parent).find(pattern)[0].defaultValue = value;
+        }
+    }
+
+    UploadElementProto._publishButton = $(this).find('button.publishButton')[0];
+    UploadElementProto._publishButton.onclick = function(event) {
+        var target = event.target;
+        target.disabled = true;
+
+        Array.removeIfExists(target.classList, 'error');
+        Array.removeIfExists(target.classList, 'success');
+        Array.addIfNotExists(target.classList, 'saving');
+
+        var uploadElement = UploadElement.findUploadElement(this);
+        var csrf = document.getElementById("csrf");
+        var job = uploadElement.job;
+        var params = csrf.name + '=' + csrf.value + '&id=' + job.filePlaceHolderId;
+        var url = UploaderUI.publishFileUrl;
+        HttpUtils.post(url, params, true, saveOk, saveError, this);
+
+        function saveOk(target) {
+            var uploadElement = UploadElement.findUploadElement(target);
+
+            var button = $(uploadElement).find('button.publishButton')[0];
+            Array.addIfNotExists(button.classList, 'success');
+            Array.removeIfExists(button.classList, 'saving');
+        }
+
+        function saveError(target) {
+            var button = $(uploadElement).find('button.publishButton')[0];
+            button.disabled = false;
+
+            Array.removeIfExists(button.classList, 'saving');
+            Array.addIfNotExists(button.classList, 'error');
         }
     }
 
