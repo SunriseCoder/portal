@@ -364,7 +364,7 @@ public class FileStorageServiceImpl implements FileStorageService {
             throw new IllegalAccessException("User tries to delete not his own file placeholder");
         }
 
-        if (filePlaceHolder.isCompleted()) {
+        if (filePlaceHolder.isPublished()) {
             filePlaceHolder.setDeleted(true);
             repository.saveAndFlush(filePlaceHolder);
         } else {
