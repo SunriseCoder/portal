@@ -37,7 +37,9 @@
 
             UploaderUI.saveFileInfoUrl = "${restFilesRoot}/save-info";
             UploaderUI.publishFileUrl = "${restFilesRoot}/publish";
+            
             DeleteFileHandler.deleteFileUrl = "${restFilesRoot}/delete";
+            PublishFileHandler.publishFileUrl = "${restFilesRoot}/publish";
         });
     </script>
 </head>
@@ -109,7 +111,7 @@
                     <thead>
                         <tr>
                             <th class="textAlignCenter">
-                                <input id="complete-checkbox_all" type="checkbox" onclick="DeleteFileHandler.checkBoxesToggle(this, 'complete-checkbox-');" />
+                                <input id="non-public-checkbox_all" type="checkbox" onclick="DeleteFileHandler.checkBoxesToggle(this, 'non-public-checkbox-');" />
                             </th>
                             <th class="textAlignCenter">Filename</th>
                             <th class="textAlignCenter">Size</th>
@@ -119,7 +121,7 @@
                     <tbody>
                         <c:forEach items="${nonPublished}" var="item">
                             <tr id="file${item.id}">
-                                <td><input id="complete-checkbox-${item.id}" type="checkbox" /></td>
+                                <td><input id="non-public-checkbox-${item.id}" type="checkbox" /></td>
                                 <td>${item.filename}</td>
                                 <td class="textAlignRight">${NumberUtils.humanReadableSize(item.size)}</td>
                                 <td>${item.lastUpdated}</td>
@@ -127,7 +129,8 @@
                         </c:forEach>
                     </tbody>
                 </table>
-                <input id="complete-delete-selected" type="button" value="Delete" onclick="DeleteFileHandler.deleteSelected(this, 'complete-checkbox-');" />
+                <input id="non-public-delete-selected" type="button" value="Delete" onclick="DeleteFileHandler.deleteSelected(this, 'non-public-checkbox-');" />
+                <input id="non-public-publish-selected" type="button" value="Publish" onclick="PublishFileHandler.publishSelected(this, 'non-public-checkbox-');" />
             </div>
         </c:if>
     </div>
@@ -143,7 +146,7 @@
                     <thead>
                         <tr>
                             <th class="textAlignCenter">
-                                <input id="complete-checkbox_all" type="checkbox" onclick="DeleteFileHandler.checkBoxesToggle(this, 'complete-checkbox-');" />
+                                <input id="public-checkbox_all" type="checkbox" onclick="DeleteFileHandler.checkBoxesToggle(this, 'public-checkbox-');" />
                             </th>
                             <th class="textAlignCenter">Filename</th>
                             <th class="textAlignCenter">Size</th>
@@ -153,7 +156,7 @@
                     <tbody>
                         <c:forEach items="${completed}" var="item">
                             <tr id="file${item.id}">
-                                <td><input id="complete-checkbox-${item.id}" type="checkbox" /></td>
+                                <td><input id="public-checkbox-${item.id}" type="checkbox" /></td>
                                 <td>${item.filename}</td>
                                 <td class="textAlignRight">${NumberUtils.humanReadableSize(item.size)}</td>
                                 <td>${item.lastUpdated}</td>
@@ -161,7 +164,7 @@
                         </c:forEach>
                     </tbody>
                 </table>
-                <input id="complete-delete-selected" type="button" value="Delete" onclick="DeleteFileHandler.deleteSelected(this, 'complete-checkbox-');" />
+                <input id="public-delete-selected" type="button" value="Delete" onclick="DeleteFileHandler.deleteSelected(this, 'public-checkbox-');" />
             </div>
         </c:if>
     </div>

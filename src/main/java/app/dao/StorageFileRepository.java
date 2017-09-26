@@ -8,7 +8,7 @@ import app.entity.StorageFileEntity;
 import app.entity.UserEntity;
 
 public interface StorageFileRepository extends JpaRepository<StorageFileEntity, Long> {
-    List<StorageFileEntity> findByCompletedIsFalseAndUploadedBy(UserEntity user);
-    List<StorageFileEntity> findByCompletedIsTrueAndPublishedIsFalseAndUploadedBy(UserEntity user);
+    List<StorageFileEntity> findByCompletedIsFalseAndDeletedIsFalseAndUploadedBy(UserEntity user);
+    List<StorageFileEntity> findByCompletedIsTrueAndPublishedIsFalseAndDeletedIsFalseAndUploadedBy(UserEntity user);
     List<StorageFileEntity> findByCompletedIsTrueAndPublishedIsTrueAndDeletedIsFalseAndUploadedBy(UserEntity user);
 }

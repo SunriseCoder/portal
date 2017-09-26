@@ -141,37 +141,47 @@ public class FileRestController extends BaseRestController {
 
     @PostMapping("publish")
     public void publishFile(HttpServletRequest request, HttpServletResponse response) {
-        String idStr = request.getParameter("id");
+        String idsStr = request.getParameter("ids");
         try {
-            Long id = Long.parseLong(idStr);
-            fileStorageService.updateFileVisibility(id, true);
-            auditService.log(OperationTypes.CHANGE_FILE_PUBLISH, AuditEventTypes.SUCCESSFUL, idStr);
+            if (idsStr != null && !idsStr.isEmpty()) {
+                String[] idsArr = idsStr.split(",");
+                for (String idStr : idsArr) {
+                    Long id = Long.valueOf(idStr);
+                    fileStorageService.updateFileVisibility(id, true);
+                }
+                auditService.log(OperationTypes.CHANGE_FILE_PUBLISH, AuditEventTypes.SUCCESSFUL, idsStr);
+            }
         } catch (SecurityException e) {
-            String message = "Error due to publish filePlaceHolder with id: " + idStr;
+            String message = "Error due to publish filePlaceHolder with ids: " + idsStr;
             logger.error(message, e);
-            auditService.log(OperationTypes.CHANGE_FILE_PUBLISH, AuditEventTypes.SUSPICIOUS_ACTIVITY, "id=" + idStr, null, e.getMessage());
+            auditService.log(OperationTypes.CHANGE_FILE_PUBLISH, AuditEventTypes.SUSPICIOUS_ACTIVITY, "ids=" + idsStr, null, e.getMessage());
         } catch (Exception e) {
-            String message = "Error due to publish filePlaceHolder with id: " + idStr;
+            String message = "Error due to publish filePlaceHolder with ids: " + idsStr;
             logger.error(message, e);
-            auditService.log(OperationTypes.CHANGE_FILE_PUBLISH, AuditEventTypes.SAVING_ERROR, "id=" + idStr, null, e.getMessage());
+            auditService.log(OperationTypes.CHANGE_FILE_PUBLISH, AuditEventTypes.SAVING_ERROR, "ids=" + idsStr, null, e.getMessage());
         }
     }
 
     @PostMapping("unpublish")
     public void unpublishFile(HttpServletRequest request, HttpServletResponse response) {
-        String idStr = request.getParameter("id");
+        String idsStr = request.getParameter("id");
         try {
-            Long id = Long.parseLong(idStr);
-            fileStorageService.updateFileVisibility(id, false);
-            auditService.log(OperationTypes.CHANGE_FILE_UNPUBLISH, AuditEventTypes.SUCCESSFUL, idStr);
+            if (idsStr != null && !idsStr.isEmpty()) {
+                String[] idsArr = idsStr.split(",");
+                for (String idStr : idsArr) {
+                    Long id = Long.valueOf(idStr);
+                    fileStorageService.updateFileVisibility(id, false);
+                }
+                auditService.log(OperationTypes.CHANGE_FILE_UNPUBLISH, AuditEventTypes.SUCCESSFUL, idsStr);
+            }
         } catch (SecurityException e) {
-            String message = "Error due to unpublish filePlaceHolder with id: " + idStr;
+            String message = "Error due to unpublish filePlaceHolder with ids: " + idsStr;
             logger.error(message, e);
-            auditService.log(OperationTypes.CHANGE_FILE_UNPUBLISH, AuditEventTypes.SUSPICIOUS_ACTIVITY, "id=" + idStr, null, e.getMessage());
+            auditService.log(OperationTypes.CHANGE_FILE_UNPUBLISH, AuditEventTypes.SUSPICIOUS_ACTIVITY, "ids=" + idsStr, null, e.getMessage());
         } catch (Exception e) {
-            String message = "Error due to unpublish filePlaceHolder with id: " + idStr;
+            String message = "Error due to unpublish filePlaceHolder with ids: " + idsStr;
             logger.error(message, e);
-            auditService.log(OperationTypes.CHANGE_FILE_UNPUBLISH, AuditEventTypes.SAVING_ERROR, "id=" + idStr, null, e.getMessage());
+            auditService.log(OperationTypes.CHANGE_FILE_UNPUBLISH, AuditEventTypes.SAVING_ERROR, "ids=" + idsStr, null, e.getMessage());
         }
     }
 }
