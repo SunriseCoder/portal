@@ -142,7 +142,7 @@ UploadElementProto.createdCallback = function() {
                 '&date=' + $(uploadElement).find('input.dateInput')[0].value +
                 '&position=' + $(uploadElement).find('input.positionInput')[0].value;
         var url = UploaderUI.saveFileInfoUrl;
-        HttpUtils.post(url, params, true, saveOk, saveError, this);
+        HttpUtils.postAjax(url, params, true, saveOk, saveError, this);
 
         function saveOk(target) {
             var uploadElement = UploadElement.findUploadElement(target);
@@ -182,9 +182,9 @@ UploadElementProto.createdCallback = function() {
         var uploadElement = UploadElement.findUploadElement(this);
         var csrf = document.getElementById("csrf");
         var job = uploadElement.job;
-        var params = csrf.name + '=' + csrf.value + '&id=' + job.filePlaceHolderId;
+        var params = csrf.name + '=' + csrf.value + '&ids=' + job.filePlaceHolderId;
         var url = UploaderUI.publishFileUrl;
-        HttpUtils.post(url, params, true, saveOk, saveError, this);
+        HttpUtils.postAjax(url, params, true, saveOk, saveError, this);
 
         function saveOk(target) {
             var uploadElement = UploadElement.findUploadElement(target);

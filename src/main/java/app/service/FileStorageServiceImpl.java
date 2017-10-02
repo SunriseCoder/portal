@@ -72,7 +72,7 @@ public class FileStorageServiceImpl implements FileStorageService {
     }
 
     @Override
-    public List<StorageFileEntity> findAllCompletedUploadedByCurrentUser() {
+    public List<StorageFileEntity> findAllPublishedUploadedByCurrentUser() {
         UserEntity user = userService.getLoggedInUser();
         List<StorageFileEntity> completed = repository.findByCompletedIsTrueAndPublishedIsTrueAndDeletedIsFalseAndUploadedBy(user);
         return completed;

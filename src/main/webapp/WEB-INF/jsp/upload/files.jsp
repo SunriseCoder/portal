@@ -2,6 +2,8 @@
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
+<%@ taglib prefix="t" tagdir="/WEB-INF/tags/files" %>
+
 <c:set var="appRoot" value="${pageContext.request.contextPath}" />
 <c:set var="restFilesRoot" value="${appRoot}/rest/files" />
 <c:set var="uploaderRoot" value="${appRoot}/js/uploader" />
@@ -107,30 +109,16 @@
             <h3>Non-published files:</h3>
 
             <div class="starter-template">
-                <table>
-                    <thead>
-                        <tr>
-                            <th class="textAlignCenter">
-                                <input id="non-public-checkbox_all" type="checkbox" onclick="DeleteFileHandler.checkBoxesToggle(this, 'non-public-checkbox-');" />
-                            </th>
-                            <th class="textAlignCenter">Filename</th>
-                            <th class="textAlignCenter">Size</th>
-                            <th class="textAlignCenter">Completed</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <c:forEach items="${nonPublished}" var="item">
-                            <tr id="file${item.id}">
-                                <td><input id="non-public-checkbox-${item.id}" type="checkbox" /></td>
-                                <td>${item.filename}</td>
-                                <td class="textAlignRight">${NumberUtils.humanReadableSize(item.size)}</td>
-                                <td>${item.lastUpdated}</td>
-                            </tr>
-                        </c:forEach>
-                    </tbody>
-                </table>
-                <input id="non-public-delete-selected" type="button" value="Delete" onclick="DeleteFileHandler.deleteSelected(this, 'non-public-checkbox-');" />
-                <input id="non-public-publish-selected" type="button" value="Publish" onclick="PublishFileHandler.publishSelected(this, 'non-public-checkbox-');" />
+                <c:forEach items="${nonPublished}" var="item">
+                    <t:file-element file="${item}" tablePrefix="non-public"></t:file-element>
+                </c:forEach>
+
+                <div class="selectionCheckbox">
+                    <input id="non-public-checkbox_all" type="checkbox" onclick="DeleteFileHandler.checkBoxesToggle(this, 'non-public-checkbox-');" />
+                    <label for="non-public-checkbox_all" style="font-weight: normal;">Select All</label> -
+                    <input id="non-public-delete-selected" type="button" value="Delete" onclick="DeleteFileHandler.deleteSelected(this, 'non-public-checkbox-');" />
+                    <input id="non-public-publish-selected" type="button" value="Publish" onclick="PublishFileHandler.publishSelected(this, 'non-public-checkbox-');" />
+                </div>
             </div>
         </c:if>
     </div>
@@ -138,33 +126,19 @@
     <!-- Published -->
 
     <div class="container">
-        <c:if test="${completed.size() > 0}">
+        <c:if test="${published.size() > 0}">
             <h3>Published files:</h3>
 
             <div class="starter-template">
-                <table>
-                    <thead>
-                        <tr>
-                            <th class="textAlignCenter">
-                                <input id="public-checkbox_all" type="checkbox" onclick="DeleteFileHandler.checkBoxesToggle(this, 'public-checkbox-');" />
-                            </th>
-                            <th class="textAlignCenter">Filename</th>
-                            <th class="textAlignCenter">Size</th>
-                            <th class="textAlignCenter">Completed</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <c:forEach items="${completed}" var="item">
-                            <tr id="file${item.id}">
-                                <td><input id="public-checkbox-${item.id}" type="checkbox" /></td>
-                                <td>${item.filename}</td>
-                                <td class="textAlignRight">${NumberUtils.humanReadableSize(item.size)}</td>
-                                <td>${item.lastUpdated}</td>
-                            </tr>
-                        </c:forEach>
-                    </tbody>
-                </table>
-                <input id="public-delete-selected" type="button" value="Delete" onclick="DeleteFileHandler.deleteSelected(this, 'public-checkbox-');" />
+                <c:forEach items="${published}" var="item">
+                    <t:file-element file="${item}" tablePrefix="public"></t:file-element>
+                </c:forEach>
+
+                <div class="selectionCheckbox">
+                    <input id="public-checkbox_all" type="checkbox" onclick="DeleteFileHandler.checkBoxesToggle(this, 'public-checkbox-');" />
+                    <label for="public-checkbox_all" style="font-weight: normal;">Select All</label> - 
+                    <input id="public-delete-selected" type="button" value="Delete" onclick="DeleteFileHandler.deleteSelected(this, 'public-checkbox-');" />
+                </div>
             </div>
         </c:if>
     </div>

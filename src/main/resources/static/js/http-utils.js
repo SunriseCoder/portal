@@ -30,5 +30,23 @@ var HttpUtils = {
         xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         xhr.send(params);
         return xhr;
+    },
+
+    postAjax: function(url, params, async, successHandler, errorHandler, that) {
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', url, async);
+        if (async) {
+            xhr.onload = function () {
+                var response = JSON.parse(xhr.response);
+                if (successHandler !== undefined && xhr.status === 200 && response.status === 'Ok') {
+                    successHandler(that, response);
+                } else if (errorHandler !== undefined) {
+                    errorHandler(that, response);
+                }
+            };
+        }
+        xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xhr.send(params);
+        return xhr;
     }
 }

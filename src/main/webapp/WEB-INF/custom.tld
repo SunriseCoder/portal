@@ -1,0 +1,45 @@
+<taglib>
+    <tlib-version>1.0</tlib-version>
+    <jsp-version>2.0</jsp-version>
+    <short-name>Utils</short-name>
+
+    <tag>
+        <name>humanReadable</name>
+        <tag-class>app.taglib.NumbersTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <name>size</name>
+            <required>true</required>
+            <type>java.lang.Long</type>
+            <fragment>true</fragment>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+
+    <tag>
+        <name>compositeDate</name>
+        <tag-class>app.taglib.CompositeDateTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <name>day</name>
+            <required>false</required>
+            <type>java.lang.Integer</type>
+            <fragment>true</fragment>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>month</name>
+            <required>false</required>
+            <type>java.lang.Integer</type>
+            <fragment>true</fragment>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>year</name>
+            <required>false</required>
+            <type>java.lang.Integer</type>
+            <fragment>true</fragment>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+</taglib>

@@ -33,7 +33,7 @@ public class UploadController extends BaseController {
         List<StorageFileEntity> nonPublished = fileStorageService.findAllNonPublishedUploadedByCurrentUser();
         model.addAttribute("nonPublished", nonPublished);
 
-        List<StorageFileEntity> completed = fileStorageService.findAllCompletedUploadedByCurrentUser();
-        model.addAttribute("completed", completed);
+        List<StorageFileEntity> published = fileStorageService.findAllPublishedUploadedByCurrentUser();
+        model.addAttribute("published", published);
     }
 }
