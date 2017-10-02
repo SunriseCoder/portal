@@ -87,12 +87,17 @@ var DeleteFileHandler = {
     },
 
     _deleteFileFromTable: function(id) {
-        var row = document.getElementById('file' + id);
+        var row = document.getElementById('file_' + id);
         if (row != undefined) {
             var parent = row.parentNode;
             parent.removeChild(row);
-            if (parent.children.length == 0) {
-                parent.parentNode.style.visibility = 'hidden';
+            var children = $(parent).find('div.uploadedFile');
+            if (children.length == 0) {
+                parent = parent.parentNode;
+                if (row.tagName === 'TR') { //TODO Make same style with the file element box
+                    parent = parent.parentNode.parentNode;
+                }
+                parent.parentNode.removeChild(parent);
             }
         }
     }
@@ -142,12 +147,15 @@ var PublishFileHandler = {
         }
 
         function _deleteFileFromTable(id) {
-            var row = document.getElementById('file' + id);
+            var row = document.getElementById('file_' + id);
             if (row != undefined) {
                 var parent = row.parentNode;
                 parent.removeChild(row);
-                if (parent.children.length == 0) {
-                    parent.parentNode.style.visibility = 'hidden';
+
+                var children = $(parent).find('div.uploadedFile');
+                if (children.length == 0) {
+                    parent = parent.parentNode;
+                    parent.parentNode.removeChild(parent);
                 }
             }
         }

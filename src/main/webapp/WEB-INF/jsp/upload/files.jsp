@@ -69,7 +69,7 @@
                     </thead>
                     <tbody>
                         <c:forEach items="${nonCompleted}" var="item">
-                            <tr id="file${item.id}">
+                            <tr id="file_${item.id}">
                                 <td><input id="incomplete-checkbox-${item.id}" type="checkbox" /></td>
                                 <td>${item.filename}</td>
                                 <td class="textAlignRight">${NumberUtils.humanReadableSize(item.size)}</td>
