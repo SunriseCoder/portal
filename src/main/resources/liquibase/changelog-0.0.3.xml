@@ -361,7 +361,7 @@
             </column>
         </createTable>
 
-        <!-- Grant Permission PAGES_VIEW to Anonymous -->
+        <!-- Grant Permission PAGES_VIEW to Role Anonymous -->
         <insert tableName="zz_roles_permissions">
             <column name="role_id" value="1" />
             <column name="permission_id" value="9" />

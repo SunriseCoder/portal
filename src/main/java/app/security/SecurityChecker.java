@@ -136,13 +136,16 @@ public class SecurityChecker {
         addRule(rules, "/profile",                  "/",               Permissions.USER_LOGGED_IN,         OperationTypes.CHANGE_USER_PROFILE);
         addRule(rules, "/change-pass",              "/",               Permissions.USER_LOGGED_IN,         OperationTypes.CHANGE_USER_PASSWORD);
 
+        // Here is basic requirements to be able to manipulate with own files.
+        // TODO For file moderation there should be either another checks in the controller or another URL path here
         addRule(rules, "/rest/files/list",          "/",               Permissions.PAGES_VIEW,             OperationTypes.ACCESS_PAGE_FILES);
         addRule(rules, "/rest/files/get",           "/",               Permissions.PAGES_VIEW,             OperationTypes.ACCESS_PAGE_FILES);
         addRule(rules, "/rest/files/create",        "/",               Permissions.UPLOAD_FILES,           OperationTypes.CHANGE_FILE_UPLOAD);
         addRule(rules, "/rest/files/upload-chunk",  "/",               Permissions.UPLOAD_FILES,           OperationTypes.CHANGE_FILE_UPLOAD);
         addRule(rules, "/rest/files/save-info",     "/",               Permissions.UPLOAD_FILES,           OperationTypes.CHANGE_FILE_UPLOAD);
         addRule(rules, "/rest/files/publish",       "/",               Permissions.UPLOAD_FILES,           OperationTypes.CHANGE_FILE_UPLOAD);
-        addRule(rules, "/rest/files/delete",        "/",               Permissions.UPLOAD_FILES,           OperationTypes.CHANGE_FILE_UPLOAD);
+        addRule(rules, "/rest/files/unpublish",     "/",               Permissions.UPLOAD_FILES,           OperationTypes.CHANGE_FILE_UPLOAD);
+        addRule(rules, "/rest/files/delete",        "/",               Permissions.ADMIN_FILES_DELETE,     OperationTypes.CHANGE_FILE_UPLOAD);
 
         addRule(rules, "/admin",                    "/",               Permissions.ADMIN_PAGE,             OperationTypes.ACCESS_ADMIN_DASHBOARD);
         addRule(rules, "/admin/",                   "/",               Permissions.ADMIN_PAGE,             OperationTypes.ACCESS_ADMIN_DASHBOARD);
