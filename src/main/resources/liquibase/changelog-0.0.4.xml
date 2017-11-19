@@ -123,4 +123,37 @@
 
     </changeSet>
 
+    <changeSet id="0.0.4-04" author="SunriseCoder">
+
+        <createTable tableName="albums">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="pk_albums"/>
+            </column>
+            <column name="name" type="varchar(255)"/>
+        </createTable>
+
+        <createTable tableName="zz_albums_files">
+            <column name="album_id" type="bigint">
+                <constraints nullable="false" foreignKeyName="fk_zz_albums_files_album"
+                    referencedTableName="albums" referencedColumnNames="id" />
+            </column>
+            <column name="file_id" type="bigint">
+                <constraints nullable="false" foreignKeyName="fk_zz_albums_files_file"
+                    referencedTableName="storage_files" referencedColumnNames="id" />
+            </column>
+        </createTable>
+
+        <createTable tableName="zz_festivals_albums">
+            <column name="festival_id" type="bigint">
+                <constraints nullable="false" foreignKeyName="fk_zz_festivals_albums_festival"
+                    referencedTableName="festivals" referencedColumnNames="id" />
+            </column>
+            <column name="album_id" type="bigint">
+                <constraints nullable="false" foreignKeyName="fk_zz_festivals_albums_album"
+                    referencedTableName="albums" referencedColumnNames="id" />
+            </column>
+        </createTable>
+
+    </changeSet>
+
 </databaseChangeLog>

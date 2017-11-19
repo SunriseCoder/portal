@@ -13,9 +13,12 @@ drop table if exists e_audit_event_types;
 drop table if exists e_operation_types;
 drop table if exists e_permissions;
 
+drop table if exists zz_festivals_albums;
 drop table if exists festivals;
 drop table if exists places;
 
+drop table if exists zz_albums_files;
+drop table if exists albums;
 drop table if exists storage_files;
 
 drop table if exists ip_bans;
