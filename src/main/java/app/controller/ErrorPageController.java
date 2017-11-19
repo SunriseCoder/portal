@@ -1,10 +1,8 @@
 package app.controller;
 
-import java.io.IOException;
 import java.security.Principal;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.boot.autoconfigure.web.ErrorController;
 import org.springframework.http.HttpStatus;

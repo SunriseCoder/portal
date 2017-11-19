@@ -5,7 +5,8 @@
 <%@ taglib prefix="t" tagdir="/WEB-INF/tags/files" %>
 
 <c:set var="appRoot" value="${pageContext.request.contextPath}" />
-<c:set var="restFilesRoot" value="${appRoot}/rest/files" />
+<c:set var="restRoot" value="${appRoot}/rest" />
+<c:set var="restFilesRoot" value="${restRoot}/files" />
 <c:set var="uploaderRoot" value="${appRoot}/js/uploader" />
 
 <!DOCTYPE html>
@@ -25,6 +26,7 @@
     <script src="${uploaderRoot}/uploader.js"></script>
     <script src="${uploaderRoot}/uploader-ui.js"></script>
     <script src="${uploaderRoot}/upload-handlers.js"></script>
+    <script src="${uploaderRoot}/session-heartbeat-worker.js"></script>
 
     <script>
         $(function() {
@@ -42,6 +44,11 @@
             
             DeleteFileHandler.deleteFileUrl = "${restFilesRoot}/delete";
             PublishFileHandler.publishFileUrl = "${restFilesRoot}/publish";
+
+            var sessionHeartbeatWorker = new Worker("${uploaderRoot}/session-heartbeat-worker.js");
+            sessionHeartbeatWorker.postMessage({type: 'sessionHeartbeatUrl', value: "${restRoot}/utils/session-heartbeat"});
+            sessionHeartbeatWorker.postMessage({type: 'timeout', value: 600000});
+            sessionHeartbeatWorker.postMessage({type: 'start'});
         });
     </script>
 </head>
