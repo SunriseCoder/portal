@@ -4,9 +4,9 @@
 
 Use following commands to manage project build:
 
-* `mvn clean package` to make development build
-* `mvn clean package -Puat` to make a build for UAT environment (with special application.properties file)
-* `mvn clean package -Pprod` to make a build for production environment (with special application.properties file)
+* `mvn clean package -Denv=dev` to make development build
+* `mvn clean package -Denv=uat` to make a build for UAT environment (with special application.properties file)
+* `mvn clean package -Denv=prod` to make a build for production environment (with special application.properties file)
 
 ## Database maintenance:
 
