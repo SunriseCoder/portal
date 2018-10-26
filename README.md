@@ -27,3 +27,14 @@ Use following commands to manage database:
 
 * `winsw.exe install` to register service
 * `winsw.exe uninstall` to unregister service
+
+## Troubleshooting
+
+MySQL 8 Server Time
+
+Problem:
+* java.sql.SQLException: The server time zone value 'RTZ 2 (çèìà)' is unrecognized or represents more than one time zone. You must configure either the server or JDBC driver (via the serverTimezone configuration property) to use a more specifc time zone value if you want to utilize time zone support.
+
+Solution:
+1. Execute script [scripts/sql/set_server_time.sql](scripts/sql/set_server_time.sql)
+2. Be sure, that `SELECT NOW();` returns correct time
